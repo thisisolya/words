@@ -1,5 +1,4 @@
 import React from "react";
-import store from "../../store";
 import WordList from "../words/word-list";
 import CreateUser from "./create-user";
 
@@ -8,17 +7,21 @@ interface User {
   lastName: string;
 }
 
-function UserList() {
-  const { allUsers, selectedUser } = store.getState().users;
-  console.log(allUsers, selectedUser);
+interface UserListProps {
+  selectedUser?: User,
+  allUsers: User[],
+}
 
-  if (!allUsers.length && !selectedUser.length) {
+const UserList = ({allUsers, selectedUser}: UserListProps) => {
+ 
+  if (!allUsers.length && !selectedUser) {
     return <CreateUser />;
   }
 
   if (selectedUser) {
     return <WordList />;
   }
+  
 
   return (
     <>

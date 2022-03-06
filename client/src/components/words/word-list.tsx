@@ -1,6 +1,13 @@
 import React from 'react'
 
-function WordList() {
+interface WordListProps {
+  allWords?: {
+    ru: string,
+    eng: string,
+  }[]
+}
+
+const WordList = ({ allWords }: WordListProps) => {
   return (
     <div> card List</div>
   )
