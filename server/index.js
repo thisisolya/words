@@ -1,14 +1,45 @@
 const express = require("express");
-const mongoose = require("mongoose");
+const { MongoClient } = require("mongodb");
+var cors = require("cors");
+require("dotenv").config();
 const UserModel = require("./models/user");
-const DataBase = require("./connect");
-const ObjectId = require("mongodb").ObjectId;
+
+const client = new MongoClient(process.env.ATLAS_URI, {
+  useUnifiedTopology: true,
+});
+
+let initialData;
+const run = async () => {
+  try {
+    await client.connect();
+    const db = await client.db("words");
+
+    initialData = db
+      .collection("words")
+      .find()
+      .toArray(function (err, result) {
+        if (err) {
+          throw err;
+        }
+        console.log(result);
+      });
+  } finally {
+    console.log("mongo is running");
+  }
+};
+run();
 
 const app = express();
 const router = express.Router();
+app.use(cors());
 app.use(express.json());
 
-console.log(DataBase);
+router.get("/", function (req, res) {
+  res.send(result);
+});
+
+// const client = await MongoClient.connect(process.env.MFLIX_DB_URI, {
+//   useNewUrlParser: true,
 
 // This help convert the id from string to ObjectId for the _id.
 
