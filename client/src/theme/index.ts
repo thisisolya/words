@@ -3,10 +3,14 @@ import palette from './palette';
 
 const theme = createTheme({
   typography: {
-    fontFamily:'Montserrat, sans-serif',
+    fontFamily: 'Montserrat, sans-serif',
     h1: {
       fontSize: '25px',
       color: palette.primary.dark,
+    },
+    h2: {
+      fontSize: '20px',
+      color: palette.primary.main,
     },
     body1: {
       fontSize: '15px',
@@ -31,14 +35,14 @@ const theme = createTheme({
         {
           props: { variant: 'contained' },
           style: {
-           color: palette.secondary.light,
-           textTransform: 'none',
+            color: palette.secondary.light,
+            textTransform: 'none',
           },
         },
         {
           props: { variant: 'text' },
           style: {
-           color: palette.primary.dark,
+            color: palette.primary.dark,
           },
         },
       ]

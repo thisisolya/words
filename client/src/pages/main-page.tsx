@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { setAllUsers, setChosenUser } from "../store/slices/user-slice";
 import { setAllWords, setAddedWord } from "../store/slices/word-slice";
 import store from "../store";
+import UserOptions from "../components/users/user-options";
 
 const ApplicationContainer = styled("div")({
   minHeight: "100vh",
@@ -20,32 +21,41 @@ const ApplicationContainer = styled("div")({
 });
 
 const MainPage = () => {
+  const dispatch = useDispatch();
   React.useEffect(() => {
-    fetch("http://localhost:3003/", {
+    fetch("http://localhost:8080/", {
+      method: "GET",
       mode: "cors",
-    }).then((response) => {
-      console.log(response);
-    });
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: "follow",
+      referrer: "no-referrer",
+    })
+      .then((response) => response.json())
+      .then((data) =>
+        dispatch(
+          setAllUsers(
+            data.map((user: any) => ({
+              firstName: user.first_name,
+              lastName: user.last_name,
+              id: user._id,
+            }))
+          )
+        )
+      );
   });
 
-  const dispatch = useDispatch();
-  const { selectedUser, allUsers } = store.getState().users;
   const { allWords } = store.getState().words;
-
-  React.useEffect(() => {
-    dispatch(setAllUsers([{ firstName: "Olga", lastName: "Pin" }]));
-    selectedUser && dispatch(setAllWords([{ ru: "ala", eng: "lala" }]));
-  }, []);
 
   return (
     <ApplicationContainer>
       <Routes>
-        <Route
-          path="/"
-          element={<UserList allUsers={allUsers} selectedUser={selectedUser} />}
-        />
+        <Route path="/" element={<UserList />} />
         <Route path="/user/create" element={<CreateUser />} />
-        <Route path="/cards" element={<WordList allWords={allWords} />} />
+        <Route path="/user/:id" element={<UserOptions />} />
+        <Route path="/cards/:id" element={<WordList allWords={allWords} />} />
       </Routes>
     </ApplicationContainer>
   );

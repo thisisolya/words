@@ -1,17 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { User } from "../../types/user";
+
+interface Type {
+    allUsers?: User[],
+    selectedUser?: User,
+}
+
+const initialState: Type = {
+    allUsers: undefined,
+    selectedUser: undefined,
+}
 
 const userSlice = createSlice({
     name: 'users',
-    initialState: {
-        allUsers: [],
-        selectedUser: undefined,
-    },
+    initialState,
     reducers: {
         setAllUsers: (state, action) => {
-            state = Object.assign(state.allUsers, action.payload);
+            state.allUsers = action.payload;
         },
         setChosenUser: (state, action) => {
-            state = Object.assign(state.selectedUser, action.payload);
+            state.selectedUser = action.payload;
         },
     },
 });

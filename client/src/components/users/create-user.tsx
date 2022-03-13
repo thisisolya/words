@@ -1,12 +1,6 @@
-import { Button, Stack, styled, TextField, Typography } from "@mui/material";
 import React from "react";
-
-const Container = styled(Stack)({
-  paddingTop: "10vh",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "10px",
-});
+import { Button, TextField, Typography } from "@mui/material";
+import Container from "../../shared/container";
 
 const CreateUser = () => {
   return (
