@@ -47,6 +47,20 @@ const theme = createTheme({
         },
       ]
     },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          width: 300,
+          height: 200,
+          margin: '50px auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: "15px",
+          boxShadow: `5px 5x 5px ${palette.secondary.main}`,
+        },
+      },
+    },
   },
 });
 

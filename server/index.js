@@ -3,6 +3,7 @@ const { MongoClient } = require("mongodb");
 var cors = require("cors");
 require("dotenv").config();
 const UserModel = require("./models/user");
+const ObjectId = require("mongodb").ObjectId;
 
 const app = express();
 app.use(require("body-parser").json());
@@ -15,10 +16,11 @@ const client = new MongoClient(process.env.ATLAS_URI, {
 
 client.connect((err, client) => {
   const db = client.db("words-app");
-  const collection = db.collection("users");
+  const usersCollection = db.collection("users");
+  const wordsCollection = db.collection("words");
 
   app.get("/", (req, res) => {
-    collection.find({ user: req.params.user }).toArray((err, docs) => {
+    usersCollection.find({ user: req.params.user }).toArray((err, docs) => {
       if (err) {
         res.send("Error in GET req.");
       } else {
@@ -26,6 +28,52 @@ client.connect((err, client) => {
       }
     });
   });
+
+  app.post("/user", (req, res) => {
+    const user_id = new ObjectId(req.body.userId);
+    usersCollection.find({ _id: user_id }).toArray((err, docs) => {
+      if (err) {
+        res.send("Error in GET req.");
+      } else {
+        res.send(docs);
+      }
+    });
+  });
+
+  app.post("/cards", (req, res) => {
+    wordsCollection.find({ user_id: req.body.userId }).toArray((err, docs) => {
+      if (err) {
+        res.send("Error in GET req.");
+      } else {
+        res.send(docs);
+      }
+    });
+  });
+
+  app.post("/cards/add", (req, res, err) => {
+    const { userId, russianWord, englishWord } = req.body;
+    wordsCollection.insertOne({
+      user_id: userId,
+      english: englishWord,
+      russian: russianWord,
+    });
+  });
+
+  app.post("/user/add", (req, res, err) => {
+    const { firstName, lastName } = req.body;
+    wordsCollection.insertOne({
+      first_name: firstName,
+      last_name: lastName,
+    });
+  });
+
+  // .toArray((err, docs) => {
+  //   if (err) {
+  //     res.send("Error in GET req.");
+  //   } else {
+  //     res.send("Information inserted");
+  //   }
+  // });
 
   // Responds to POST requests with the route parameter being the username.
   // Creates a new user in the collection with the `user` parameter and the JSON sent with the req in the `body` property

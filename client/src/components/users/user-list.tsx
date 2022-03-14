@@ -5,9 +5,10 @@ import WordList from "../words/word-list";
 import CreateUser from "./create-user";
 import Container from "../../shared/container";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setAllUsers, setChosenUser } from "../../store/slices/user-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { setAllUsers, setSelectedUser } from "../../store/slices/user-slice";
 import { User } from "../../types/user";
+import UserOptions from "./user-options";
 
 type UserListProps = {
   selectedUser?: User;
@@ -15,14 +16,65 @@ type UserListProps = {
 };
 
 const UserList = () => {
-  // const { allUsers, selectedUser }: UserListProps = store.getState().users;
+  const dispatch = useDispatch();
   let navigate = useNavigate();
+  const { allUsers, selectedUser } = useSelector((state: any) => state.users);
 
-  const allUsers = React.useState(store.getState().users.allUsers);
-  const selectedUser = React.useState(store.getState().users.selectedUser);
+  React.useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    userId
+      ? fetch(`http://localhost:8080/user`, {
+          method: "POST",
+          mode: "cors",
+          cache: "no-cache",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          redirect: "follow",
+          referrer: "no-referrer",
+          body: JSON.stringify({ userId }),
+        })
+          .then((response) => response.json())
+          .then((data) =>
+            dispatch(
+              setSelectedUser({
+                firstName: data[0].first_name,
+                lastName: data[0].last_name,
+                id: data[0]._id,
+              })
+            )
+          )
+      : fetch("http://localhost:8080/", {
+          method: "GET",
+          mode: "cors",
+          cache: "no-cache",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          redirect: "follow",
+          referrer: "no-referrer",
+        })
+          .then((response) => response.json())
+          .then((data) =>
+            dispatch(
+              setAllUsers(
+                data.map((user: any) => ({
+                  firstName: user.first_name,
+                  lastName: user.last_name,
+                  id: user._id,
+                }))
+              )
+            )
+          );
+  }, []);
 
-  const handleClick = (id: string) => {
-    navigate(`/user/${id}`);
+  React.useEffect(() => {
+    selectedUser && navigate(`/user/${selectedUser.id}`);
+  }, [selectedUser]);
+
+  const handleClick = (user: any) => {
+    localStorage.setItem("userId", user.id);
+    dispatch(setSelectedUser(user));
   };
 
   if (!allUsers && !selectedUser) {
@@ -30,20 +82,22 @@ const UserList = () => {
   }
 
   if (selectedUser) {
-    return <WordList />;
+    return <UserOptions />;
   }
 
   return (
     <Container>
       <Typography variant="h2">Who's playing?</Typography>
       <Grid container gap="30px" justifyContent={"center"} m="20px 30px">
-        {allUsers?.map(
-          (user) => "slslsl"
-          // <Grid item onClick={() => handleClick(user?.id)}>
-          //   {user?.firstName} {user?.lastName}
-          // </Grid>
-        )}
+        {allUsers?.map((user: any) => (
+          <Grid item onClick={() => handleClick(user)} key={user.id}>
+            {user?.firstName} {user?.lastName}
+          </Grid>
+        ))}
       </Grid>
+      <Link to="user/create">
+        <Typography variant="h2">Create new user</Typography>
+      </Link>
     </Container>
   );
 };

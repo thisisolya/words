@@ -3,15 +3,15 @@ import { createSlice } from "@reduxjs/toolkit"
 const wordsSlice = createSlice({
     name: 'words',
     initialState: {
-        allWords: [],
+        allWords: undefined,
         newWord: undefined,
     },
     reducers: {
-        setAllWords: (state, action) =>  {
-            Object.assign(state.allWords ,action.payload)
+        setAllWords: (state, action) => {
+            state.allWords = action.payload;
         },
         setAddedWord: (state, action) => {
-            Object.assign(state.newWord, action.payload)
+            state.newWord = action.payload;
         },
     },
 });

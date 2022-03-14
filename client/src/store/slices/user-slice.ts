@@ -18,16 +18,16 @@ const userSlice = createSlice({
         setAllUsers: (state, action) => {
             state.allUsers = action.payload;
         },
-        setChosenUser: (state, action) => {
+        setSelectedUser: (state, action) => {
             state.selectedUser = action.payload;
         },
     },
 });
 
-const { setAllUsers, setChosenUser } = userSlice.actions;
+const { setAllUsers, setSelectedUser } = userSlice.actions;
 
 export default userSlice;
-export { setAllUsers, setChosenUser };
+export { setAllUsers, setSelectedUser };
 
 
 // {
