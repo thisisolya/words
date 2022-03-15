@@ -12,6 +12,11 @@ const theme = createTheme({
       fontSize: '20px',
       color: palette.primary.main,
     },
+    h3: {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      color: palette.primary.main,
+    },
     body1: {
       fontSize: '15px',
       color: palette.primary.main,
@@ -24,10 +29,17 @@ const theme = createTheme({
         variant: 'outlined',
         size: 'small',
       },
+    },
+    MuiAppBar: {
       styleOverrides: {
         root: {
-          width: 300,
+          backgroundColor: palette.primary.main,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          padding: '10px 15px',
+          textAlign: 'center',
         },
+
       },
     },
     MuiButton: {
@@ -40,9 +52,10 @@ const theme = createTheme({
           },
         },
         {
-          props: { variant: 'text' },
+          props: { variant: 'outlined' },
           style: {
             color: palette.primary.dark,
+            textTransform: 'none',
           },
         },
       ]
@@ -50,9 +63,8 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          width: 300,
-          height: 200,
-          margin: '50px auto',
+          minWidth: "60vw",
+          height: 160,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -60,6 +72,13 @@ const theme = createTheme({
           boxShadow: `5px 5x 5px ${palette.secondary.main}`,
         },
       },
+    },
+    MuiSvgIcon: {
+      styleOverrides: {
+        root: {
+          cursor: 'pointer',
+        }
+      }
     },
   },
 });

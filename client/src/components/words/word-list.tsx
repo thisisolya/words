@@ -1,24 +1,25 @@
-import { Card, Typography } from "@mui/material";
+import { Button, Card, Stack, Typography } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Container from "../../shared/container";
 import { setAllWords } from "../../store/slices/word-slice";
-
-interface WordListProps {
-  allWords?: {
-    ru: string;
-    eng: string;
-  }[];
-}
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useNavigate } from "react-router-dom";
 
 const WordList = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userId =
     useSelector((state: any) => state.users.selectedUser?.id) ||
     localStorage.getItem("userId");
+
   const { allWords } = useSelector((state: any) => state.words);
   const [currentWord, setCurrentWord] = React.useState(0);
-  const cardRef = React.useRef<any>();
+  const [language, setLanguage] = React.useState("russian");
+
+  const lastWord = allWords ? currentWord === allWords.length - 1 : 0;
+  const firstWord = currentWord === 0;
 
   React.useEffect(() => {
     fetch(`http://localhost:8080/cards`, {
@@ -46,39 +47,49 @@ const WordList = () => {
       );
   }, []);
 
-  const handleClick = (e: any) => {
-    console.log(currentWord);
-    if (currentWord === 0) {
-      e.pageY > 150
-        ? setCurrentWord((currentWord) => currentWord + 1)
-        : setCurrentWord(currentWord);
-    }
-    if (currentWord > 0) {
-      e.pageY > 150
-        ? setCurrentWord((currentWord) => currentWord + 1)
-        : setCurrentWord((currentWord) => currentWord - 1);
-    }
-    if (currentWord === allWords.length - 1) {
-      e.pageY > 150
-        ? setCurrentWord(currentWord)
-        : setCurrentWord((currentWord) => currentWord - 1);
-    }
+  const handleCardClick = () => {
+    setLanguage(language === "russian" ? "english" : "russian");
   };
 
-  if (!allWords) {
-    return null;
+  const handleBackClick = () => {
+    if (firstWord) return;
+    setCurrentWord((currentWord) => currentWord - 1);
+  };
+
+  const handleForwardClick = () => {
+    if (lastWord) return;
+    setCurrentWord((currentWord) => currentWord + 1);
+  };
+
+  if (!allWords || !allWords.length) {
+    return (
+      <>
+        <Typography variant="body1" textAlign="center">
+          You have no words yet. Woud you like to add some?
+        </Typography>
+        <Button variant="contained" onClick={() => navigate("/cards/add")}>
+          add a new word
+        </Button>
+      </>
+    );
   }
 
   return (
-    <Container>
-      <Card
-        key={allWords[currentWord].russian}
-        onClick={handleClick}
-        ref={cardRef}
-      >
-        <Typography variant="body1">{allWords[currentWord].english}</Typography>
+    <Stack direction="row" alignItems="center" spacing={2}>
+      <ArrowBackIosIcon
+        color={firstWord ? "secondary" : "primary"}
+        onClick={handleBackClick}
+      />
+      <Card key={allWords[currentWord].russian} onClick={handleCardClick}>
+        <Typography variant="body1">
+          {allWords[currentWord][language]}
+        </Typography>
       </Card>
-    </Container>
+      <ArrowForwardIosIcon
+        color={lastWord ? "secondary" : "primary"}
+        onClick={handleForwardClick}
+      />
+    </Stack>
   );
 };
 

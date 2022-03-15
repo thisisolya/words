@@ -1,16 +1,33 @@
 import React from "react";
-import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
+import theme from "../theme";
 
-const Container = ({ children }: any) => {
-  const Container = styled(Stack)({
+interface ContainerProps {
+  children: any;
+  direction?: "row" | "column" | "column-reverse" | "row-reverse";
+  justifyContent?:
+    | "start"
+    | "end"
+    | "center"
+    | "space-evenly"
+    | "space-between";
+}
+
+const Container = ({ children, direction, justifyContent }: ContainerProps) => {
+  const flexDirection = direction ? direction : "column";
+  const containerStyle = {
+    display: "flex",
     paddingTop: "10vh",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent,
     gap: "10px",
-  });
+    flexDirection,
+    minHeight: "100vh",
+    height: "100%",
+    backgroundColor: theme.palette.secondary.light,
+  };
 
-  return <Container>{children}</Container>;
+  return <Stack sx={containerStyle}>{children}</Stack>;
 };
 
 export default Container;

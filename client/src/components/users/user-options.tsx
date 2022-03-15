@@ -1,26 +1,35 @@
 import React from "react";
-import styled from "@emotion/styled";
 import Container from "../../shared/container";
-import { Link } from "react-router-dom";
-import store from "../../store";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Button, Typography, Stack } from "@mui/material";
 
 const UserOptions = () => {
-  const Card = styled("div")({
-    padding: "15px",
-  });
+  const navigate = useNavigate();
 
-  const userIid = useSelector((state: any) => state.users.selectedUser?.id);
-  if (!userIid) return null;
+  const userId =
+    useSelector((state: any) => state.users.selectedUser?.id) ||
+    localStorage.getItem("userId");
+  const { firstName } = useSelector((state: any) => state.users.selectedUser);
+
+  if (!userId) return null;
+
   return (
-    <Container>
-      <Card>
-        <Link to="/cards/add">add word</Link>
-      </Card>
-      <Card>
-        <Link to={`/cards/${userIid}`}>browse words</Link>
-      </Card>
-    </Container>
+    <>
+      <Typography variant="h3">Welcome, {firstName}!</Typography>
+      <Typography variant="body1">What would you like to do?</Typography>
+      <Stack direction="row" spacing={3}>
+        <Button variant="contained" onClick={() => navigate("/cards/add")}>
+          add a new word
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => navigate(`/cards/${userId}`)}
+        >
+          practice existing words
+        </Button>
+      </Stack>
+    </>
   );
 };
 

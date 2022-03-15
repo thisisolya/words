@@ -1,18 +1,22 @@
 import React from "react";
-import { Grid, Typography } from "@mui/material";
-import store from "../../store";
-import WordList from "../words/word-list";
-import CreateUser from "./create-user";
-import Container from "../../shared/container";
-import { Link, useNavigate } from "react-router-dom";
+import { Button, Grid, Typography, Stack } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 import { setAllUsers, setSelectedUser } from "../../store/slices/user-slice";
-import { User } from "../../types/user";
+
+import CreateUser from "./create-user";
 import UserOptions from "./user-options";
 
-type UserListProps = {
-  selectedUser?: User;
-  allUsers?: User[];
+import { User } from "../../types/user";
+import theme from "../../theme";
+
+const stackStyle = {
+  minHeight: "100px",
+  backgroundColor: "white",
+  padding: "15px",
+  borderRadius: "5px",
+  boxShadow: `5px 5px 10px 10px ${theme.palette.secondary.main}`,
 };
 
 const UserList = () => {
@@ -72,7 +76,7 @@ const UserList = () => {
     selectedUser && navigate(`/user/${selectedUser.id}`);
   }, [selectedUser]);
 
-  const handleClick = (user: any) => {
+  const handleClick = (user: User) => {
     localStorage.setItem("userId", user.id);
     dispatch(setSelectedUser(user));
   };
@@ -86,19 +90,24 @@ const UserList = () => {
   }
 
   return (
-    <Container>
+    <>
       <Typography variant="h2">Who's playing?</Typography>
-      <Grid container gap="30px" justifyContent={"center"} m="20px 30px">
+      <Grid container gap="30px" justifyContent="center" m="20px 30px">
         {allUsers?.map((user: any) => (
-          <Grid item onClick={() => handleClick(user)} key={user.id}>
-            {user?.firstName} {user?.lastName}
-          </Grid>
+          <Stack key={user.id} style={stackStyle} spacing={3}>
+            <Typography variant="h3" textAlign="center">
+              {user.firstName} {user.lastName}
+            </Typography>
+            <Button variant="contained" onClick={() => handleClick(user)}>
+              Choose this one
+            </Button>
+          </Stack>
         ))}
       </Grid>
-      <Link to="user/create">
-        <Typography variant="h2">Create new user</Typography>
-      </Link>
-    </Container>
+      <Button variant="outlined" onClick={() => navigate("user/create")}>
+        Create new user
+      </Button>
+    </>
   );
 };
 

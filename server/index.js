@@ -52,19 +52,26 @@ client.connect((err, client) => {
 
   app.post("/cards/add", (req, res, err) => {
     const { userId, russianWord, englishWord } = req.body;
-    wordsCollection.insertOne({
-      user_id: userId,
-      english: englishWord,
-      russian: russianWord,
-    });
+    wordsCollection.insertOne(
+      {
+        user_id: userId,
+        english: englishWord,
+        russian: russianWord,
+      },
+      (err, result) => {
+        res.send(result);
+      }
+    );
   });
 
   app.post("/user/add", (req, res, err) => {
     const { firstName, lastName } = req.body;
-    wordsCollection.insertOne({
-      first_name: firstName,
-      last_name: lastName,
-    });
+    usersCollection.insertOne(
+      { first_name: firstName, last_name: lastName },
+      (err, result) => {
+        res.send(result);
+      }
+    );
   });
 
   // .toArray((err, docs) => {

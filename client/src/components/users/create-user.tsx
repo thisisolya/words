@@ -1,10 +1,14 @@
 import React from "react";
-import { Button, Input, TextField, Typography } from "@mui/material";
-import Container from "../../shared/container";
+import { Button, TextField, Typography } from "@mui/material";
+import FormBase from "../../shared/form-base";
+import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 const CreateUser = () => {
-  const [firstName, setFirstName] = React.useState<string>();
-  const [lastName, setLastName] = React.useState<string>();
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = (e: any) => {
     e.preventDefault();
@@ -18,9 +22,14 @@ const CreateUser = () => {
       redirect: "follow",
       referrer: "no-referrer",
       body: JSON.stringify({ firstName, lastName }),
-    }).then(() => console.log("lala"));
+    }).then((result) => {
+      if (result.status === 200) {
+        navigate("/");
+      } else {
+        enqueueSnackbar("Something went wrong:(", { variant: "error" });
+      }
+    });
   };
-  console.log(firstName);
 
   const handleInput = (e: any, field: any) => {
     e.preventDefault();
@@ -28,7 +37,7 @@ const CreateUser = () => {
   };
 
   return (
-    <Container>
+    <FormBase>
       <Typography variant="h1">Create account</Typography>
       <TextField
         label="First name"
@@ -48,7 +57,7 @@ const CreateUser = () => {
       >
         Let's go!
       </Button>
-    </Container>
+    </FormBase>
   );
 };
 
