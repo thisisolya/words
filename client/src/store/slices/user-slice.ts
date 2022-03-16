@@ -28,10 +28,3 @@ const { setAllUsers, setSelectedUser } = userSlice.actions;
 
 export default userSlice;
 export { setAllUsers, setSelectedUser };
-
-
-// {
-//     firstName: '',
-//         lastName: '',
-//             words: [],
-// }

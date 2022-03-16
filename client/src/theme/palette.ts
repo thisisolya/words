@@ -1,13 +1,17 @@
 const palette = {
     primary: {
-        main: '#406343',
-        dark: "#32502E",
+        light: "#d1d9ff",
+        main: '#9fa8da',
+        dark: "#26418f",
+        contrast: '#6f79a8',
+
     },
     secondary: {
-        main: '#ECE7B4',
-        light: "#F3EFCC",
-        contrastText: '#32502E',
-    }
+        light: "#fffffb",
+        main: '#dcedc8',
+        dark: "#aabb97",
+        contrastText: '#00251a',
+    },
 }
 
 export default palette

@@ -1,11 +1,13 @@
-import { Button, Card, Stack, Typography } from "@mui/material";
+import { Button, IconButton, Stack, Typography } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Container from "../../shared/container";
 import { setAllWords } from "../../store/slices/word-slice";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../../hooks/use-fetch";
+import WordCard from "./word-card";
+import theme from "../../theme";
 
 const WordList = () => {
   const dispatch = useDispatch();
@@ -16,40 +18,30 @@ const WordList = () => {
 
   const { allWords } = useSelector((state: any) => state.words);
   const [currentWord, setCurrentWord] = React.useState(0);
-  const [language, setLanguage] = React.useState("russian");
 
-  const lastWord = allWords ? currentWord === allWords.length - 1 : 0;
+  const lastWord = allWords ? currentWord === allWords.length - 1 : false;
   const firstWord = currentWord === 0;
 
+  const wordsList = useFetch({
+    endpoint: "http://localhost:8080/cards",
+    method: "POST",
+    body: JSON.stringify({ userId }),
+  });
+
   React.useEffect(() => {
-    fetch(`http://localhost:8080/cards`, {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrer: "no-referrer",
-      body: JSON.stringify({ userId }),
-    })
-      .then((response) => response.json())
-      .then((data) =>
-        dispatch(
-          setAllWords(
-            data.map((word: any) => ({
-              english: word.english,
-              russian: word.russian,
-              userId: word.user_id,
-            }))
-          )
+    wordsList &&
+      wordsList.length &&
+      dispatch(
+        setAllWords(
+          wordsList.map((word: any) => ({
+            english: word.english,
+            russian: word.russian,
+            userId: word.user_id,
+            wordId: word._id,
+          }))
         )
       );
-  }, []);
-
-  const handleCardClick = () => {
-    setLanguage(language === "russian" ? "english" : "russian");
-  };
+  }, [wordsList, dispatch]);
 
   const handleBackClick = () => {
     if (firstWord) return;
@@ -64,10 +56,10 @@ const WordList = () => {
   if (!allWords || !allWords.length) {
     return (
       <>
-        <Typography variant="body1" textAlign="center">
+        <Typography variant="body1">
           You have no words yet. Woud you like to add some?
         </Typography>
-        <Button variant="contained" onClick={() => navigate("/cards/add")}>
+        <Button variant="contained" onClick={() => navigate("/cards/create")}>
           add a new word
         </Button>
       </>
@@ -75,20 +67,19 @@ const WordList = () => {
   }
 
   return (
-    <Stack direction="row" alignItems="center" spacing={2}>
-      <ArrowBackIosIcon
-        color={firstWord ? "secondary" : "primary"}
-        onClick={handleBackClick}
-      />
-      <Card key={allWords[currentWord].russian} onClick={handleCardClick}>
-        <Typography variant="body1">
-          {allWords[currentWord][language]}
-        </Typography>
-      </Card>
-      <ArrowForwardIosIcon
-        color={lastWord ? "secondary" : "primary"}
-        onClick={handleForwardClick}
-      />
+    <Stack direction="column" alignItems="center" spacing={3}>
+      <Stack direction="row" alignItems="center" spacing={1}>
+        <IconButton disabled={firstWord} onClick={handleBackClick}>
+          <ArrowBackIosIcon />
+        </IconButton>
+        <WordCard currentWord={allWords[currentWord]} />
+        <IconButton disabled={lastWord} onClick={handleForwardClick}>
+          <ArrowForwardIosIcon />
+        </IconButton>
+      </Stack>
+      <Button variant="outlined" onClick={() => navigate("/cards/create")}>
+        add a new word
+      </Button>
     </Stack>
   );
 };

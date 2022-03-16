@@ -1,27 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 import palette from './palette';
+import typography from './typography';
 
 const theme = createTheme({
-  typography: {
-    fontFamily: 'Montserrat, sans-serif',
-    h1: {
-      fontSize: '25px',
-      color: palette.primary.dark,
-    },
-    h2: {
-      fontSize: '20px',
-      color: palette.primary.main,
-    },
-    h3: {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      color: palette.primary.main,
-    },
-    body1: {
-      fontSize: '15px',
-      color: palette.primary.main,
-    }
-  },
+  typography,
   palette,
   components: {
     MuiTextField: {
@@ -33,11 +15,10 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: palette.primary.main,
+          color: 'white',
           flexDirection: 'row',
           justifyContent: 'space-between',
           padding: '10px 15px',
-          textAlign: 'center',
         },
 
       },
@@ -47,6 +28,7 @@ const theme = createTheme({
         {
           props: { variant: 'contained' },
           style: {
+            backgroundColor: palette.primary.contrast,
             color: palette.secondary.light,
             textTransform: 'none',
           },
@@ -66,6 +48,7 @@ const theme = createTheme({
           minWidth: "60vw",
           height: 160,
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: "15px",

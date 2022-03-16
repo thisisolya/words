@@ -6,6 +6,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { setSelectedUser } from "../store/slices/user-slice";
+import palette from "../theme/palette";
+
+const appBarStyle = {
+  backgroundColor: palette.primary.dark,
+};
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -18,7 +23,7 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar>
+    <AppBar style={appBarStyle}>
       <HomeIcon onClick={() => navigate("/")} />
       <LogoutIcon onClick={handleLogOut} />
     </AppBar>

@@ -1,8 +1,9 @@
 import React from "react";
 import { Button, TextField, Typography } from "@mui/material";
-import FormBase from "../../shared/form-base";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
+
+import Card from "../../shared/card";
 
 const CreateUser = () => {
   const [firstName, setFirstName] = React.useState("");
@@ -12,7 +13,7 @@ const CreateUser = () => {
 
   const handleClick = (e: any) => {
     e.preventDefault();
-    fetch("http://localhost:8080/user/add", {
+    fetch("http://localhost:8080/user/create", {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
@@ -31,33 +32,27 @@ const CreateUser = () => {
     });
   };
 
-  const handleInput = (e: any, field: any) => {
-    e.preventDefault();
-    field(e.target.value);
-  };
-
   return (
-    <FormBase>
+    <Card size="medium">
       <Typography variant="h1">Create account</Typography>
       <TextField
         label="First name"
-        onChange={(e) => handleInput(e, setFirstName)}
+        onChange={(e) => setFirstName(e.target.value)}
         value={firstName}
       />
       <TextField
         label="Last name"
-        onChange={(e) => handleInput(e, setLastName)}
+        onChange={(e) => setLastName(e.target.value)}
         value={lastName}
       />
       <Button
-        type="submit"
         variant="contained"
         onClick={handleClick}
         disabled={!firstName || !lastName}
       >
         Let's go!
       </Button>
-    </FormBase>
+    </Card>
   );
 };
 

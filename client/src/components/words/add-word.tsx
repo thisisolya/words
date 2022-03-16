@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, TextField, Typography } from "@mui/material";
-import Container from "../../shared/container";
 import { useSelector } from "react-redux";
-import FormBase from "../../shared/form-base";
 import { useSnackbar } from "notistack";
+
+import Card from "../../shared/card";
 
 const AddWord = () => {
   const [russianWord, setRussianWord] = React.useState("");
@@ -14,9 +14,8 @@ const AddWord = () => {
     useSelector((state: any) => state.users.selectedUser?.id) ||
     localStorage.getItem("userId");
 
-  const handleClick = (e: any) => {
-    e.preventDefault();
-    fetch("http://localhost:8080/cards/add", {
+  const handleClick = () => {
+    fetch("http://localhost:8080/cards/create", {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
@@ -36,34 +35,33 @@ const AddWord = () => {
       }
     });
   };
+
   return (
-    <>
-      <FormBase>
-        <Typography variant="body1" textAlign={"center"}>
-          Please type a word in Russian and its equivalent in a foreign language
-          of your choice and hit "submit"
-        </Typography>
-        <TextField
-          type="text"
-          label="Russian"
-          value={russianWord}
-          onChange={(e) => setRussianWord(e.target.value)}
-        />
-        <TextField
-          type="text"
-          label="Translation"
-          value={englishWord}
-          onChange={(e) => setEnglishWord(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          onClick={handleClick}
-          disabled={!englishWord || !russianWord}
-        >
-          Submit
-        </Button>
-      </FormBase>
-    </>
+    <Card size="medium">
+      <Typography variant="body1" textAlign={"center"}>
+        Please type a word in Russian and its equivalent in English and hit
+        "submit"
+      </Typography>
+      <TextField
+        type="text"
+        label="Russian"
+        value={russianWord}
+        onChange={(e) => setRussianWord(e.target.value)}
+      />
+      <TextField
+        type="text"
+        label="English"
+        value={englishWord}
+        onChange={(e) => setEnglishWord(e.target.value)}
+      />
+      <Button
+        variant="contained"
+        onClick={handleClick}
+        disabled={!englishWord || !russianWord}
+      >
+        Submit
+      </Button>
+    </Card>
   );
 };
 
