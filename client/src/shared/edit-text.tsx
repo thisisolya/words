@@ -1,5 +1,4 @@
 import { Stack, TextField } from "@mui/material";
-import { v4 as uuidv4 } from "uuid";
 
 type objectToEdit = {
   value: string;
@@ -7,11 +6,12 @@ type objectToEdit = {
 };
 
 const EditText = ({ objectsToEdit }: { objectsToEdit: objectToEdit[] }) => {
+  console.log(objectsToEdit);
   return (
     <Stack marginX={2}>
-      {objectsToEdit.map((object) => (
+      {objectsToEdit.map((object, index) => (
         <TextField
-          key={uuidv4()}
+          key={index}
           variant="standard"
           value={object.value}
           onChange={(e) => object.setNewValue(e.target.value)}

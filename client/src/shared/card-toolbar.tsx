@@ -19,9 +19,9 @@ const CardToolbar = ({
 }: CardToolbarProps) => {
   if (editingMode) {
     return (
-      <Stack flex={2} direction="row" justifyContent="end">
+      <Stack direction="row" justifyContent="end">
         <IconButton onClick={handleWordEdit}>
-          <CheckIcon fontSize="small" color="primary" />
+          <CheckIcon fontSize="small" color="info" />
         </IconButton>
         <IconButton onClick={handleModeChange}>
           <CloseOutlinedIcon fontSize="small" color="primary" />
@@ -31,7 +31,7 @@ const CardToolbar = ({
   }
 
   return (
-    <Stack flex={2} direction="row" justifyContent="end">
+    <Stack direction="row" justifyContent="end">
       <IconButton onClick={handleWordDelete}>
         <DeleteOutlineIcon fontSize="small" color="primary" />
       </IconButton>

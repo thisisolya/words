@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { setAllUsers } from "../../store/slices/users-slice";
 import { RootState } from "../../store";
+import { getAllUsers } from "../../fetch/getAllUsers";
 
 import CreateUser from "./create-user";
 import UserMenu from "./user-menu";
 import UserCard from "./user-card";
-import { getAllUsers } from "../../fetch/getAllUsers";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -45,7 +45,7 @@ const UsersList = () => {
   }
 
   return (
-    <Stack justifyContent="center" alignItems="center" spacing={3} marginX={1}>
+    <Stack justifyContent="center" alignItems="center" spacing={3} marginX={2}>
       <Typography variant="h2" textAlign="center">
         Who's playing?
       </Typography>

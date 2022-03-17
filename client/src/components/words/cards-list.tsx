@@ -1,13 +1,16 @@
-import { Button, IconButton, Stack, Typography } from "@mui/material";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setAllCards } from "../../store/slices/cards-slice";
+import { Button, IconButton, Stack, Typography } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import WordCard from "./word-card";
+
+import { setAllCards } from "../../store/slices/cards-slice";
 import { RootState } from "../../store";
 import { getAllCardsByUserId } from "../../fetch/getAllCardsByUserId";
+
+import WordCard from "./word-card";
 
 const CardsList = () => {
   const dispatch = useDispatch();
@@ -21,7 +24,7 @@ const CardsList = () => {
   const [currentCard, setCurrentCard] = React.useState(0);
   const [refetchNeeded, setRefetchNeeded] = React.useState(false);
 
-  const lastWord = allCards ? currentCard === allCards.length - 1 : false;
+  const lastWord = allCards && currentCard === allCards.length - 1;
   const firstWord = currentCard === 0;
 
   React.useEffect(() => {
@@ -43,45 +46,41 @@ const CardsList = () => {
     }
   }, [refetchNeeded, userId]);
 
-  const handleBackClick = () => {
-    if (firstWord) return;
-    setCurrentCard((currentCard) => currentCard - 1);
-  };
-
-  const handleForwardClick = () => {
-    if (lastWord) return;
-    setCurrentCard((currentCard) => currentCard + 1);
-  };
-
   if (!allCards || !allCards.length) {
     return (
-      <>
+      <Stack spacing={3}>
         <Typography variant="body1">
-          You have no words yet. Woud you like to add some?
+          You have no cards yet. Woud you like to add some?
         </Typography>
         <Button variant="contained" onClick={() => navigate("/cards/create")}>
-          add a new word
+          Create card
         </Button>
-      </>
+      </Stack>
     );
   }
 
   return (
-    <Stack direction="column" alignItems="center" spacing={3}>
-      <Stack direction="row" alignItems="center" spacing={1}>
-        <IconButton disabled={firstWord} onClick={handleBackClick}>
-          <ArrowBackIosIcon />
+    <Stack direction="column" alignItems="center" spacing={2}>
+      <Stack direction="row" alignItems="center">
+        <IconButton
+          disabled={firstWord}
+          onClick={() => setCurrentCard(currentCard - 1)}
+        >
+          <ArrowBackIosIcon color={firstWord ? "disabled" : "primary"} />
         </IconButton>
         <WordCard
           currentCard={allCards[currentCard]}
           setRefetchNeeded={setRefetchNeeded}
         />
-        <IconButton disabled={lastWord} onClick={handleForwardClick}>
-          <ArrowForwardIosIcon />
+        <IconButton
+          disabled={lastWord}
+          onClick={() => setCurrentCard(currentCard + 1)}
+        >
+          <ArrowForwardIosIcon color={lastWord ? "disabled" : "primary"} />
         </IconButton>
       </Stack>
-      <Button variant="outlined" onClick={() => navigate("/cards/create")}>
-        add a new word
+      <Button variant="contained" onClick={() => navigate("/cards/create")}>
+        Create card
       </Button>
     </Stack>
   );

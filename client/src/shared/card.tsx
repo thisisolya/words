@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material";
-import theme from "../theme";
+import palette from "../theme/palette";
 
 interface CardProps {
   children: any;
@@ -10,7 +10,7 @@ const style = {
   shared: {
     backgroundColor: "white",
     borderRadius: "5px",
-    boxShadow: `5px 5px 5px 1px ${theme.palette.primary.dark}`,
+    boxShadow: `0 0 2px 0.1px ${palette.primary.main}`,
   },
   small: {
     justifyContent: "space-evenly",

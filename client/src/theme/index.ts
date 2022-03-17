@@ -6,12 +6,6 @@ const theme = createTheme({
   typography,
   palette,
   components: {
-    MuiTextField: {
-      defaultProps: {
-        variant: 'outlined',
-        size: 'small',
-      },
-    },
     MuiAppBar: {
       styleOverrides: {
         root: {
@@ -24,35 +18,41 @@ const theme = createTheme({
       },
     },
     MuiButton: {
+      defaultProps: {
+        size: "small",
+      },
       variants: [
         {
           props: { variant: 'contained' },
           style: {
             backgroundColor: palette.primary.contrast,
-            color: palette.secondary.light,
+            color: palette.primary.light,
             textTransform: 'none',
           },
         },
         {
           props: { variant: 'outlined' },
           style: {
-            color: palette.primary.dark,
+            color: palette.primary.contrast,
+
+          },
+        },
+        {
+          props: { variant: 'text' },
+          style: {
             textTransform: 'none',
+            color: palette.primary.contrast,
           },
         },
       ]
     },
-    MuiCard: {
+    MuiInputBase: {
+      defaultProps: {
+        size: "small",
+      },
       styleOverrides: {
         root: {
-          minWidth: "60vw",
-          height: 160,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: "15px",
-          boxShadow: `5px 5x 5px ${palette.secondary.main}`,
+          color: palette.primary.contrast,
         },
       },
     },

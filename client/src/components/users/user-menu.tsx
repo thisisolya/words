@@ -49,8 +49,8 @@ const UserMenu = () => {
   if (!firstName) return null;
 
   return (
-    <>
-      <Typography variant="h3" textAlign="center">
+    <Stack spacing={2}>
+      <Typography variant="h2" textAlign="center">
         Welcome, {firstName}!
       </Typography>
       <Typography variant="body1" textAlign="center">
@@ -58,16 +58,16 @@ const UserMenu = () => {
       </Typography>
       <Stack direction="row" spacing={3} justifyContent="center" mt={2}>
         <Button variant="contained" onClick={() => navigate("/cards/create")}>
-          add a new word
+          Add card
         </Button>
         <Button
           variant="contained"
           onClick={() => navigate(`/cards/${userId}`)}
         >
-          practice existing words
+          Practice
         </Button>
       </Stack>
-    </>
+    </Stack>
   );
 };
 

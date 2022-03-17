@@ -1,4 +1,4 @@
-import { Typography, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import Card from "../../shared/card";
 
@@ -16,9 +16,7 @@ const UserCard = ({ user }: { user: User }) => {
   return (
     <Card key={user.id} size="small">
       <Button onClick={handleClick}>
-        <Typography variant="body1">
-          {user.firstName} {user.lastName}
-        </Typography>
+        {user.firstName} {user.lastName}
       </Button>
     </Card>
   );

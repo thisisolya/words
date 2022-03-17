@@ -2,14 +2,17 @@ import React from "react";
 import { Stack, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
+import { v4 as uuid } from "uuid";
 
-import Card from "../../shared/card";
-import CardToolbar from "../../shared/card-toolbar";
-import { Card as CardType } from "../../types/cards";
-import EditText from "../../shared/edit-text";
 import { RootState } from "../../store";
 import { editCard } from "../../fetch/editCard";
 import { deleteCard } from "../../fetch/deleteCard";
+
+import { Card as CardType } from "../../types/cards";
+
+import EditText from "../../shared/edit-text";
+import Card from "../../shared/card";
+import CardToolbar from "../../shared/card-toolbar";
 
 interface WordCardProps {
   currentCard: CardType;
@@ -17,6 +20,11 @@ interface WordCardProps {
 }
 
 const WordCard = ({ currentCard, setRefetchNeeded }: WordCardProps) => {
+  const userId =
+    useSelector((state: RootState) => state.users.selectedUser?.id) ||
+    localStorage.getItem("userId");
+  const { enqueueSnackbar } = useSnackbar();
+
   const [language, setLanguage] = React.useState("russian");
   const [editedRussianWord, setEditedRussianWord] = React.useState(
     currentCard.russian
@@ -25,16 +33,9 @@ const WordCard = ({ currentCard, setRefetchNeeded }: WordCardProps) => {
     currentCard.english
   );
   const [editingMode, setEditingMode] = React.useState(false);
-
   const cardId = currentCard.cardId;
 
-  const userId =
-    useSelector((state: RootState) => state.users.selectedUser?.id) ||
-    localStorage.getItem("userId");
-
-  const { enqueueSnackbar } = useSnackbar();
-
-  const handleCardClick = () => {
+  const handleLanguageChange = () => {
     !editingMode && setLanguage(language === "russian" ? "english" : "russian");
   };
 
@@ -76,22 +77,27 @@ const WordCard = ({ currentCard, setRefetchNeeded }: WordCardProps) => {
   };
 
   const editableObjects = [
-    { value: editedRussianWord, setNewValue: setEditedRussianWord },
-    { value: editedEnglishWord, setNewValue: setEditedEnglishWord },
+    {
+      value: editedEnglishWord,
+      setNewValue: setEditedEnglishWord,
+    },
+    {
+      value: editedRussianWord,
+      setNewValue: setEditedRussianWord,
+    },
   ];
 
   return (
     <Card size="large">
-      <Stack flex={10} onClick={handleCardClick} justifyContent="center">
+      <Stack flex={10} onClick={handleLanguageChange} justifyContent="center">
         {editingMode ? (
           <EditText objectsToEdit={editableObjects} />
         ) : (
-          <Typography variant="body1" textAlign="center">
+          <Typography variant="body1" textAlign="center" fontWeight="600">
             {currentCard[language as keyof CardType]}
           </Typography>
         )}
       </Stack>
-
       <CardToolbar
         handleWordDelete={handleCardDelete}
         handleModeChange={handleModeChange}
