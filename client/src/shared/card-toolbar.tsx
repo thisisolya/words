@@ -6,22 +6,22 @@ import EditIcon from "@mui/icons-material/Edit";
 
 interface CardToolbarProps {
   editingMode: boolean;
-  handleWordDelete: () => void;
-  handleWordEdit: () => void;
+  handleCardDelete: () => void;
+  handleCardEdit: () => void;
   handleModeChange: () => void;
 }
 
 const CardToolbar = ({
   editingMode,
-  handleWordDelete,
-  handleWordEdit,
+  handleCardDelete,
+  handleCardEdit,
   handleModeChange,
 }: CardToolbarProps) => {
   if (editingMode) {
     return (
       <Stack direction="row" justifyContent="end">
-        <IconButton onClick={handleWordEdit}>
-          <CheckIcon fontSize="small" color="info" />
+        <IconButton onClick={handleCardEdit}>
+          <CheckIcon fontSize="small" color="primary" />
         </IconButton>
         <IconButton onClick={handleModeChange}>
           <CloseOutlinedIcon fontSize="small" color="primary" />
@@ -32,7 +32,7 @@ const CardToolbar = ({
 
   return (
     <Stack direction="row" justifyContent="end">
-      <IconButton onClick={handleWordDelete}>
+      <IconButton onClick={handleCardDelete}>
         <DeleteOutlineIcon fontSize="small" color="primary" />
       </IconButton>
       <IconButton onClick={handleModeChange}>

@@ -24,7 +24,6 @@ const UserMenu = () => {
     userId &&
       getUserInfo(userId).then((result: Response) =>
         result.json().then((data) => {
-          console.log(data);
           dispatch(
             setSelectedUser({
               firstName: data[0].first_name,

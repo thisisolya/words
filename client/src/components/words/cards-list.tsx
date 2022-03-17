@@ -44,6 +44,7 @@ const CardsList = () => {
           )
         );
     }
+    setRefetchNeeded(false);
   }, [refetchNeeded, userId]);
 
   if (!allCards || !allCards.length) {
@@ -70,6 +71,8 @@ const CardsList = () => {
         </IconButton>
         <WordCard
           currentCard={allCards[currentCard]}
+          currentCardNumber={currentCard}
+          setCurrentCardNumber={setCurrentCard}
           setRefetchNeeded={setRefetchNeeded}
         />
         <IconButton

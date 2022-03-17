@@ -6,7 +6,6 @@ type objectToEdit = {
 };
 
 const EditText = ({ objectsToEdit }: { objectsToEdit: objectToEdit[] }) => {
-  console.log(objectsToEdit);
   return (
     <Stack marginX={2}>
       {objectsToEdit.map((object, index) => (

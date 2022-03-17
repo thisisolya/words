@@ -64,7 +64,6 @@ const editCardById = ({
   russian,
   result,
 }) => {
-  console.log(english, russian);
   collection.updateOne(
     { _id: cardId, user_id: userId },
     {

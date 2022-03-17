@@ -16,10 +16,17 @@ import CardToolbar from "../../shared/card-toolbar";
 
 interface WordCardProps {
   currentCard: CardType;
+  currentCardNumber: number;
+  setCurrentCardNumber: React.Dispatch<React.SetStateAction<number>>;
   setRefetchNeeded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const WordCard = ({ currentCard, setRefetchNeeded }: WordCardProps) => {
+const WordCard = ({
+  currentCard,
+  currentCardNumber,
+  setCurrentCardNumber,
+  setRefetchNeeded,
+}: WordCardProps) => {
   const userId =
     useSelector((state: RootState) => state.users.selectedUser?.id) ||
     localStorage.getItem("userId");
@@ -40,22 +47,26 @@ const WordCard = ({ currentCard, setRefetchNeeded }: WordCardProps) => {
   };
 
   const handleCardDelete = () => {
-    deleteCard({ userId, cardId }).then((result) => {
-      if (result.status === 200) {
-        enqueueSnackbar("Word was sucessfullly deleted!", {
-          variant: "success",
-        });
-        setRefetchNeeded(true);
-      } else {
-        enqueueSnackbar("Something went wrong:(", { variant: "error" });
-      }
-    });
+    deleteCard({ userId, cardId })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.deletedCount === 1) {
+          enqueueSnackbar("Word was sucessfullly deleted!", {
+            variant: "success",
+          });
+          setRefetchNeeded(true);
+          currentCardNumber > 0 && setCurrentCardNumber(currentCardNumber - 1);
+        } else {
+          enqueueSnackbar("Something went wrong:(", { variant: "error" });
+        }
+      });
   };
 
-  const handlCardEdit = () => {
-    editCard({ editedEnglishWord, editedRussianWord, userId, cardId }).then(
-      (result) => {
-        if (result.status === 200) {
+  const handleCardEdit = () => {
+    editCard({ editedEnglishWord, editedRussianWord, userId, cardId })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.modifiedCount === 1) {
           enqueueSnackbar("Word was sucessfullly edited!", {
             variant: "success",
           });
@@ -63,17 +74,14 @@ const WordCard = ({ currentCard, setRefetchNeeded }: WordCardProps) => {
         } else {
           enqueueSnackbar("Something went wrong:(", { variant: "error" });
         }
-      }
-    );
+      });
     handleModeChange();
   };
 
   const handleModeChange = () => {
     setEditingMode(!editingMode);
-    if (editingMode) {
-      setEditedEnglishWord(currentCard.english);
-      setEditedRussianWord(currentCard.russian);
-    }
+    setEditedEnglishWord(currentCard.english);
+    setEditedRussianWord(currentCard.russian);
   };
 
   const editableObjects = [
@@ -99,9 +107,9 @@ const WordCard = ({ currentCard, setRefetchNeeded }: WordCardProps) => {
         )}
       </Stack>
       <CardToolbar
-        handleWordDelete={handleCardDelete}
+        handleCardDelete={handleCardDelete}
         handleModeChange={handleModeChange}
-        handleWordEdit={handlCardEdit}
+        handleCardEdit={handleCardEdit}
         editingMode={editingMode}
       />
     </Card>
