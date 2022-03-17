@@ -1,17 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { User } from "../../types/user";
 
-interface Type {
+interface UsersInitialType {
     allUsers?: User[],
     selectedUser?: User,
 }
 
-const initialState: Type = {
+const initialState: UsersInitialType = {
     allUsers: undefined,
     selectedUser: undefined,
 }
 
-const userSlice = createSlice({
+const usersSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {
@@ -24,7 +24,7 @@ const userSlice = createSlice({
     },
 });
 
-const { setAllUsers, setSelectedUser } = userSlice.actions;
+const { setAllUsers, setSelectedUser } = usersSlice.actions;
 
-export default userSlice;
+export default usersSlice;
 export { setAllUsers, setSelectedUser };

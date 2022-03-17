@@ -3,12 +3,12 @@ import { Route, Routes } from "react-router-dom";
 
 import theme from "../theme";
 
-import AddWord from "../components/words/add-word";
+import CreateCard from "../components/words/create-card";
 import CreateUser from "../components/users/create-user";
 import NavBar from "../components/nav-bar";
 import UsersList from "../components/users/users-list";
 import UserMenu from "../components/users/user-menu";
-import WordList from "../components/words/word-list";
+import CardsList from "../components/words/cards-list";
 
 const stackStyle = {
   backgroundColor: theme.palette.primary.light,
@@ -25,8 +25,8 @@ const MainPage = () => {
         <Route path="/" element={<UsersList />} />
         <Route path="/user/create" element={<CreateUser />} />
         <Route path="/user/:id" element={<UserMenu />} />
-        <Route path="/cards/:id" element={<WordList />} />
-        <Route path="/cards/create" element={<AddWord />} />
+        <Route path="/cards/:id" element={<CardsList />} />
+        <Route path="/cards/create" element={<CreateCard />} />
       </Routes>
     </Stack>
   );

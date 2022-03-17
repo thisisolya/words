@@ -1,59 +1,59 @@
 import { Button, IconButton, Stack, Typography } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setAllWords } from "../../store/slices/word-slice";
+import { setAllCards } from "../../store/slices/cards-slice";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
-import useFetch from "../../hooks/use-fetch";
 import WordCard from "./word-card";
-import theme from "../../theme";
+import { RootState } from "../../store";
+import { getAllCardsByUserId } from "../../fetch/getAllCardsByUserId";
 
-const WordList = () => {
+const CardsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const userId =
-    useSelector((state: any) => state.users.selectedUser?.id) ||
+    useSelector((state: RootState) => state.users.selectedUser?.id) ||
     localStorage.getItem("userId");
+  const { allCards } = useSelector((state: RootState) => state.words);
 
-  const { allWords } = useSelector((state: any) => state.words);
-  const [currentWord, setCurrentWord] = React.useState(0);
+  const [currentCard, setCurrentCard] = React.useState(0);
+  const [refetchNeeded, setRefetchNeeded] = React.useState(false);
 
-  const lastWord = allWords ? currentWord === allWords.length - 1 : false;
-  const firstWord = currentWord === 0;
-
-  const wordsList = useFetch({
-    endpoint: "http://localhost:8080/cards",
-    method: "POST",
-    body: JSON.stringify({ userId }),
-  });
+  const lastWord = allCards ? currentCard === allCards.length - 1 : false;
+  const firstWord = currentCard === 0;
 
   React.useEffect(() => {
-    wordsList &&
-      wordsList.length &&
-      dispatch(
-        setAllWords(
-          wordsList.map((word: any) => ({
-            english: word.english,
-            russian: word.russian,
-            userId: word.user_id,
-            wordId: word._id,
-          }))
-        )
-      );
-  }, [wordsList, dispatch]);
+    if (!allCards || allCards.length < 1 || refetchNeeded) {
+      getAllCardsByUserId(userId!)
+        .then((res) => res.json())
+        .then((data) =>
+          dispatch(
+            setAllCards(
+              data.map((card: any) => ({
+                english: card.english,
+                russian: card.russian,
+                userId: card.user_id,
+                cardId: card._id,
+              }))
+            )
+          )
+        );
+    }
+  }, [refetchNeeded, userId]);
 
   const handleBackClick = () => {
     if (firstWord) return;
-    setCurrentWord((currentWord) => currentWord - 1);
+    setCurrentCard((currentCard) => currentCard - 1);
   };
 
   const handleForwardClick = () => {
     if (lastWord) return;
-    setCurrentWord((currentWord) => currentWord + 1);
+    setCurrentCard((currentCard) => currentCard + 1);
   };
 
-  if (!allWords || !allWords.length) {
+  if (!allCards || !allCards.length) {
     return (
       <>
         <Typography variant="body1">
@@ -72,7 +72,10 @@ const WordList = () => {
         <IconButton disabled={firstWord} onClick={handleBackClick}>
           <ArrowBackIosIcon />
         </IconButton>
-        <WordCard currentWord={allWords[currentWord]} />
+        <WordCard
+          currentCard={allCards[currentCard]}
+          setRefetchNeeded={setRefetchNeeded}
+        />
         <IconButton disabled={lastWord} onClick={handleForwardClick}>
           <ArrowForwardIosIcon />
         </IconButton>
@@ -84,4 +87,4 @@ const WordList = () => {
   );
 };
 
-export default WordList;
+export default CardsList;

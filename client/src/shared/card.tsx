@@ -17,15 +17,17 @@ const style = {
     minHeight: "90px",
   },
   medium: {
+    gap: "15px",
+    margin: "10px 15px",
     maxWidth: "450px",
     padding: "20px 10px",
-    gap: "15px",
   },
   large: {
-    maxWidth: "600px",
-    minWidth: "250px",
-    padding: "20px 10px",
     gap: "15px",
+    maxWidth: "600px",
+    minHeight: "150px",
+    minWidth: "250px",
+    padding: "5px 10px",
   },
 };
 

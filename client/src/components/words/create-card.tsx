@@ -4,8 +4,9 @@ import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 
 import Card from "../../shared/card";
+import { createCard } from "../../fetch/createCard";
 
-const AddWord = () => {
+const CreateCard = () => {
   const [russianWord, setRussianWord] = React.useState("");
   const [englishWord, setEnglishWord] = React.useState("");
   const { enqueueSnackbar } = useSnackbar();
@@ -15,17 +16,7 @@ const AddWord = () => {
     localStorage.getItem("userId");
 
   const handleClick = () => {
-    fetch("http://localhost:8080/cards/create", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-      referrer: "no-referrer",
-      body: JSON.stringify({ userId, russianWord, englishWord }),
-    }).then((result) => {
+    createCard({ userId, russianWord, englishWord }).then((result) => {
       if (result.status === 200) {
         setRussianWord("");
         setEnglishWord("");
@@ -65,4 +56,4 @@ const AddWord = () => {
   );
 };
 
-export default AddWord;
+export default CreateCard;

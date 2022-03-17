@@ -3,13 +3,13 @@ import { Button, Typography, Stack, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import useFetch from "../../hooks/use-fetch";
-import { setAllUsers } from "../../store/slices/user-slice";
+import { setAllUsers } from "../../store/slices/users-slice";
 import { RootState } from "../../store";
 
 import CreateUser from "./create-user";
 import UserMenu from "./user-menu";
 import UserCard from "./user-card";
+import { getAllUsers } from "../../fetch/getAllUsers";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -20,23 +20,21 @@ const UsersList = () => {
   );
   const userId = localStorage.getItem("userId");
 
-  const allUsersData = useFetch({
-    endpoint: "http://localhost:8080/",
-    method: "GET",
-  });
-
   React.useEffect(() => {
-    allUsersData &&
-      dispatch(
-        setAllUsers(
-          allUsersData.map((user: any) => ({
-            firstName: user.first_name,
-            lastName: user.last_name,
-            id: user._id,
-          }))
+    getAllUsers()
+      .then((res) => res.json())
+      .then((data) =>
+        dispatch(
+          setAllUsers(
+            data.map((user: any) => ({
+              firstName: user.first_name,
+              lastName: user.last_name,
+              id: user._id,
+            }))
+          )
         )
       );
-  }, [allUsersData, dispatch]);
+  }, [dispatch]);
 
   if (!allUsers && !selectedUser) {
     return <CreateUser />;
@@ -47,7 +45,7 @@ const UsersList = () => {
   }
 
   return (
-    <Stack justifyContent="center" alignItems="center" spacing={3}>
+    <Stack justifyContent="center" alignItems="center" spacing={3} marginX={1}>
       <Typography variant="h2" textAlign="center">
         Who's playing?
       </Typography>

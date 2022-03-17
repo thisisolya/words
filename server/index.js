@@ -4,10 +4,12 @@ const { MongoClient, ObjectId } = require("mongodb");
 
 const {
   getAllUsers,
-  getUserById,
+  getUserInfoById,
   createNewUser,
   createNewCard,
   deleteCardById,
+  editCardById,
+  getCardsByUserId,
 } = require("./queries");
 
 require("dotenv").config();
@@ -25,7 +27,7 @@ app.use(express.json());
 client.connect((error, client) => {
   const db = client.db("words-app");
   const usersCollection = db.collection("users");
-  const wordsCollection = db.collection("words");
+  const cardsCollection = db.collection("cards");
 
   app.get("/", (_, result) => {
     getAllUsers(usersCollection, result);
@@ -33,7 +35,7 @@ client.connect((error, client) => {
 
   app.post("/user", (request, result) => {
     const userId = new ObjectId(request.body.userId);
-    getUserById({ collection: usersCollection, userId, result });
+    getUserInfoById({ collection: usersCollection, userId, result });
   });
 
   app.post("/user/create", (request, result) => {
@@ -42,32 +44,40 @@ client.connect((error, client) => {
   });
 
   app.post("/cards", (request, result) => {
-    wordsCollection
-      .find({ user_id: request.body.userId })
-      .toArray((err, docs) => {
-        if (err) {
-          result.send("Error in GET req.");
-        } else {
-          result.send(docs);
-        }
-      });
+    const userId = new ObjectId(request.body.userId);
+    getCardsByUserId({ userId, collection: cardsCollection, result });
   });
 
   app.post("/cards/create", (request, result) => {
-    const { userId, russianWord, englishWord } = request.body;
+    const userId = new ObjectId(request.body.userId);
+    const { russianWord, englishWord } = request.body;
     createNewCard({
       userId,
       russian: russianWord,
       english: englishWord,
-      collection: wordsCollection,
+      collection: cardsCollection,
+      result,
+    });
+  });
+
+  app.post("/cards/edit", (request, result) => {
+    const cardId = new ObjectId(request.body.cardId);
+    const userId = new ObjectId(request.body.userId);
+    const { editedRussianWord, editedEnglishWord } = request.body;
+    editCardById({
+      userId,
+      cardId,
+      russian: editedRussianWord,
+      english: editedEnglishWord,
+      collection: cardsCollection,
       result,
     });
   });
 
   app.post("/cards/delete", (request, result) => {
-    const wordId = new ObjectId(request.body.wordId);
-    const userId = request.body.userId;
-    deleteCardById({ wordId, userId, collection: wordsCollection, result });
+    const cardId = new ObjectId(request.body.cardId);
+    const userId = new ObjectId(request.body.userId);
+    deleteCardById({ cardId, userId, collection: cardsCollection, result });
   });
 });
 

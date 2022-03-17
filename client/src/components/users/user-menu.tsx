@@ -3,9 +3,10 @@ import { Button, Typography, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import useFetch from "../../hooks/use-fetch";
-import { setSelectedUser } from "../../store/slices/user-slice";
+import { setSelectedUser } from "../../store/slices/users-slice";
 import { RootState } from "../../store";
+import { getUserInfo } from "../../fetch/getUserInfo";
+import { setAllCards } from "../../store/slices/cards-slice";
 
 const UserMenu = () => {
   const dispatch = useDispatch();
@@ -19,22 +20,31 @@ const UserMenu = () => {
     (state: RootState) => state.users.selectedUser?.firstName
   );
 
-  const userData = useFetch({
-    endpoint: "http://localhost:8080/user",
-    method: "POST",
-    body: JSON.stringify({ userId }),
-  });
-
   React.useEffect(() => {
-    userData &&
-      dispatch(
-        setSelectedUser({
-          firstName: userData.first_name,
-          lastName: userData.last_name,
-          userId: userData._id,
+    userId &&
+      getUserInfo(userId).then((result: Response) =>
+        result.json().then((data) => {
+          console.log(data);
+          dispatch(
+            setSelectedUser({
+              firstName: data[0].first_name,
+              lastName: data[0].last_name,
+              id: data[0]._id,
+            })
+          );
+          dispatch(
+            setAllCards(
+              data[0].cards.map((card: any) => ({
+                english: card.english,
+                russian: card.russian,
+                userId: card.user_id,
+                cardId: card._id,
+              }))
+            )
+          );
         })
       );
-  }, [userData, dispatch]);
+  }, [userId, dispatch]);
 
   if (!firstName) return null;
 
