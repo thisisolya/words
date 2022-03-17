@@ -1,7 +1,8 @@
 import React from "react";
-import { Button, IconButton, Stack, Typography } from "@mui/material";
+import { Button, IconButton, Stack, Switch, Typography } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { motion } from "framer-motion";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +24,7 @@ const CardsList = () => {
 
   const [currentCard, setCurrentCard] = React.useState(0);
   const [refetchNeeded, setRefetchNeeded] = React.useState(false);
+  const [language, setLanguage] = React.useState("russian");
 
   const lastWord = allCards && currentCard === allCards.length - 1;
   const firstWord = currentCard === 0;
@@ -45,7 +47,12 @@ const CardsList = () => {
         );
     }
     setRefetchNeeded(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetchNeeded, userId]);
+
+  const toggleLanguage = () => {
+    setLanguage(language === "russian" ? "english" : "russian");
+  };
 
   if (!allCards || !allCards.length) {
     return (
@@ -63,6 +70,12 @@ const CardsList = () => {
   return (
     <Stack direction="column" alignItems="center" spacing={2}>
       <Stack direction="row" alignItems="center">
+        <Typography>Russian first</Typography>
+        <Switch color="info" onChange={toggleLanguage} />
+        <Typography>English first</Typography>
+      </Stack>
+
+      <Stack direction="row" alignItems="center">
         <IconButton
           disabled={firstWord}
           onClick={() => setCurrentCard(currentCard - 1)}
@@ -71,6 +84,7 @@ const CardsList = () => {
         </IconButton>
         <WordCard
           currentCard={allCards[currentCard]}
+          language={language}
           currentCardNumber={currentCard}
           setCurrentCardNumber={setCurrentCard}
           setRefetchNeeded={setRefetchNeeded}

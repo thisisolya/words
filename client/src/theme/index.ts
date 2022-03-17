@@ -63,6 +63,16 @@ const theme = createTheme({
         }
       }
     },
+    MuiSwitch: {
+      styleOverrides: {
+        track: {
+          backgroundColor: palette.primary.dark,
+        },
+        thumb: {
+          backgroundColor: palette.primary.contrast,
+        }
+      }
+    }
   },
 });
 

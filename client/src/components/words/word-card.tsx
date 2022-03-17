@@ -2,7 +2,7 @@ import React from "react";
 import { Stack, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import { v4 as uuid } from "uuid";
+import { motion } from "framer-motion";
 
 import { RootState } from "../../store";
 import { editCard } from "../../fetch/editCard";
@@ -19,10 +19,12 @@ interface WordCardProps {
   currentCardNumber: number;
   setCurrentCardNumber: React.Dispatch<React.SetStateAction<number>>;
   setRefetchNeeded: React.Dispatch<React.SetStateAction<boolean>>;
+  language: string;
 }
 
 const WordCard = ({
   currentCard,
+  language,
   currentCardNumber,
   setCurrentCardNumber,
   setRefetchNeeded,
@@ -32,7 +34,6 @@ const WordCard = ({
     localStorage.getItem("userId");
   const { enqueueSnackbar } = useSnackbar();
 
-  const [language, setLanguage] = React.useState("russian");
   const [editedRussianWord, setEditedRussianWord] = React.useState(
     currentCard.russian
   );
@@ -40,11 +41,12 @@ const WordCard = ({
     currentCard.english
   );
   const [editingMode, setEditingMode] = React.useState(false);
+  const [currentLanguage, setCurrentLanguage] = React.useState("");
   const cardId = currentCard.cardId;
 
-  const handleLanguageChange = () => {
-    !editingMode && setLanguage(language === "russian" ? "english" : "russian");
-  };
+  React.useEffect(() => {
+    setCurrentLanguage(language);
+  }, [language, currentCardNumber]);
 
   const handleCardDelete = () => {
     deleteCard({ userId, cardId })
@@ -97,12 +99,20 @@ const WordCard = ({
 
   return (
     <Card size="large">
-      <Stack flex={10} onClick={handleLanguageChange} justifyContent="center">
+      <Stack
+        flex={10}
+        onClick={() =>
+          setCurrentLanguage(
+            currentLanguage === "russian" ? "english" : "russian"
+          )
+        }
+        justifyContent="center"
+      >
         {editingMode ? (
           <EditText objectsToEdit={editableObjects} />
         ) : (
           <Typography variant="body1" textAlign="center" fontWeight="600">
-            {currentCard[language as keyof CardType]}
+            {currentCard[currentLanguage as keyof CardType]}
           </Typography>
         )}
       </Stack>
