@@ -2,7 +2,7 @@ import React from "react";
 import { Button, IconButton, Stack, Switch, Typography } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ import { RootState } from "../../store";
 import { getAllCardsByUserId } from "../../fetch/getAllCardsByUserId";
 
 import WordCard from "./word-card";
+import Container from "../../shared/container";
 
 const CardsList = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,10 @@ const CardsList = () => {
   const [currentCard, setCurrentCard] = React.useState(0);
   const [refetchNeeded, setRefetchNeeded] = React.useState(false);
   const [language, setLanguage] = React.useState("russian");
+  const [paginateForwards, setPaginateForwards] = React.useState(true);
+
+  const transitionInitialValue = paginateForwards ? "100%" : "-100%";
+  const transitionExitValue = paginateForwards ? "-100%" : "100%";
 
   const lastWord = allCards && currentCard === allCards.length - 1;
   const firstWord = currentCard === 0;
@@ -54,6 +59,11 @@ const CardsList = () => {
     setLanguage(language === "russian" ? "english" : "russian");
   };
 
+  const handlePagination = (direction: number) => {
+    setCurrentCard(currentCard + direction);
+    setPaginateForwards(direction === 1 ? true : false);
+  };
+
   if (!allCards || !allCards.length) {
     return (
       <Stack spacing={3}>
@@ -68,7 +78,7 @@ const CardsList = () => {
   }
 
   return (
-    <Stack direction="column" alignItems="center" spacing={2}>
+    <>
       <Stack direction="row" alignItems="center">
         <Typography>Russian first</Typography>
         <Switch color="info" onChange={toggleLanguage} />
@@ -76,30 +86,36 @@ const CardsList = () => {
       </Stack>
 
       <Stack direction="row" alignItems="center">
-        <IconButton
-          disabled={firstWord}
-          onClick={() => setCurrentCard(currentCard - 1)}
-        >
+        <IconButton disabled={firstWord} onClick={() => handlePagination(-1)}>
           <ArrowBackIosIcon color={firstWord ? "disabled" : "primary"} />
         </IconButton>
-        <WordCard
-          currentCard={allCards[currentCard]}
-          language={language}
-          currentCardNumber={currentCard}
-          setCurrentCardNumber={setCurrentCard}
-          setRefetchNeeded={setRefetchNeeded}
-        />
-        <IconButton
-          disabled={lastWord}
-          onClick={() => setCurrentCard(currentCard + 1)}
-        >
+        <AnimatePresence initial={false}>
+          <div style={{ overflow: "hidden" }}>
+            <motion.div
+              key={currentCard}
+              initial={{ x: transitionInitialValue, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: transitionExitValue, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <WordCard
+                currentCard={allCards[currentCard]}
+                language={language}
+                currentCardNumber={currentCard}
+                setCurrentCardNumber={setCurrentCard}
+                setRefetchNeeded={setRefetchNeeded}
+              />
+            </motion.div>
+          </div>
+        </AnimatePresence>
+        <IconButton disabled={lastWord} onClick={() => handlePagination(1)}>
           <ArrowForwardIosIcon color={lastWord ? "disabled" : "primary"} />
         </IconButton>
       </Stack>
       <Button variant="contained" onClick={() => navigate("/cards/create")}>
         Create card
       </Button>
-    </Stack>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Typography, Stack, Grid } from "@mui/material";
+import { Button, Typography, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,6 +10,7 @@ import { getAllUsers } from "../../fetch/getAllUsers";
 import CreateUser from "./create-user";
 import UserMenu from "./user-menu";
 import UserCard from "./user-card";
+import Container from "../../shared/container";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -45,7 +46,7 @@ const UsersList = () => {
   }
 
   return (
-    <Stack justifyContent="center" alignItems="center" spacing={3} marginX={2}>
+    <>
       <Typography variant="h2" textAlign="center">
         Who's playing?
       </Typography>
@@ -57,7 +58,7 @@ const UsersList = () => {
       <Button variant="contained" onClick={() => navigate("user/create")}>
         Create new user
       </Button>
-    </Stack>
+    </>
   );
 };
 

@@ -34,7 +34,9 @@ const CreateUser = () => {
 
   return (
     <Card size="medium">
-      <Typography variant="h1">Create account</Typography>
+      <Typography variant="h2" textAlign="center">
+        Create account
+      </Typography>
       <TextField
         label="First name"
         onChange={(e) => setFirstName(e.target.value)}

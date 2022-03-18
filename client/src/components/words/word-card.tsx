@@ -2,7 +2,7 @@ import React from "react";
 import { Stack, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { RootState } from "../../store";
 import { editCard } from "../../fetch/editCard";
@@ -21,6 +21,24 @@ interface WordCardProps {
   setRefetchNeeded: React.Dispatch<React.SetStateAction<boolean>>;
   language: string;
 }
+
+const ReadText = ({ text }: { text: string }) => {
+  return (
+    <AnimatePresence>
+      <Typography
+        key={text}
+        fontWeight="600"
+        textAlign="center"
+        component={motion.p}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        {text}
+      </Typography>
+    </AnimatePresence>
+  );
+};
 
 const WordCard = ({
   currentCard,
@@ -98,7 +116,7 @@ const WordCard = ({
   ];
 
   return (
-    <Card size="large">
+    <Card size="large" key={currentCardNumber}>
       <Stack
         flex={10}
         onClick={() =>
@@ -111,9 +129,7 @@ const WordCard = ({
         {editingMode ? (
           <EditText objectsToEdit={editableObjects} />
         ) : (
-          <Typography variant="body1" textAlign="center" fontWeight="600">
-            {currentCard[currentLanguage as keyof CardType]}
-          </Typography>
+          <ReadText text={currentCard[currentLanguage as keyof CardType]} />
         )}
       </Stack>
       <CardToolbar

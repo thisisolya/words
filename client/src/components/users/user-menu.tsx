@@ -8,6 +8,8 @@ import { RootState } from "../../store";
 import { getUserInfo } from "../../fetch/getUserInfo";
 import { setAllCards } from "../../store/slices/cards-slice";
 
+import Container from "../../shared/container";
+
 const UserMenu = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ const UserMenu = () => {
   if (!firstName) return null;
 
   return (
-    <Stack spacing={2}>
+    <>
       <Typography variant="h2" textAlign="center">
         Welcome, {firstName}!
       </Typography>
@@ -66,7 +68,7 @@ const UserMenu = () => {
           Practice
         </Button>
       </Stack>
-    </Stack>
+    </>
   );
 };
 
