@@ -5,8 +5,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { setSelectedUser } from "../store/slices/users-slice";
 import palette from "../theme/palette";
+import { setSelectedUser } from "../store/slice";
 
 const appBarStyle = {
   backgroundColor: palette.primary.main,
@@ -18,7 +18,7 @@ const NavBar = () => {
 
   const handleLogOut = () => {
     localStorage.removeItem("userId");
-    dispatch(setSelectedUser(undefined));
+    dispatch(setSelectedUser({}));
     navigate("/");
   };
 

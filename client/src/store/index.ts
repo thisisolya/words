@@ -1,13 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
-import usersSlice from './slices/users-slice';
-import cardsSlice from './slices/cards-slice';
+import { appAPI } from './api';
+import appSlice from './slice';
 
 const store = configureStore({
   reducer: {
-    users: usersSlice.reducer,
-    words: cardsSlice.reducer,
+    users: appSlice.reducer,
+    [appAPI.reducerPath]: appAPI.reducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(appAPI.middleware)
 });
 
 export default store;
-export type RootState = ReturnType<typeof store.getState>
+export type AppState = ReturnType<typeof store.getState>

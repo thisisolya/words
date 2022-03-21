@@ -5,25 +5,9 @@ const getAllUsers = (collection, result) => {
 };
 
 const getUserInfoById = ({ collection, userId, result }) => {
-  collection
-    .aggregate([
-      {
-        $match: {
-          _id: userId,
-        },
-      },
-      {
-        $lookup: {
-          from: "cards",
-          localField: "_id",
-          foreignField: "user_id",
-          as: "cards",
-        },
-      },
-    ])
-    .toArray((error, documents) => {
-      error ? result.send("Cannot find user") : result.send(documents);
-    });
+  collection.find({ _id: userId }).toArray((error, documents) => {
+    error ? result.send("Cannot find user") : result.send(documents[0]);
+  });
 };
 
 const getCardsByUserId = ({ collection, userId, result }) => {

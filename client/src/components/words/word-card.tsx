@@ -4,11 +4,9 @@ import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { RootState } from "../../store";
-import { editCard } from "../../fetch/editCard";
-import { deleteCard } from "../../fetch/deleteCard";
-
-import { Card as CardType } from "../../types/cards";
+import { Card as CardType } from "../../types";
+import { AppState } from "../../store";
+import { useDeleteCardMutation, useEditCardMutation } from "../../store/api";
 
 import EditText from "../../shared/edit-text";
 import Card from "../../shared/card";
@@ -18,7 +16,6 @@ interface WordCardProps {
   currentCard: CardType;
   currentCardNumber: number;
   setCurrentCardNumber: React.Dispatch<React.SetStateAction<number>>;
-  setRefetchNeeded: React.Dispatch<React.SetStateAction<boolean>>;
   language: string;
 }
 
@@ -45,13 +42,7 @@ const WordCard = ({
   language,
   currentCardNumber,
   setCurrentCardNumber,
-  setRefetchNeeded,
 }: WordCardProps) => {
-  const userId =
-    useSelector((state: RootState) => state.users.selectedUser?.id) ||
-    localStorage.getItem("userId");
-  const { enqueueSnackbar } = useSnackbar();
-
   const [editedRussianWord, setEditedRussianWord] = React.useState(
     currentCard.russian
   );
@@ -60,41 +51,45 @@ const WordCard = ({
   );
   const [editingMode, setEditingMode] = React.useState(false);
   const [currentLanguage, setCurrentLanguage] = React.useState("");
+  const userId =
+    useSelector((state: AppState) => state.users.selectedUser?.id) ||
+    localStorage.getItem("userId");
+
+  const { enqueueSnackbar } = useSnackbar();
   const cardId = currentCard.cardId;
 
   React.useEffect(() => {
     setCurrentLanguage(language);
   }, [language, currentCardNumber]);
 
+  const [deleteCard] = useDeleteCardMutation();
+  const [editCard] = useEditCardMutation();
+
   const handleCardDelete = () => {
-    deleteCard({ userId, cardId })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.deletedCount === 1) {
-          enqueueSnackbar("Word was sucessfullly deleted!", {
-            variant: "success",
-          });
-          setRefetchNeeded(true);
-          currentCardNumber > 0 && setCurrentCardNumber(currentCardNumber - 1);
-        } else {
-          enqueueSnackbar("Something went wrong:(", { variant: "error" });
-        }
-      });
+    deleteCard({ userId, cardId }).then((result: any) => {
+      if (result.data.deletedCount === 1) {
+        enqueueSnackbar("Word was sucessfullly deleted!", {
+          variant: "success",
+        });
+        currentCardNumber > 0 && setCurrentCardNumber(currentCardNumber - 1);
+      } else {
+        enqueueSnackbar("Something went wrong:(", { variant: "error" });
+      }
+    });
   };
 
   const handleCardEdit = () => {
-    editCard({ editedEnglishWord, editedRussianWord, userId, cardId })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.modifiedCount === 1) {
+    editCard({ userId, editedEnglishWord, editedRussianWord, cardId }).then(
+      (result: any) => {
+        if (result.data.modifiedCount === 1) {
           enqueueSnackbar("Word was sucessfullly edited!", {
             variant: "success",
           });
-          setRefetchNeeded(true);
         } else {
           enqueueSnackbar("Something went wrong:(", { variant: "error" });
         }
-      });
+      }
+    );
     handleModeChange();
   };
 

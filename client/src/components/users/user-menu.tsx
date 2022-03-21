@@ -3,10 +3,10 @@ import { Button, Typography, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setSelectedUser } from "../../store/slices/users-slice";
-import { RootState } from "../../store";
-import { getUserInfo } from "../../fetch/getUserInfo";
-import { setAllCards } from "../../store/slices/cards-slice";
+import { AppState } from "../../store";
+import { useGetUserInfoQuery } from "../../store/api";
+import { setSelectedUser } from "../../store/slice";
+import { UserModelFromServer, CardModelFromServer } from "../../types";
 
 import Container from "../../shared/container";
 
@@ -15,44 +15,29 @@ const UserMenu = () => {
   const navigate = useNavigate();
 
   const userId =
-    useSelector((state: RootState) => state.users.selectedUser?.id) ||
+    useSelector((state: AppState) => state.users.selectedUser?.id) ||
     localStorage.getItem("userId");
 
-  const firstName = useSelector(
-    (state: RootState) => state.users.selectedUser?.firstName
-  );
+  const { selectedUser } = useSelector((state: AppState) => state.users);
+  const { data } = useGetUserInfoQuery({ userId });
 
   React.useEffect(() => {
-    userId &&
-      getUserInfo(userId).then((result: Response) =>
-        result.json().then((data) => {
-          dispatch(
-            setSelectedUser({
-              firstName: data[0].first_name,
-              lastName: data[0].last_name,
-              id: data[0]._id,
-            })
-          );
-          dispatch(
-            setAllCards(
-              data[0].cards.map((card: any) => ({
-                english: card.english,
-                russian: card.russian,
-                userId: card.user_id,
-                cardId: card._id,
-              }))
-            )
-          );
+    data &&
+      dispatch(
+        setSelectedUser({
+          firstName: data.first_name,
+          lastName: data.last_name,
+          id: data._id,
         })
       );
-  }, [userId, dispatch]);
+  }, [data, dispatch]);
 
-  if (!firstName) return null;
+  if (!data || !selectedUser) return null;
 
   return (
-    <>
+    <Container>
       <Typography variant="h2" textAlign="center">
-        Welcome, {firstName}!
+        Welcome, {selectedUser.firstName}!
       </Typography>
       <Typography variant="body1" textAlign="center">
         What would you like to do?
@@ -68,7 +53,7 @@ const UserMenu = () => {
           Practice
         </Button>
       </Stack>
-    </>
+    </Container>
   );
 };
 
