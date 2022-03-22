@@ -9,7 +9,7 @@ import palette from "../theme/palette";
 import { setSelectedUser } from "../store/slice";
 
 const appBarStyle = {
-  backgroundColor: palette.primary.main,
+  backgroundColor: palette.primary.dark,
 };
 
 const NavBar = () => {

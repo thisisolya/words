@@ -3,12 +3,12 @@ import { Route, Routes } from "react-router-dom";
 
 import theme from "../theme";
 
-import CreateCard from "../components/words/create-card";
-import CreateUser from "../components/users/create-user";
+import CreateCard from "./create-card";
+import CreateUser from "./create-user";
 import NavBar from "../components/nav-bar";
-import UsersList from "../components/users/users-list";
-import UserMenu from "../components/users/user-menu";
-import CardsList from "../components/words/cards-list";
+import UsersList from "./users-list";
+import UserMenu from "./user-menu";
+import CardsList from "./cards-list";
 
 const stackStyle = {
   backgroundColor: theme.palette.primary.light,

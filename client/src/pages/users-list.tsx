@@ -1,17 +1,18 @@
 import React from "react";
-import { Button, Typography, Grid } from "@mui/material";
+import { Typography, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { AppState } from "../../store";
-import { setAllUsers } from "../../store/slice";
-import { useGetAllUsersQuery } from "../../store/api";
+import { AppState } from "../store";
+import { setAllUsers } from "../store/slice";
+import { useGetAllUsersQuery } from "../store/api";
 
 import CreateUser from "./create-user";
 import UserMenu from "./user-menu";
-import UserCard from "./user-card";
-import Container from "../../shared/container";
-import { User, UserModelFromServer } from "../../types";
+import UserCard from "../components/user-card";
+import Container from "../components/container";
+import { User, UserModelFromServer } from "../types";
+import ButtonContained from "../components/shared/button-contained";
 
 const UsersList = () => {
   const dispatch = useDispatch();
@@ -52,9 +53,10 @@ const UsersList = () => {
           <UserCard key={user.id} user={user} />
         ))}
       </Grid>
-      <Button variant="contained" onClick={() => navigate("user/create")}>
-        Create new user
-      </Button>
+      <ButtonContained
+        text="Create new user"
+        clickHandler={() => navigate("user/create")}
+      />
     </Container>
   );
 };

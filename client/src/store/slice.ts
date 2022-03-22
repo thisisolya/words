@@ -16,7 +16,7 @@ const appSlice = createSlice({
     initialState,
     reducers: {
         setAllUsers: (state, action) => {
-            state.allUsers = state.allUsers ? Array.from(new Set([...state.allUsers, ...action.payload])) : action.payload;
+            state.allUsers = action.payload;
         },
         setSelectedUser: (state, action) => {
             state.selectedUser = { ...state.selectedUser, ...action.payload };

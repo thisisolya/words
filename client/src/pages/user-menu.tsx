@@ -3,12 +3,11 @@ import { Button, Typography, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { AppState } from "../../store";
-import { useGetUserInfoQuery } from "../../store/api";
-import { setSelectedUser } from "../../store/slice";
-import { UserModelFromServer, CardModelFromServer } from "../../types";
+import { AppState } from "../store";
+import { useGetUserInfoQuery } from "../store/api";
+import { setSelectedUser } from "../store/slice";
 
-import Container from "../../shared/container";
+import Container from "../components/container";
 
 const UserMenu = () => {
   const dispatch = useDispatch();

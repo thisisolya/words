@@ -1,8 +1,9 @@
-import { IconButton, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "./shared/icon-button";
 
 interface CardToolbarProps {
   editingMode: boolean;
@@ -20,24 +21,16 @@ const CardToolbar = ({
   if (editingMode) {
     return (
       <Stack direction="row" justifyContent="end">
-        <IconButton onClick={handleCardEdit}>
-          <CheckIcon fontSize="small" color="primary" />
-        </IconButton>
-        <IconButton onClick={handleModeChange}>
-          <CloseOutlinedIcon fontSize="small" color="primary" />
-        </IconButton>
+        <IconButton clickHandler={handleCardEdit} Icon={CheckIcon} />
+        <IconButton clickHandler={handleModeChange} Icon={CloseOutlinedIcon} />
       </Stack>
     );
   }
 
   return (
     <Stack direction="row" justifyContent="end">
-      <IconButton onClick={handleCardDelete}>
-        <DeleteOutlineIcon fontSize="small" color="primary" />
-      </IconButton>
-      <IconButton onClick={handleModeChange}>
-        <EditIcon fontSize="small" color="primary" />
-      </IconButton>
+      <IconButton clickHandler={handleCardDelete} Icon={DeleteOutlineIcon} />
+      <IconButton clickHandler={handleModeChange} Icon={EditIcon} />
     </Stack>
   );
 };

@@ -4,19 +4,21 @@ import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { Card as CardType } from "../../types";
-import { AppState } from "../../store";
-import { useDeleteCardMutation, useEditCardMutation } from "../../store/api";
+import { Card as CardType } from "../types";
+import { AppState } from "../store";
+import { useDeleteCardMutation, useEditCardMutation } from "../store/api";
 
-import EditText from "../../shared/edit-text";
-import Card from "../../shared/card";
-import CardToolbar from "../../shared/card-toolbar";
+import EditText from "./edit-text";
+import Card from "./card";
+import CardToolbar from "./card-toolbar";
 
 interface WordCardProps {
   currentCard: CardType;
   currentCardNumber: number;
   setCurrentCardNumber: React.Dispatch<React.SetStateAction<number>>;
   language: string;
+  transitionInitialValue: string;
+  transitionExitValue: string;
 }
 
 const ReadText = ({ text }: { text: string }) => {
@@ -42,6 +44,8 @@ const WordCard = ({
   language,
   currentCardNumber,
   setCurrentCardNumber,
+  transitionInitialValue,
+  transitionExitValue,
 }: WordCardProps) => {
   const [editedRussianWord, setEditedRussianWord] = React.useState(
     currentCard.russian
@@ -111,29 +115,43 @@ const WordCard = ({
   ];
 
   return (
-    <Card size="large" key={currentCardNumber}>
-      <Stack
-        flex={10}
-        onClick={() =>
-          setCurrentLanguage(
-            currentLanguage === "russian" ? "english" : "russian"
-          )
-        }
-        justifyContent="center"
-      >
-        {editingMode ? (
-          <EditText objectsToEdit={editableObjects} />
-        ) : (
-          <ReadText text={currentCard[currentLanguage as keyof CardType]} />
-        )}
-      </Stack>
-      <CardToolbar
-        handleCardDelete={handleCardDelete}
-        handleModeChange={handleModeChange}
-        handleCardEdit={handleCardEdit}
-        editingMode={editingMode}
-      />
-    </Card>
+    <AnimatePresence initial={false}>
+      <div style={{ overflow: "hidden" }}>
+        <motion.div
+          key={currentCard.cardId}
+          initial={{ x: transitionInitialValue, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: transitionExitValue, opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card size="large" key={currentCardNumber}>
+            <Stack
+              flex={10}
+              onClick={() =>
+                setCurrentLanguage(
+                  currentLanguage === "russian" ? "english" : "russian"
+                )
+              }
+              justifyContent="center"
+            >
+              {editingMode ? (
+                <EditText objectsToEdit={editableObjects} />
+              ) : (
+                <ReadText
+                  text={currentCard[currentLanguage as keyof CardType]}
+                />
+              )}
+            </Stack>
+            <CardToolbar
+              handleCardDelete={handleCardDelete}
+              handleModeChange={handleModeChange}
+              handleCardEdit={handleCardEdit}
+              editingMode={editingMode}
+            />
+          </Card>
+        </motion.div>
+      </div>
+    </AnimatePresence>
   );
 };
 

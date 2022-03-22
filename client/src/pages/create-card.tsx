@@ -1,12 +1,13 @@
 import React from "react";
-import { Button, TextField, Typography } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 
-import { useCreateNewCardMutation } from "../../store/api";
+import { useCreateNewCardMutation } from "../store/api";
 
-import Card from "../../shared/card";
-import Container from "../../shared/container";
+import ButtonContained from "../components/shared/button-contained";
+import Container from "../components/container";
+import Card from "../components/card";
 
 const CreateCard = () => {
   const [russianWord, setRussianWord] = React.useState("");
@@ -49,13 +50,11 @@ const CreateCard = () => {
           value={englishWord}
           onChange={(e) => setEnglishWord(e.target.value)}
         />
-        <Button
-          variant="contained"
-          onClick={handleCreateCard}
+        <ButtonContained
+          clickHandler={handleCreateCard}
           disabled={!englishWord || !russianWord}
-        >
-          Submit
-        </Button>
+          text="Submit"
+        />
       </Card>
     </Container>
   );

@@ -1,10 +1,10 @@
 import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
+import { setSelectedUser } from "../store/slice";
 
-import { setSelectedUser } from "../../store/slice";
-import { User } from "../../types";
+import { User } from "../types";
 
-import Card from "../../shared/card";
+import Card from "./card";
 
 const UserCard = ({ user }: { user: User }) => {
   const dispatch = useDispatch();

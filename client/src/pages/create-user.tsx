@@ -3,9 +3,10 @@ import { Button, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
-import Card from "../../shared/card";
-import Container from "../../shared/container";
-import { useCreateNewUserMutation } from "../../store/api";
+import { useCreateNewUserMutation } from "../store/api";
+
+import Card from "../components/card";
+import Container from "../components/container";
 
 const CreateUser = () => {
   const [firstName, setFirstName] = React.useState("");

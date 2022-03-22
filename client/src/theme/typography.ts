@@ -5,11 +5,11 @@ const typography = {
     h2: {
         fontSize: '20px',
         fontWeight: 'bold',
-        color: palette.primary.contrast,
+        color: palette.primary.contrastText,
     },
     body1: {
         fontSize: '15px',
-        color: palette.primary.contrast,
+        color: palette.primary.contrastText,
     }
 }
 

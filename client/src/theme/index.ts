@@ -25,7 +25,7 @@ const theme = createTheme({
         {
           props: { variant: 'contained' },
           style: {
-            backgroundColor: palette.primary.contrast,
+            backgroundColor: palette.primary.dark,
             color: palette.primary.light,
             textTransform: 'none',
           },
@@ -33,7 +33,7 @@ const theme = createTheme({
         {
           props: { variant: 'outlined' },
           style: {
-            color: palette.primary.contrast,
+            color: palette.primary.dark,
 
           },
         },
@@ -41,7 +41,7 @@ const theme = createTheme({
           props: { variant: 'text' },
           style: {
             textTransform: 'none',
-            color: palette.primary.contrast,
+            color: palette.primary.dark,
           },
         },
       ]
@@ -52,7 +52,7 @@ const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          color: palette.primary.contrast,
+          color: palette.primary.dark,
         },
       },
     },
@@ -69,7 +69,7 @@ const theme = createTheme({
           backgroundColor: palette.primary.dark,
         },
         thumb: {
-          backgroundColor: palette.primary.contrast,
+          backgroundColor: palette.primary.dark,
         }
       }
     }
