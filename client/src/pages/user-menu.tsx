@@ -1,57 +1,40 @@
 import React from "react";
-import { Button, Typography, Stack } from "@mui/material";
+import { Typography, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import { AppState } from "../store";
-import { useGetUserInfoQuery } from "../store/api";
-import { setSelectedUser } from "../store/slice";
-
-import Container from "../components/container";
+import ButtonContained from "../components/shared/button-contained";
+import Container from "../components/shared/container";
+import useUserInfo from "../hooks/use-user-info";
+import useCardsList from "../hooks/use-cards-list";
 
 const UserMenu = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userId =
-    useSelector((state: AppState) => state.users.selectedUser?.id) ||
-    localStorage.getItem("userId");
+  const selectedUser = useUserInfo();
+  const cardsList = useCardsList();
 
-  const { selectedUser } = useSelector((state: AppState) => state.users);
-  const { data } = useGetUserInfoQuery({ userId });
-
-  React.useEffect(() => {
-    data &&
-      dispatch(
-        setSelectedUser({
-          firstName: data.first_name,
-          lastName: data.last_name,
-          id: data._id,
-        })
-      );
-  }, [data, dispatch]);
-
-  if (!data || !selectedUser) return null;
+  if (!cardsList || !selectedUser) return null;
 
   return (
     <Container>
       <Typography variant="h2" textAlign="center">
         Welcome, {selectedUser.firstName}!
       </Typography>
-      <Typography variant="body1" textAlign="center">
-        What would you like to do?
-      </Typography>
-      <Stack direction="row" spacing={3} justifyContent="center" mt={2}>
-        <Button variant="contained" onClick={() => navigate("/cards/create")}>
-          Add card
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => navigate(`/cards/${userId}`)}
-        >
-          Practice
-        </Button>
-      </Stack>
+      <Typography textAlign="center">What would you like to do?</Typography>
+      <Grid container gap={2} justifyContent="center">
+        <ButtonContained
+          text="Add card"
+          clickHandler={() => navigate("/cards/create")}
+        />
+        <ButtonContained
+          text="Practice"
+          clickHandler={() => navigate(`/cards/${selectedUser.id}`)}
+        />
+        <ButtonContained
+          text="Settings"
+          clickHandler={() => navigate("/user/settings")}
+        />
+      </Grid>
     </Container>
   );
 };

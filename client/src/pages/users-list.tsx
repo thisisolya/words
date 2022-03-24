@@ -10,7 +10,7 @@ import { useGetAllUsersQuery } from "../store/api";
 import CreateUser from "./create-user";
 import UserMenu from "./user-menu";
 import UserCard from "../components/user-card";
-import Container from "../components/container";
+import Container from "../components/shared/container";
 import { User, UserModelFromServer } from "../types";
 import ButtonContained from "../components/shared/button-contained";
 

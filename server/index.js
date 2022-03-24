@@ -10,6 +10,9 @@ const {
   deleteCardById,
   editCardById,
   getCardsByUserId,
+  deleteUserById,
+  deleteCardsByUserId,
+  editUserById,
 } = require("./queries");
 
 require("dotenv").config();
@@ -78,6 +81,24 @@ client.connect((error, client) => {
     const cardId = new ObjectId(request.body.cardId);
     const userId = new ObjectId(request.body.userId);
     deleteCardById({ cardId, userId, collection: cardsCollection, result });
+  });
+
+  app.post("/user/edit", (request, result) => {
+    const userId = new ObjectId(request.body.userId);
+    const { editedFirstName, editedLastName } = request.body;
+    editUserById({
+      userId,
+      editedFirstName,
+      editedLastName,
+      collection: usersCollection,
+      result,
+    });
+  });
+
+  app.post("/user/delete", (request, result) => {
+    const userId = new ObjectId(request.body.userId);
+    // deleteCardsByUserId({ userId, collection: cardsCollection, result });
+    deleteUserById({ userId, collection: usersCollection, result });
   });
 });
 

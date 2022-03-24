@@ -1,16 +1,17 @@
 import React from "react";
 import { Stack, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useSnackbar } from "notistack";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { Card as CardType } from "../types";
 import { AppState } from "../store";
 import { useDeleteCardMutation, useEditCardMutation } from "../store/api";
+import useAlert from "../hooks/use-alert";
 
-import EditText from "./edit-text";
-import Card from "./card";
-import CardToolbar from "./card-toolbar";
+import EditableText from "./shared/editable-text";
+import Card from "./shared/card";
+import CardToolbar from "./shared/card-toolbar";
+import useModal from "../hooks/use-modal";
 
 interface WordCardProps {
   currentCard: CardType;
@@ -21,7 +22,7 @@ interface WordCardProps {
   transitionExitValue: string;
 }
 
-const ReadText = ({ text }: { text: string }) => {
+const ReadonlyText = ({ text }: { text: string }) => {
   return (
     <AnimatePresence>
       <Typography
@@ -59,26 +60,35 @@ const WordCard = ({
     useSelector((state: AppState) => state.users.selectedUser?.id) ||
     localStorage.getItem("userId");
 
-  const { enqueueSnackbar } = useSnackbar();
   const cardId = currentCard.cardId;
 
   React.useEffect(() => {
     setCurrentLanguage(language);
   }, [language, currentCardNumber]);
 
+  const { showAlert } = useAlert();
+  const { showModal } = useModal();
   const [deleteCard] = useDeleteCardMutation();
   const [editCard] = useEditCardMutation();
 
-  const handleCardDelete = () => {
+  const deleteUserFunction = () => {
     deleteCard({ userId, cardId }).then((result: any) => {
       if (result.data.deletedCount === 1) {
-        enqueueSnackbar("Word was sucessfullly deleted!", {
-          variant: "success",
+        showAlert({
+          text: "Word was sucessfullly deleted!",
+          severity: "success",
         });
         currentCardNumber > 0 && setCurrentCardNumber(currentCardNumber - 1);
       } else {
-        enqueueSnackbar("Something went wrong:(", { variant: "error" });
+        showAlert({ text: "Something went wrong:(", severity: "error" });
       }
+    });
+  };
+
+  const handleCardDelete = () => {
+    showModal({
+      text: " This is going to delete this card forever. There is no possibility to restore deleted cards",
+      acceptFunction: () => deleteUserFunction,
     });
   };
 
@@ -86,11 +96,12 @@ const WordCard = ({
     editCard({ userId, editedEnglishWord, editedRussianWord, cardId }).then(
       (result: any) => {
         if (result.data.modifiedCount === 1) {
-          enqueueSnackbar("Word was sucessfullly edited!", {
-            variant: "success",
+          showAlert({
+            text: "Word was sucessfullly edited!",
+            severity: "success",
           });
         } else {
-          enqueueSnackbar("Something went wrong:(", { variant: "error" });
+          showAlert({ text: "Something went wrong:(", severity: "error" });
         }
       }
     );
@@ -115,7 +126,7 @@ const WordCard = ({
   ];
 
   return (
-    <AnimatePresence initial={false}>
+    <AnimatePresence>
       <div style={{ overflow: "hidden" }}>
         <motion.div
           key={currentCard.cardId}
@@ -124,7 +135,7 @@ const WordCard = ({
           exit={{ x: transitionExitValue, opacity: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Card size="large" key={currentCardNumber}>
+          <Card size="large">
             <Stack
               flex={10}
               onClick={() =>
@@ -135,15 +146,21 @@ const WordCard = ({
               justifyContent="center"
             >
               {editingMode ? (
-                <EditText objectsToEdit={editableObjects} />
+                editableObjects.map((object, index) => (
+                  <EditableText
+                    key={index}
+                    value={object.value}
+                    setNewValue={object.setNewValue}
+                  />
+                ))
               ) : (
-                <ReadText
+                <ReadonlyText
                   text={currentCard[currentLanguage as keyof CardType]}
                 />
               )}
             </Stack>
             <CardToolbar
-              handleCardDelete={handleCardDelete}
+              handleCardDelete={() => handleCardDelete()}
               handleModeChange={handleModeChange}
               handleCardEdit={handleCardEdit}
               editingMode={editingMode}

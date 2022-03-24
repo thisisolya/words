@@ -1,20 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-
 export const appAPI = createApi({
     reducerPath: 'appAPI',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080' }),
-    tagTypes: ['Users', 'Cards'],
+    baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_FETCH_BASE_URL }),
+    tagTypes: ['Users', 'UserInfo', 'Cards'],
     endpoints: (build) => ({
         getAllUsers: build.query({
             query: (endpoint) => (`${endpoint}`),
-            providesTags: (result) =>
-                result
-                    ? [
-                        ...result.map(({ id }: { id: any }) => ({ type: 'Users' as const, id })),
-                        { type: 'Users', id: 'LIST' },
-                    ]
-                    : [{ type: 'Users', id: 'LIST' }],
+            providesTags: ['Users'],
         }),
         getUserInfo: build.query({
             query: (body) => ({
@@ -22,6 +15,7 @@ export const appAPI = createApi({
                 method: 'POST',
                 body,
             }),
+            providesTags: ['UserInfo']
         }),
         createNewUser: build.mutation({
             query: (body) => ({
@@ -37,12 +31,7 @@ export const appAPI = createApi({
                 method: 'POST',
                 body,
             }),
-            providesTags: (result) => result
-                ? [
-                    ...result.map(({ id }: { id: any }) => ({ type: 'Cards' as const, id })),
-                    { type: 'Cards', id: 'LIST' },
-                ]
-                : [{ type: 'Cards', id: 'LIST' }],
+            providesTags: ['Cards'],
         }),
         createNewCard: build.mutation({
             query: (body) => ({
@@ -68,13 +57,32 @@ export const appAPI = createApi({
             }),
             invalidatesTags: ['Cards'],
         }),
+        deleteUser: build.mutation({
+            query: (body) => ({
+                url: 'user/delete',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Users'],
+        }),
+        editUserInfo: build.mutation({
+            query: (body) => ({
+                url: 'user/edit',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['UserInfo']
+        }),
     })
 })
 
 export const { useGetAllUsersQuery,
     useGetUserInfoQuery,
+    useLazyGetUserInfoQuery,
     useCreateNewUserMutation,
     useGetAllCardsQuery,
     useCreateNewCardMutation,
     useDeleteCardMutation,
-    useEditCardMutation } = appAPI;
+    useEditCardMutation,
+    useDeleteUserMutation,
+    useEditUserInfoMutation } = appAPI;

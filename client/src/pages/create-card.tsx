@@ -1,18 +1,18 @@
 import React from "react";
 import { TextField, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useSnackbar } from "notistack";
 
 import { useCreateNewCardMutation } from "../store/api";
+import useAlert from "../hooks/use-alert";
 
 import ButtonContained from "../components/shared/button-contained";
-import Container from "../components/container";
-import Card from "../components/card";
+import Container from "../components/shared/container";
+import Card from "../components/shared/card";
 
 const CreateCard = () => {
   const [russianWord, setRussianWord] = React.useState("");
   const [englishWord, setEnglishWord] = React.useState("");
-  const { enqueueSnackbar } = useSnackbar();
+  const { showAlert } = useAlert();
   const [createCard] = useCreateNewCardMutation();
 
   const userId =
@@ -24,9 +24,9 @@ const CreateCard = () => {
       if (result.insertedId !== null) {
         setRussianWord("");
         setEnglishWord("");
-        enqueueSnackbar("Word was sucessfullly added!", { variant: "success" });
+        showAlert({ text: "Card was added!", severity: "success" });
       } else {
-        enqueueSnackbar("Something went wrong:(", { variant: "error" });
+        showAlert({ text: "Something went wrong:(", severity: "error" });
       }
     });
   };
@@ -34,7 +34,7 @@ const CreateCard = () => {
   return (
     <Container>
       <Card size="medium">
-        <Typography variant="body1" textAlign={"center"}>
+        <Typography variant="body1" textAlign="center">
           Please type a word in Russian and its equivalent in English and hit
           "submit"
         </Typography>

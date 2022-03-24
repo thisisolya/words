@@ -13,7 +13,7 @@ const IconButton = ({
   Icon,
 }: IconButtonProps) => {
   return (
-    <MuiIconButton disabled={disabled} onClick={clickHandler}>
+    <MuiIconButton disabled={disabled} onClick={clickHandler} size="small">
       <Icon color={disabled ? "disabled" : "primary"} size="small" />
     </MuiIconButton>
   );

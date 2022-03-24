@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { User } from "../types";
 
-interface InitialStateType {
+export interface AppSlice {
     allUsers?: User[],
     selectedUser?: User,
 }
 
-const initialState: InitialStateType = {
+const initialState: AppSlice = {
     allUsers: undefined,
     selectedUser: undefined,
 }
@@ -21,10 +21,13 @@ const appSlice = createSlice({
         setSelectedUser: (state, action) => {
             state.selectedUser = { ...state.selectedUser, ...action.payload };
         },
+        resetSelectedUser: (state, action) => {
+            state.selectedUser = undefined;
+        },
     },
 });
 
-const { setAllUsers, setSelectedUser } = appSlice.actions;
+const { setAllUsers, setSelectedUser, resetSelectedUser } = appSlice.actions;
 
 export default appSlice;
-export { setAllUsers, setSelectedUser };
+export { setAllUsers, setSelectedUser, resetSelectedUser };

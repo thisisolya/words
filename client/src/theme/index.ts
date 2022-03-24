@@ -18,33 +18,32 @@ const theme = createTheme({
       },
     },
     MuiButton: {
-      defaultProps: {
-        size: "small",
-      },
       variants: [
         {
           props: { variant: 'contained' },
           style: {
             backgroundColor: palette.primary.dark,
-            color: palette.primary.light,
+            color: 'white',
             textTransform: 'none',
-          },
-        },
-        {
-          props: { variant: 'outlined' },
-          style: {
-            color: palette.primary.dark,
-
           },
         },
         {
           props: { variant: 'text' },
           style: {
             textTransform: 'none',
-            color: palette.primary.dark,
+            color: palette.primary.contrastText,
           },
         },
       ]
+    },
+    MuiInput: {
+      styleOverrides: {
+        root: {
+          '&::before': {
+            borderBottom: `1px solid ${palette.primary.dark}`,
+          }
+        }
+      }
     },
     MuiInputBase: {
       defaultProps: {
@@ -52,7 +51,14 @@ const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          color: palette.primary.dark,
+          color: palette.primary.contrastText,
+        }
+      }
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        notchedOutline: {
+          border: `0.5px solid ${palette.primary.dark}`,
         },
       },
     },

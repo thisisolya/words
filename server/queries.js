@@ -5,8 +5,8 @@ const getAllUsers = (collection, result) => {
 };
 
 const getUserInfoById = ({ collection, userId, result }) => {
-  collection.find({ _id: userId }).toArray((error, documents) => {
-    error ? result.send("Cannot find user") : result.send(documents[0]);
+  collection.findOne({ _id: userId }, (error, response) => {
+    error ? result.send("Cannot find user") : result.send(response);
   });
 };
 
@@ -62,6 +62,35 @@ const editCardById = ({
   );
 };
 
+const deleteUserById = ({ userId, collection, result }) => {
+  collection.deleteOne({ _id: userId }, (error, response) => {
+    error ? result.send("Cannot delete user") : result.send(response);
+  });
+};
+const deleteCardsByUserId = ({ userId, collection, result }) => {
+  collection.deleteMany({ user_id: userId }, (error, response) => {
+    error
+      ? result.send("Cannot delete cards belonging to user")
+      : result.send(response);
+  });
+};
+
+const editUserById = ({
+  collection,
+  userId,
+  editedFirstName,
+  editedLastName,
+  result,
+}) => {
+  collection.updateOne(
+    { _id: userId },
+    { $set: { first_name: editedFirstName, last_name: editedLastName } },
+    (error, response) => {
+      error ? result.send("Cannot edit user info") : result.send(response);
+    }
+  );
+};
+
 module.exports = {
   getAllUsers,
   getUserInfoById,
@@ -70,4 +99,7 @@ module.exports = {
   deleteCardById,
   editCardById,
   getCardsByUserId,
+  deleteUserById,
+  deleteCardsByUserId,
+  editUserById,
 };

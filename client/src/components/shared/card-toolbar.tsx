@@ -3,11 +3,12 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import EditIcon from "@mui/icons-material/Edit";
-import IconButton from "./shared/icon-button";
+import IconButton from "./icon-button";
+import useModal from "../../hooks/use-modal";
 
 interface CardToolbarProps {
   editingMode: boolean;
-  handleCardDelete: () => void;
+  handleCardDelete?: () => void;
   handleCardEdit: () => void;
   handleModeChange: () => void;
 }
@@ -18,6 +19,14 @@ const CardToolbar = ({
   handleCardEdit,
   handleModeChange,
 }: CardToolbarProps) => {
+  const { showModal } = useModal();
+  // const handleDeleteCard = () => {
+  //   showModal({
+  //     text: " This is going to delete this card forever. There is no possibility to restore deleted cards",
+  //     acceptFunction: () => handleCardDelete && handleCardDelete,
+  //   });
+  // };
+
   if (editingMode) {
     return (
       <Stack direction="row" justifyContent="end">
@@ -29,7 +38,12 @@ const CardToolbar = ({
 
   return (
     <Stack direction="row" justifyContent="end">
-      <IconButton clickHandler={handleCardDelete} Icon={DeleteOutlineIcon} />
+      {handleCardDelete && (
+        <IconButton
+          clickHandler={() => handleCardDelete()}
+          Icon={DeleteOutlineIcon}
+        />
+      )}
       <IconButton clickHandler={handleModeChange} Icon={EditIcon} />
     </Stack>
   );

@@ -2,17 +2,11 @@ import React from "react";
 import { Stack, Switch, Typography } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { AppState } from "../store";
+import useCardsList from "../hooks/use-cards-list";
 
-import { CardModelFromServer } from "../types";
-import { setSelectedUser } from "../store/slice";
-import { useGetAllCardsQuery } from "../store/api";
-
-import Container from "../components/container";
+import Container from "../components/shared/container";
 import WordCard from "../components/word-card";
 import IconButton from "../components/shared/icon-button";
 import ButtonContained from "../components/shared/button-contained";
@@ -33,18 +27,12 @@ const LanguagesSwitcher = ({
 
 const CardsList = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [currentCardNumber, setCurrentCardNumber] = React.useState(0);
   const [language, setLanguage] = React.useState("russian");
   const [paginateForwards, setPaginateForwards] = React.useState(true);
 
-  const userId =
-    useSelector((state: AppState) => state.users.selectedUser?.id) ||
-    localStorage.getItem("userId");
-
-  const { selectedUser } = useSelector((state: AppState) => state.users);
-  const cards = selectedUser?.cards;
+  const cards = useCardsList();
 
   const transitionInitialValue = paginateForwards ? "100%" : "-100%";
   const transitionExitValue = paginateForwards ? "-100%" : "100%";
@@ -60,22 +48,6 @@ const CardsList = () => {
     setCurrentCardNumber(currentCardNumber + direction);
     setPaginateForwards(direction === 1 ? true : false);
   };
-
-  const { data } = useGetAllCardsQuery({ userId });
-
-  React.useEffect(() => {
-    data &&
-      dispatch(
-        setSelectedUser({
-          cards: data.map((card: CardModelFromServer) => ({
-            english: card.english,
-            russian: card.russian,
-            userId: card.user_id,
-            cardId: card._id,
-          })),
-        })
-      );
-  }, [data, dispatch]);
 
   if (!cards || cards.length === 0) {
     return (
@@ -96,7 +68,7 @@ const CardsList = () => {
   return (
     <Container>
       <LanguagesSwitcher switchFirstLanguage={toggleLanguage} />
-      <Stack direction="row">
+      <Stack direction="row" alignItems="center" spacing={1}>
         <IconButton
           disabled={!!isFirstWord}
           clickHandler={() => handlePagination(-1)}

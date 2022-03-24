@@ -1,10 +1,10 @@
+import React from "react";
 import { Button } from "@mui/material";
 
 interface ButtonProps {
   disabled?: boolean;
   clickHandler?: () => void;
-  text: string;
-  icon?: any;
+  text: any;
 }
 
 const ButtonContained = ({

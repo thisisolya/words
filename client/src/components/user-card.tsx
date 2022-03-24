@@ -4,7 +4,7 @@ import { setSelectedUser } from "../store/slice";
 
 import { User } from "../types";
 
-import Card from "./card";
+import Card from "./shared/card";
 
 const UserCard = ({ user }: { user: User }) => {
   const dispatch = useDispatch();
