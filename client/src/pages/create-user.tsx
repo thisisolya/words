@@ -1,28 +1,36 @@
-import React from "react";
-import { Button, TextField, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { Button, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-import { useCreateNewUserMutation } from "../store/api";
-import useAlert from "../hooks/use-alert";
+import { useCreateNewUserMutation } from '../store/api';
 
-import Card from "../components/shared/card";
-import Container from "../components/shared/container";
+import Card from '../components/shared/card';
+import Container from '../components/shared/container';
+import useAlert from '../hooks/use-alert';
 
-const CreateUser = () => {
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
+function CreateUser() {
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-  const [createUser] = useCreateNewUserMutation();
+  const [createUser, { data: creationResult }] = useCreateNewUserMutation();
+
+  React.useEffect(() => {
+    if (creationResult) {
+      if (creationResult.insertedId) {
+        showAlert({
+          text: 'User was sucessfullly created!',
+          severity: 'success',
+        });
+        navigate('/');
+      } else {
+        showAlert({ text: 'Something went wrong:(', severity: 'error' });
+      }
+    }
+  }, [creationResult]);
 
   const handleCreateUser = () => {
-    createUser({ firstName, lastName }).then((result: any) => {
-      if (result.insertedId !== null) {
-        navigate("/");
-      } else {
-        showAlert({ text: "Something went wrong:(", severity: "error" });
-      }
-    });
+    createUser({ firstName, lastName }).unwrap();
   };
 
   return (
@@ -46,11 +54,11 @@ const CreateUser = () => {
           onClick={handleCreateUser}
           disabled={!firstName || !lastName}
         >
-          Let's go!
+          Let&apos;s go!
         </Button>
       </Card>
     </Container>
   );
-};
+}
 
 export default CreateUser;

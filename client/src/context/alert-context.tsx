@@ -1,34 +1,36 @@
-import React from "react";
-import Snackbar from "../components/snackbar";
+import React from 'react';
+import Snackbar from '../components/snackbar';
 
 interface ContextType {
   toggleAlert: () => void;
-
   setSeverity: React.Dispatch<
-    React.SetStateAction<"success" | "error" | "info" | "warning">
+  React.SetStateAction<'success' | 'error' | 'info' | 'warning'>
   >;
   setText: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const initialAlertContextState = {
   toggleAlert: () => false,
-
-  setSeverity: () => "info",
-  setText: () => "",
+  setSeverity: () => 'info',
+  setText: () => '',
 };
 
 const AlertContext = React.createContext<ContextType>(initialAlertContextState);
 
-const AlertProvider = ({ children }: { children: any }) => {
+function AlertProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setOpen] = React.useState(false);
-  const [text, setText] = React.useState("");
+  const [text, setText] = React.useState('');
   const [severity, setSeverity] = React.useState<
-    "success" | "error" | "info" | "warning"
-  >("info");
+  'success' | 'error' | 'info' | 'warning'
+  >('info');
   const toggleAlert = () => setOpen(!isOpen);
 
+  const contextValue = React.useMemo(() => ({
+    toggleAlert, setSeverity, setText,
+  }), [toggleAlert, setSeverity, setText]);
+
   return (
-    <AlertContext.Provider value={{ toggleAlert, setSeverity, setText }}>
+    <AlertContext.Provider value={contextValue}>
       {children}
       {isOpen && (
         <Snackbar
@@ -40,7 +42,7 @@ const AlertProvider = ({ children }: { children: any }) => {
       )}
     </AlertContext.Provider>
   );
-};
+}
 
 export default AlertContext;
 export { AlertProvider };

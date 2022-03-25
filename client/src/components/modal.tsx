@@ -1,21 +1,21 @@
-import React from "react";
-import { Dialog, Typography, Stack } from "@mui/material";
-import Card from "./shared/card";
-import ButtonContained from "./shared/button-contained";
+import React from 'react';
+import { Dialog, Typography, Stack } from '@mui/material';
+import Card from './shared/card';
+import ButtonContained from './shared/button-contained';
 
 interface ModalProps {
   isOpen: boolean;
   toggleModal: () => void;
   text: string;
-  acceptButtonHandler: any;
+  acceptButtonHandler: () => void;
 }
 
-const Modal = ({
+function Modal({
   isOpen,
   text,
   toggleModal,
   acceptButtonHandler,
-}: ModalProps) => {
+}: ModalProps) {
   const handleAcceptButton = () => {
     acceptButtonHandler();
     toggleModal();
@@ -33,6 +33,6 @@ const Modal = ({
       </Card>
     </Dialog>
   );
-};
+}
 
 export default Modal;

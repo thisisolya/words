@@ -1,21 +1,21 @@
-import React from "react";
-import { Stack, Switch, Typography } from "@mui/material";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { Stack, Switch, Typography } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { useNavigate } from 'react-router-dom';
 
-import useCardsList from "../hooks/use-cards-list";
+import useCardsList from '../hooks/use-cards-list';
 
-import Container from "../components/shared/container";
-import WordCard from "../components/word-card";
-import IconButton from "../components/shared/icon-button";
-import ButtonContained from "../components/shared/button-contained";
+import Container from '../components/shared/container';
+import WordCard from '../components/word-card';
+import IconButton from '../components/shared/icon-button';
+import ButtonContained from '../components/shared/button-contained';
 
-const LanguagesSwitcher = ({
+function LanguagesSwitcher({
   switchFirstLanguage,
 }: {
   switchFirstLanguage: () => void;
-}) => {
+}) {
   return (
     <Stack direction="row" justifyContent="center" alignItems="center" mb={1}>
       <Typography variant="body2">Russian first</Typography>
@@ -23,30 +23,30 @@ const LanguagesSwitcher = ({
       <Typography variant="body2">English first</Typography>
     </Stack>
   );
-};
+}
 
-const CardsList = () => {
+function CardsList() {
   const navigate = useNavigate();
 
   const [currentCardNumber, setCurrentCardNumber] = React.useState(0);
-  const [language, setLanguage] = React.useState("russian");
+  const [language, setLanguage] = React.useState('russian');
   const [paginateForwards, setPaginateForwards] = React.useState(true);
 
   const cards = useCardsList();
 
-  const transitionInitialValue = paginateForwards ? "100%" : "-100%";
-  const transitionExitValue = paginateForwards ? "-100%" : "100%";
+  const transitionInitialValue = paginateForwards ? '100%' : '-100%';
+  const transitionExitValue = paginateForwards ? '-100%' : '100%';
 
   const isLastWord = cards && currentCardNumber === cards.length - 1;
   const isFirstWord = currentCardNumber === 0;
 
   const toggleLanguage = () => {
-    setLanguage(language === "russian" ? "english" : "russian");
+    setLanguage(language === 'russian' ? 'english' : 'russian');
   };
 
   const handlePagination = (direction: number) => {
     setCurrentCardNumber(currentCardNumber + direction);
-    setPaginateForwards(direction === 1 ? true : false);
+    setPaginateForwards(direction === 1);
   };
 
   if (!cards || cards.length === 0) {
@@ -58,7 +58,7 @@ const CardsList = () => {
           </Typography>
           <ButtonContained
             text="Create card"
-            clickHandler={() => navigate("/cards/create")}
+            clickHandler={() => navigate('/cards/create')}
           />
         </Stack>
       </Container>
@@ -90,10 +90,10 @@ const CardsList = () => {
       </Stack>
       <ButtonContained
         text="Create card"
-        clickHandler={() => navigate("/cards/create")}
+        clickHandler={() => navigate('/cards/create')}
       />
     </Container>
   );
-};
+}
 
 export default CardsList;

@@ -1,22 +1,22 @@
-import React from "react";
-import { Button } from "@mui/material";
+import React from 'react';
+import { Button } from '@mui/material';
 
 interface ButtonProps {
   disabled?: boolean;
-  clickHandler?: () => void;
-  text: any;
+  clickHandler: () => void;
+  text: string;
 }
 
-const ButtonContained = ({
-  disabled = false,
+function ButtonContained({
+  disabled,
   clickHandler,
   text,
-}: ButtonProps) => {
+}: ButtonProps) {
   return (
     <Button variant="contained" onClick={clickHandler} disabled={disabled}>
       {text}
     </Button>
   );
-};
+}
 
 export default ButtonContained;

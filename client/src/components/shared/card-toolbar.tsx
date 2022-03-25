@@ -1,10 +1,10 @@
-import { Stack } from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import EditIcon from "@mui/icons-material/Edit";
-import IconButton from "./icon-button";
-import useModal from "../../hooks/use-modal";
+import React from 'react';
+import { Stack } from '@mui/material';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from './icon-button';
 
 interface CardToolbarProps {
   editingMode: boolean;
@@ -13,20 +13,12 @@ interface CardToolbarProps {
   handleModeChange: () => void;
 }
 
-const CardToolbar = ({
+function CardToolbar({
   editingMode,
   handleCardDelete,
   handleCardEdit,
   handleModeChange,
-}: CardToolbarProps) => {
-  const { showModal } = useModal();
-  // const handleDeleteCard = () => {
-  //   showModal({
-  //     text: " This is going to delete this card forever. There is no possibility to restore deleted cards",
-  //     acceptFunction: () => handleCardDelete && handleCardDelete,
-  //   });
-  // };
-
+}: CardToolbarProps) {
   if (editingMode) {
     return (
       <Stack direction="row" justifyContent="end">
@@ -47,6 +39,6 @@ const CardToolbar = ({
       <IconButton clickHandler={handleModeChange} Icon={EditIcon} />
     </Stack>
   );
-};
+}
 
 export default CardToolbar;

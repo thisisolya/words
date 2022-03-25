@@ -1,44 +1,35 @@
-import { Stack } from "@mui/material";
-import palette from "../../theme/palette";
+import React from 'react';
+import { Stack, styled } from '@mui/material';
+import palette from '../../theme/palette';
 
 interface CardProps {
-  children: any;
-  size: "small" | "medium" | "large";
+  children: React.ReactNode;
+  size: 'small' | 'medium' | 'large';
 }
+const CustomCard = styled(Stack)(({ size }: { size: 'small' | 'medium' | 'large' }) => {
+  const boxShadowSmallAndMedium = size === 'small'
+    ? `3px 3px 1px 0.1px ${palette.primary.main}`
+    : `5px 5px 1px 2px ${palette.primary.main}`;
+  const minWidthSmallAndMedium = size === 'small' ? '100px' : '150px';
+  const minHeightSmallAndLarge = size === 'small' ? '90px' : '150px';
+  const paddingMediumAndLarge = size === 'medium' ? '25px' : '5px 10px';
+  const marginMediumAndLarge = size === 'medium' ? '10px 15px' : '10px';
 
-const style = {
-  shared: {
+  return ({
     backgroundColor: palette.primary.light,
-    borderRadius: "5px",
-  },
-  small: {
-    boxShadow: `3px 3px 1px 0.1px ${palette.primary.main}`,
-    justifyContent: "space-evenly",
-    minHeight: "100px",
-    minWidth: "90px",
-  },
-  medium: {
-    boxShadow: `5px 5px 1px 2px ${palette.primary.main}`,
-    gap: "15px",
-    margin: "10px 15px",
-    maxWidth: "450px",
-    padding: "25px",
-  },
-  large: {
-    boxShadow: `3px 3px 1px 1px ${palette.primary.main}`,
-    gap: "15px",
-    margin: "10px",
-    minHeight: "150px",
-    minWidth: "200px",
-    padding: "5px 10px",
-  },
-};
+    borderRadius: '5px',
+    justifyContent: size === 'small' ? 'space-evenly' : 'center',
+    boxShadow: size === 'large' ? `3px 3px 1px 1px ${palette.primary.main}` : boxShadowSmallAndMedium,
+    minHeight: size !== 'medium' ? minHeightSmallAndLarge : undefined,
+    minWidth: size === 'large' ? '200px' : minWidthSmallAndMedium,
+    gap: size !== 'small' ? '15px' : undefined,
+    padding: size !== 'small' ? paddingMediumAndLarge : undefined,
+    margin: size !== 'small' ? marginMediumAndLarge : undefined,
+  });
+});
 
-const Card = ({ children, size }: CardProps) => {
-  const sharedStyled = style.shared;
-  const customStyles = style[size];
-
-  return <Stack style={{ ...sharedStyled, ...customStyles }}>{children}</Stack>;
-};
+function Card({ children, size }: CardProps) {
+  return <CustomCard size={size}>{children}</CustomCard>;
+}
 
 export default Card;

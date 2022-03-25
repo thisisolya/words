@@ -1,5 +1,5 @@
-import React from "react";
-import AlertContext from "../context/alert-context";
+import React from 'react';
+import AlertContext from '../context/alert-context';
 
 const useAlert = () => {
   const { toggleAlert, setText, setSeverity } = React.useContext(AlertContext);
@@ -8,7 +8,7 @@ const useAlert = () => {
     severity,
     text,
   }: {
-    severity: "success" | "error" | "info" | "warning";
+    severity: 'success' | 'error' | 'info' | 'warning';
     text: string;
   }) => {
     toggleAlert();

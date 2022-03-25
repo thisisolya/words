@@ -1,22 +1,23 @@
-import React from "react";
-import { IconButton as MuiIconButton } from "@mui/material";
+import React from 'react';
+import { IconButton as MuiIconButton, SvgIconTypeMap } from '@mui/material';
+import { OverridableComponent } from '@mui/material/OverridableComponent';
 
 interface IconButtonProps {
   disabled?: boolean;
   clickHandler: () => void;
-  Icon: any;
+  Icon: OverridableComponent<SvgIconTypeMap<Record<string, unknown>, 'svg'>> & { muiName: string; };
 }
 
-const IconButton = ({
+function IconButton({
   disabled = false,
   clickHandler,
   Icon,
-}: IconButtonProps) => {
+}: IconButtonProps) {
   return (
     <MuiIconButton disabled={disabled} onClick={clickHandler} size="small">
-      <Icon color={disabled ? "disabled" : "primary"} size="small" />
+      <Icon color={disabled ? 'disabled' : 'primary'} size="small" />
     </MuiIconButton>
   );
-};
+}
 
 export default IconButton;

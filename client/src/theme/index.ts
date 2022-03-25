@@ -34,26 +34,26 @@ const theme = createTheme({
             color: palette.primary.contrastText,
           },
         },
-      ]
+      ],
     },
     MuiInput: {
       styleOverrides: {
         root: {
           '&::before': {
             borderBottom: `1px solid ${palette.primary.dark}`,
-          }
-        }
-      }
+          },
+        },
+      },
     },
     MuiInputBase: {
       defaultProps: {
-        size: "small",
+        size: 'small',
       },
       styleOverrides: {
         root: {
           color: palette.primary.contrastText,
-        }
-      }
+        },
+      },
     },
     MuiOutlinedInput: {
       styleOverrides: {
@@ -66,8 +66,8 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           cursor: 'pointer',
-        }
-      }
+        },
+      },
     },
     MuiSwitch: {
       styleOverrides: {
@@ -76,9 +76,9 @@ const theme = createTheme({
         },
         thumb: {
           backgroundColor: palette.primary.dark,
-        }
-      }
-    }
+        },
+      },
+    },
   },
 });
 

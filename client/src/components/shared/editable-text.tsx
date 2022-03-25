@@ -1,12 +1,12 @@
-import React from "react";
-import { TextField } from "@mui/material";
+import React from 'react';
+import { TextField } from '@mui/material';
 
 type EditableTextProps = {
   value: string;
   setNewValue: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const EditableText = ({ value, setNewValue }: EditableTextProps) => {
+function EditableText({ value, setNewValue }: EditableTextProps) {
   return (
     <TextField
       variant="standard"
@@ -14,6 +14,6 @@ const EditableText = ({ value, setNewValue }: EditableTextProps) => {
       onChange={(e) => setNewValue(e.target.value)}
     />
   );
-};
+}
 
 export default EditableText;
