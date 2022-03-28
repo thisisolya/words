@@ -1,9 +1,8 @@
 import React from 'react';
 import { TextField, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { useCreateNewCardMutation } from '../store/api';
-import { AppState } from '../store';
 import useAlert from '../hooks/use-alert';
 
 import ButtonContained from '../components/shared/button-contained';
@@ -11,13 +10,14 @@ import Container from '../components/shared/container';
 import Card from '../components/shared/card';
 
 function CreateCard() {
+  const { showAlert } = useAlert();
+  const navigate = useNavigate();
+
   const [russianWord, setRussianWord] = React.useState('');
   const [englishWord, setEnglishWord] = React.useState('');
   const [createCard, { data: creationResult }] = useCreateNewCardMutation();
-  const { showAlert } = useAlert();
 
-  const userId = useSelector((state: AppState) => state.users.selectedUser?.id)
-    || localStorage.getItem('userId');
+  const userId = localStorage.getItem('userId');
 
   React.useEffect(() => {
     if (creationResult) {
@@ -62,18 +62,9 @@ function CreateCard() {
           text="Submit"
         />
       </Card>
+      <ButtonContained text="Start practicing!" clickHandler={() => navigate(`/cards/${userId}`)} />
     </Container>
   );
 }
 
 export default CreateCard;
-
-// .then((result: any) => {
-//   if (result.insertedId !== null) {
-//     setRussianWord('');
-//     setEnglishWord('');
-//     showAlert({ text: 'Card was added!', severity: 'success' });
-//   } else {
-//     showAlert({ text: 'Something went wrong:(', severity: 'error' });
-//   }
-// });

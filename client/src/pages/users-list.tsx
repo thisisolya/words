@@ -6,12 +6,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../store';
 import { setAllUsers } from '../store/slice';
 import { useGetAllUsersQuery } from '../store/api';
+import { User, UserModelFromServer } from '../types';
 
 import CreateUser from './create-user';
 import UserMenu from './user-menu';
 import UserCard from '../components/user-card';
 import Container from '../components/shared/container';
-import { User, UserModelFromServer } from '../types';
 import ButtonContained from '../components/shared/button-contained';
 
 function UsersList() {
@@ -19,7 +19,6 @@ function UsersList() {
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
   const { allUsers } = useSelector((state: AppState) => state.users);
-
   const { data } = useGetAllUsersQuery('/');
 
   React.useEffect(() => {

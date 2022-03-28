@@ -10,8 +10,7 @@ const {
   deleteCardById,
   editCardById,
   getCardsByUserId,
-  deleteUserById,
-  deleteCardsByUserId,
+  deleteUserById, 
   editUserById,
 } = require("./queries");
 
@@ -96,9 +95,8 @@ client.connect((error, client) => {
   });
 
   app.post("/user/delete", (request, result) => {
-    const userId = new ObjectId(request.body.userId);
-    // deleteCardsByUserId({ userId, collection: cardsCollection, result });
-    deleteUserById({ userId, collection: usersCollection, result });
+    const userId = new ObjectId(request.body.userId); 
+    deleteUserById({ userId, usersCollection, cardsCollection, result });
   });
 });
 

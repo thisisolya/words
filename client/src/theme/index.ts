@@ -62,6 +62,16 @@ const theme = createTheme({
         },
       },
     },
+    MuiSnackbar: {
+      styleOverrides: {
+        root: {
+          '& .MuiPaper-root': {
+            minWidth: '300px',
+            width: '60vw',
+          },
+        },
+      },
+    },
     MuiSvgIcon: {
       styleOverrides: {
         root: {

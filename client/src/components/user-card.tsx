@@ -19,6 +19,7 @@ function UserCard({ user }: { user: User }) {
     <Card key={user.id} size="small">
       <Button onClick={handleClick}>
         {user.firstName}
+        {' '}
         {user.lastName}
       </Button>
     </Card>

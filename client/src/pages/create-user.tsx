@@ -3,16 +3,16 @@ import { Button, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import { useCreateNewUserMutation } from '../store/api';
+import useAlert from '../hooks/use-alert';
 
 import Card from '../components/shared/card';
 import Container from '../components/shared/container';
-import useAlert from '../hooks/use-alert';
 
 function CreateUser() {
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
   const navigate = useNavigate();
   const { showAlert } = useAlert();
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
   const [createUser, { data: creationResult }] = useCreateNewUserMutation();
 
   React.useEffect(() => {

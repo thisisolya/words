@@ -48,6 +48,8 @@ function WordCard({
   transitionInitialValue,
   transitionExitValue,
 }: WordCardProps) {
+  const { showAlert } = useAlert();
+  const { showModal } = useModal();
   const [editedRussianWord, setEditedRussianWord] = React.useState(
     currentCard.russian,
   );
@@ -58,17 +60,13 @@ function WordCard({
   const [currentLanguage, setCurrentLanguage] = React.useState('');
   const userId = useSelector((state: AppState) => state.users.selectedUser?.id)
     || localStorage.getItem('userId');
-
+  const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
+  const [editCard, { data: editResult }] = useEditCardMutation();
   const { cardId } = currentCard;
 
   React.useEffect(() => {
     setCurrentLanguage(language);
   }, [language, currentCardNumber]);
-
-  const { showAlert } = useAlert();
-  const { showModal } = useModal();
-  const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
-  const [editCard, { data: editResult }] = useEditCardMutation();
 
   const handleModeChange = () => {
     setEditingMode(!editingMode);
@@ -105,14 +103,14 @@ function WordCard({
     }
   }, [deleteResult]);
 
-  const deleteUserFunction = () => {
+  const deleteCardFunction = () => {
     deleteCard({ userId, cardId }).unwrap();
   };
 
   const handleCardDelete = () => {
     showModal({
       text: ' This is going to delete this card forever. There is no possibility to restore deleted cards',
-      acceptFunction: () => deleteUserFunction,
+      acceptFunction: () => deleteCardFunction,
     });
   };
 

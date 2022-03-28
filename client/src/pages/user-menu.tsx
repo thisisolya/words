@@ -2,14 +2,14 @@ import React from 'react';
 import { Typography, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import ButtonContained from '../components/shared/button-contained';
-import Container from '../components/shared/container';
 import useUserInfo from '../hooks/use-user-info';
 import useCardsList from '../hooks/use-cards-list';
 
+import ButtonContained from '../components/shared/button-contained';
+import Container from '../components/shared/container';
+
 function UserMenu() {
   const navigate = useNavigate();
-
   const selectedUser = useUserInfo();
   const cardsList = useCardsList();
 

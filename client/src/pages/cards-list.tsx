@@ -27,12 +27,11 @@ function LanguagesSwitcher({
 
 function CardsList() {
   const navigate = useNavigate();
+  const cards = useCardsList();
 
   const [currentCardNumber, setCurrentCardNumber] = React.useState(0);
   const [language, setLanguage] = React.useState('russian');
   const [paginateForwards, setPaginateForwards] = React.useState(true);
-
-  const cards = useCardsList();
 
   const transitionInitialValue = paginateForwards ? '100%' : '-100%';
   const transitionExitValue = paginateForwards ? '-100%' : '100%';

@@ -32,7 +32,7 @@ function CardToolbar({
     <Stack direction="row" justifyContent="end">
       {handleCardDelete && (
         <IconButton
-          clickHandler={() => handleCardDelete()}
+          clickHandler={handleCardDelete}
           Icon={DeleteOutlineIcon}
         />
       )}

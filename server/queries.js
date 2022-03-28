@@ -62,16 +62,26 @@ const editCardById = ({
   );
 };
 
-const deleteUserById = ({ userId, collection, result }) => {
-  collection.deleteOne({ _id: userId }, (error, response) => {
-    error ? result.send("Cannot delete user") : result.send(response);
-  });
-};
-const deleteCardsByUserId = ({ userId, collection, result }) => {
-  collection.deleteMany({ user_id: userId }, (error, response) => {
-    error
-      ? result.send("Cannot delete cards belonging to user")
-      : result.send(response);
+const deleteUserById = ({ userId, usersCollection, cardsCollection, result }) => {
+  usersCollection.aggregate([
+    { $match: { _id: userId } },
+    { $lookup: { from: 'cards', foreignField: "user_id", localField: "_id", as: 'cards' } }
+  ]).toArray((error, documents) => {
+    if (!error) {
+      documents.map((doc) => doc.cards.map((card) => {
+        cardsCollection.deleteOne({ _id: card._id }, (error) => {
+          if (!error) {
+            usersCollection.deleteOne({ _id: userId }, (error, response) => {
+              error ? result.send("Cannot delete user") : result.send(response);
+            })
+          } else {
+            result.send("Cannot delete user")
+          }
+        })
+      }))
+    } else {
+      result.send("Cannot delete user")
+    }
   });
 };
 
@@ -100,6 +110,5 @@ module.exports = {
   editCardById,
   getCardsByUserId,
   deleteUserById,
-  deleteCardsByUserId,
   editUserById,
 };

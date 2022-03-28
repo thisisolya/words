@@ -2,19 +2,24 @@ import React from 'react';
 import { Typography, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
 import { AppState } from '../store';
 import { useDeleteUserMutation, useEditUserInfoMutation } from '../store/api';
+import useAlert from '../hooks/use-alert';
+import useModal from '../hooks/use-modal';
+import useLogout from '../hooks/use-logout';
 
 import EditableText from '../components/shared/editable-text';
 import CardToolbar from '../components/shared/card-toolbar';
 import Card from '../components/shared/card';
 import Container from '../components/shared/container';
 import ButtonContained from '../components/shared/button-contained';
-import useAlert from '../hooks/use-alert';
-import useModal from '../hooks/use-modal';
-import useLogout from '../hooks/use-logout';
 
 function Settings() {
+  const navigate = useNavigate();
+  const { showAlert } = useAlert();
+  const { showModal } = useModal();
+  const { logout } = useLogout();
   const { selectedUser } = useSelector((state: AppState) => state.users);
 
   const [editingMode, setEdidingMode] = React.useState(false);
@@ -26,11 +31,6 @@ function Settings() {
   );
   const userId = useSelector((state: AppState) => state.users.selectedUser?.id)
     || localStorage.getItem('userId');
-
-  const { showAlert } = useAlert();
-  const { showModal } = useModal();
-  const navigate = useNavigate();
-  const { logout } = useLogout();
 
   const [editUserInfo, { data: editResult }] = useEditUserInfoMutation();
   const [deleteUser, { data: deleteResult }] = useDeleteUserMutation();
@@ -66,6 +66,12 @@ function Settings() {
     }
   }, [deleteResult]);
 
+  React.useEffect(() => {
+    if (!selectedUser) {
+      navigate('/');
+    }
+  }, [selectedUser]);
+
   const handleCardEdit = () => {
     editUserInfo({ userId, editedFirstName, editedLastName }).unwrap();
   };
@@ -80,10 +86,6 @@ function Settings() {
       acceptFunction: () => deleteUserFunction,
     });
   };
-
-  if (!selectedUser) {
-    return <Typography>User info is unknown and cannot be edited.</Typography>;
-  }
 
   return (
     <Container>
