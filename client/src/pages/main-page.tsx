@@ -1,5 +1,6 @@
 import React from 'react';
-import { Stack, styled } from '@mui/material';
+import { Stack } from '@mui/material';
+import styled from '@emotion/styled';
 import { Route, Routes } from 'react-router-dom';
 
 import { ModalProvider } from '../context/modal-context';
@@ -13,16 +14,17 @@ import Settings from './settings';
 import UsersList from './users-list';
 import UserMenu from './user-menu';
 
-const Wrapper = styled(Stack)({
-  height: '100%',
-  minHeight: '100vh',
-  padding: '10vh 0',
-  overflow: 'hidden',
-});
+const Wrapper = styled(Stack)`
+  height: 100%;
+  min-height: 100vh;
+  padding: 10vh 0;
+  overflow: hidden;
+  align-items: center;
+`;
 
 function MainPage() {
   return (
-    <Wrapper direction="column" alignItems="center">
+    <Wrapper>
       <NavBar />
       <AlertProvider>
         <ModalProvider>
