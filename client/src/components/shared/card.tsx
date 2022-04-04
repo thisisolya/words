@@ -3,7 +3,7 @@ import { Stack } from '@mui/material';
 import styled from '@emotion/styled';
 import palette from '../../theme/palette';
 
-interface CustomCardProps{
+interface CustomCardProps {
   size: 'small' | 'medium' | 'large';
 }
 interface CardProps {

@@ -17,7 +17,8 @@
         },
         "ecmaVersion": "latest",
         "sourceType": "module",
-        "project": "tsconfig.json"
+        "eslint.workingDirectories": [ "./client", "./server" ],
+        "project":  "tsconfig.json" 
     },
     "plugins": [
         "react",

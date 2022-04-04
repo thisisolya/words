@@ -123,12 +123,14 @@ function WordCard({
 
   const editableObjects = [
     {
-      value: editedEnglishWord,
+      id: React.useId(),
       setNewValue: setEditedEnglishWord,
+      value: editedEnglishWord,
     },
     {
-      value: editedRussianWord,
+      id: React.useId(),
       setNewValue: setEditedRussianWord,
+      value: editedRussianWord,
     },
   ];
 
@@ -151,10 +153,9 @@ function WordCard({
               justifyContent="center"
             >
               {editingMode ? (
-                editableObjects.map((object, index) => (
+                editableObjects.map((object) => (
                   <EditableText
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={index}
+                    key={object.id}
                     value={object.value}
                     setNewValue={object.setNewValue}
                   />
