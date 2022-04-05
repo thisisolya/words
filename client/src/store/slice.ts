@@ -5,11 +5,13 @@ import { User } from '../types';
 export interface AppSlice {
   allUsers?: User[],
   selectedUser?: User,
+  preferredLanguage: string,
 }
 
 const initialState: AppSlice = {
   allUsers: undefined,
   selectedUser: undefined,
+  preferredLanguage: 'russian',
 };
 
 const appSlice = createSlice({
@@ -25,10 +27,17 @@ const appSlice = createSlice({
     resetSelectedUser: (state) => {
       state.selectedUser = undefined;
     },
+    setPreferredLanguage: (state, action) => {
+      state.preferredLanguage = action.payload;
+    },
   },
 });
 
-const { setAllUsers, setSelectedUser, resetSelectedUser } = appSlice.actions;
+const {
+  setAllUsers, setSelectedUser, resetSelectedUser, setPreferredLanguage,
+} = appSlice.actions;
 
 export default appSlice;
-export { setAllUsers, setSelectedUser, resetSelectedUser };
+export {
+  setAllUsers, setSelectedUser, resetSelectedUser, setPreferredLanguage,
+};

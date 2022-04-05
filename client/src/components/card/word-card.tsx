@@ -1,25 +1,22 @@
 import React from 'react';
 import { Stack, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
+
 import { AnimatePresence, motion } from 'framer-motion';
+import { Card as CardType } from '../../types';
+import { AppState } from '../../store';
+import { useDeleteCardMutation, useEditCardMutation } from '../../store/api';
+import useAlert from '../../hooks/use-alert';
 
-import { Card as CardType } from '../types';
-import { AppState } from '../store';
-import { useDeleteCardMutation, useEditCardMutation } from '../store/api';
-import useAlert from '../hooks/use-alert';
-
-import EditableText from './shared/editable-text';
-import Card from './shared/card';
-import CardToolbar from './shared/card-toolbar';
-import useModal from '../hooks/use-modal';
+import EditableText from '../shared/editable-text';
+import Card from '../shared/card';
+import CardToolbar from '../shared/card-toolbar';
+import useModal from '../../hooks/use-modal';
 
 interface WordCardProps {
   currentCard: CardType;
   currentCardNumber: number;
   setCurrentCardNumber: React.Dispatch<React.SetStateAction<number>>;
-  language: string;
-  transitionInitialValue: string;
-  transitionExitValue: string;
 }
 
 function ReadonlyText({ text }: { text: string }) {
@@ -42,31 +39,32 @@ function ReadonlyText({ text }: { text: string }) {
 
 function WordCard({
   currentCard,
-  language,
   currentCardNumber,
   setCurrentCardNumber,
-  transitionInitialValue,
-  transitionExitValue,
 }: WordCardProps) {
   const { showAlert } = useAlert();
   const { showModal } = useModal();
+
   const [editedRussianWord, setEditedRussianWord] = React.useState(
     currentCard.russian,
   );
   const [editedEnglishWord, setEditedEnglishWord] = React.useState(
     currentCard.english,
   );
+
   const [editingMode, setEditingMode] = React.useState(false);
   const [currentLanguage, setCurrentLanguage] = React.useState('');
+
   const userId = useSelector((state: AppState) => state.users.selectedUser?.id)
     || localStorage.getItem('userId');
+  const preferredLanguage = useSelector((state: AppState) => state.users.preferredLanguage);
+
   const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
   const [editCard, { data: editResult }] = useEditCardMutation();
-  const { cardId } = currentCard;
 
   React.useEffect(() => {
-    setCurrentLanguage(language);
-  }, [language, currentCardNumber]);
+    setCurrentLanguage(preferredLanguage);
+  }, [preferredLanguage, currentCardNumber]);
 
   const handleModeChange = () => {
     setEditingMode(!editingMode);
@@ -104,7 +102,7 @@ function WordCard({
   }, [deleteResult]);
 
   const deleteCardFunction = () => {
-    deleteCard({ userId, cardId }).unwrap();
+    deleteCard({ userId, cardId: currentCard.cardId }).unwrap();
   };
 
   const handleCardDelete = () => {
@@ -116,7 +114,7 @@ function WordCard({
 
   const handleCardEdit = () => {
     editCard({
-      userId, editedEnglishWord, editedRussianWord, cardId,
+      userId, editedEnglishWord, editedRussianWord, cardId: currentCard.cardId,
     }).unwrap();
     handleModeChange();
   };
@@ -135,47 +133,35 @@ function WordCard({
   ];
 
   return (
-    <AnimatePresence>
-      <div style={{ overflow: 'hidden' }}>
-        <motion.div
-          key={currentCard.cardId}
-          initial={{ x: transitionInitialValue, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: transitionExitValue, opacity: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Card size="large">
-            <Stack
-              flex={10}
-              onClick={() => setCurrentLanguage(
-                currentLanguage === 'russian' ? 'english' : 'russian',
-              )}
-              justifyContent="center"
-            >
-              {editingMode ? (
-                editableObjects.map((object) => (
-                  <EditableText
-                    key={object.id}
-                    value={object.value}
-                    setNewValue={object.setNewValue}
-                  />
-                ))
-              ) : (
-                <ReadonlyText
-                  text={currentCard[currentLanguage as keyof CardType]}
-                />
-              )}
-            </Stack>
-            <CardToolbar
-              handleCardDelete={() => handleCardDelete()}
-              handleModeChange={handleModeChange}
-              handleCardEdit={handleCardEdit}
-              editingMode={editingMode}
+    <Card size="large">
+      <Stack
+        flex={10}
+        onClick={() => setCurrentLanguage(
+          currentLanguage === 'russian' ? 'english' : 'russian',
+        )}
+        justifyContent="center"
+      >
+        {editingMode ? (
+          editableObjects.map((object) => (
+            <EditableText
+              key={object.id}
+              value={object.value}
+              setNewValue={object.setNewValue}
             />
-          </Card>
-        </motion.div>
-      </div>
-    </AnimatePresence>
+          ))
+        ) : (
+          <ReadonlyText
+            text={currentCard[currentLanguage as keyof CardType]}
+          />
+        )}
+      </Stack>
+      <CardToolbar
+        handleCardDelete={() => handleCardDelete()}
+        handleModeChange={handleModeChange}
+        handleCardEdit={handleCardEdit}
+        editingMode={editingMode}
+      />
+    </Card>
   );
 }
 
