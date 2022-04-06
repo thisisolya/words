@@ -1,20 +1,24 @@
 import React from 'react';
 import { Stack, Typography, Switch } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { setPreferredLanguage } from '../../store/slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPreferredLanguage } from '../../store/slices/card-slice';
+import { AppState } from '../../store';
 
-function LanguagesSwitcher({
-  languages,
-}: {
-  languages: string[];
-}) {
+function LanguagesSwitcher() {
   const dispatch = useDispatch();
-  const [currentLanguage, setCurrentLanguage] = React.useState(languages[0]);
+  const { preferredLanguage } = useSelector((state: AppState) => state.card);
+  const languages = useSelector((state: AppState) => state.card.currentCard?.languages);
+
+  const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);
 
   const toggleLanguage = () => {
-    setCurrentLanguage(currentLanguage === languages[0] ? languages[1] : languages[0]);
-    dispatch(setPreferredLanguage(currentLanguage));
+    if (languages) {
+      setCurrentLanguage(currentLanguage === languages[0] ? languages[1] : languages[0]);
+      dispatch(setPreferredLanguage(currentLanguage));
+    }
   };
+
+  if (!languages) return null;
 
   return (
     <Stack direction="row" justifyContent="center" alignItems="center" mb={1}>

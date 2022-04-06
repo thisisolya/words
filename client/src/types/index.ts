@@ -1,8 +1,22 @@
 export interface Card {
   cardId: string,
   userId: string,
-  english: string,
-  russian: string,
+  firstWord:string,
+  secondWord: string,
+}
+
+export interface CurrentCard {
+  languages: string[],
+  firstWord: string,
+  secondWord: string;
+}
+
+export interface NewCard {
+  firstLanguage: string,
+  secondLanguage: string,
+  firstWord:string,
+  secondWord: string,
+
 }
 export interface User {
   firstName: string;

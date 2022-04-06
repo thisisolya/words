@@ -36,6 +36,23 @@ const theme = createTheme({
         },
       ],
     },
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: '10%',
+        },
+      },
+    },
+    MuiFormGroup: {
+      styleOverrides: {
+        root: {
+          flexDirection: 'row',
+          wrap: 'wrap',
+        },
+      },
+    },
     MuiInput: {
       styleOverrides: {
         root: {
@@ -59,6 +76,14 @@ const theme = createTheme({
       styleOverrides: {
         notchedOutline: {
           border: `0.5px solid ${palette.primary.dark}`,
+        },
+      },
+    },
+    MuiRadio: {
+      styleOverrides: {
+        root: {
+          color: palette.primary.main,
+          padding: '5px',
         },
       },
     },

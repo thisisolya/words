@@ -62,15 +62,12 @@ client.connect((error, client) => {
     });
   });
 
-  app.post("/cards/edit", (request, result) => {
-    const cardId = new ObjectId(request.body.cardId);
-    const userId = new ObjectId(request.body.userId);
-    const { editedRussianWord, editedEnglishWord } = request.body;
+  app.post("/cards/edit", (request, result) => { 
+    const { cardId, userId, ...editedWords} = request.body;
     editCardById({
-      userId,
-      cardId,
-      russian: editedRussianWord,
-      english: editedEnglishWord,
+      userId:new ObjectId(request.body.userId),
+      cardId:new ObjectId(request.body.cardId),
+      editedWords,
       collection: cardsCollection,
       result,
     });

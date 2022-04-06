@@ -3,7 +3,6 @@ import { Stack, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom';
-
 import useCardsList from '../hooks/use-cards-list';
 
 import ButtonContained from '../components/shared/button-contained';
@@ -11,7 +10,7 @@ import CardContainer from '../components/card/container';
 import Container from '../components/shared/container';
 import IconButton from '../components/shared/icon-button';
 import LanguagesSwitcher from '../components/card/language-switcher';
-import WordCard from '../components/card/word-card';
+import CardWords from '../components/card/card-words';
 
 function EmptyCardList() {
   const navigate = useNavigate();
@@ -31,11 +30,17 @@ function EmptyCardList() {
 }
 
 function CardsList() {
-  const navigate = useNavigate();
   const cards = useCardsList();
+  const navigate = useNavigate();
 
   const [currentCardNumber, setCurrentCardNumber] = React.useState(0);
   const [paginateForwards, setPaginateForwards] = React.useState(true);
+
+  React.useEffect(() => {
+    if (currentCardNumber > 0) {
+      setCurrentCardNumber(currentCardNumber - 1);
+    }
+  }, [cards?.length]);
 
   const handlePagination = (direction: number) => {
     setCurrentCardNumber(currentCardNumber + direction);
@@ -48,7 +53,7 @@ function CardsList() {
 
   return (
     <Container>
-      <LanguagesSwitcher languages={Object.keys(cards[currentCardNumber])} />
+      <LanguagesSwitcher />
       <Stack direction="row" alignItems="center" spacing={1}>
         <IconButton
           disabled={currentCardNumber === 0}
@@ -59,10 +64,9 @@ function CardsList() {
           paginateForwards={paginateForwards}
           cardId={currentCardNumber}
         >
-          <WordCard
+          <CardWords
             currentCard={cards[currentCardNumber]}
             currentCardNumber={currentCardNumber}
-            setCurrentCardNumber={setCurrentCardNumber}
           />
         </CardContainer>
         <IconButton

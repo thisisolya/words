@@ -44,16 +44,14 @@ const editCardById = ({
   collection,
   userId,
   cardId,
-  english,
-  russian,
+  editedWords,
   result,
 }) => {
   collection.updateOne(
     { _id: cardId, user_id: userId },
     {
       $set: {
-        english,
-        russian,
+        ...editedWords
       },
     },
     (error, response) => {

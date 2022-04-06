@@ -1,14 +1,14 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useGetAllUsersQuery } from '../store/api';
-import { setAllUsers } from '../store/slice';
 import { AppState } from '../store';
+import { useGetAllUsersQuery } from '../store/api';
+import { setAllUsers } from '../store/slices/user-slice';
 import { UserModelFromServer } from '../types';
 
 const useUsersList = () => {
   const dispatch = useDispatch();
   const { data } = useGetAllUsersQuery('/');
-  const { allUsers } = useSelector((state: AppState) => state.users);
+  const { allUsers } = useSelector((state: AppState) => state.user);
 
   React.useEffect(() => {
     if (data) {
