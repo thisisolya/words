@@ -6,9 +6,12 @@ export interface Card {
 }
 
 export interface CurrentCard {
-  languages: string[],
+  firstLanguage: string,
+  secondLanguage: string,
   firstWord: string,
-  secondWord: string;
+  secondWord: string,
+  cardId: string,
+  userId: string,
 }
 
 export interface NewCard {
@@ -16,7 +19,6 @@ export interface NewCard {
   secondLanguage: string,
   firstWord:string,
   secondWord: string,
-
 }
 export interface User {
   firstName: string;

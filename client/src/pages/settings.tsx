@@ -20,7 +20,7 @@ function Settings() {
   const { showAlert } = useAlert();
   const { showModal } = useModal();
   const { logout } = useLogout();
-  const { selectedUser } = useSelector((state: AppState) => state.users);
+  const { selectedUser } = useSelector((state: AppState) => state.user);
 
   const [editingMode, setEdidingMode] = React.useState(false);
   const [editedFirstName, setEdiditedFirstName] = React.useState(
@@ -29,7 +29,7 @@ function Settings() {
   const [editedLastName, setEdiditedLastName] = React.useState(
     selectedUser?.lastName || '',
   );
-  const userId = useSelector((state: AppState) => state.users.selectedUser?.id)
+  const userId = useSelector((state: AppState) => state.user.selectedUser?.id)
     || localStorage.getItem('userId');
 
   const [editUserInfo, { data: editResult }] = useEditUserInfoMutation();

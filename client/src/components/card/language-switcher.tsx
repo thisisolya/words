@@ -1,38 +1,30 @@
 import React from 'react';
 import { Stack, Typography, Switch } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPreferredLanguage } from '../../store/slices/card-slice';
+import _ from 'lodash';
 import { AppState } from '../../store';
+import { setPreferredLanguage } from '../../store/slices/card-slice';
 
 function LanguagesSwitcher() {
   const dispatch = useDispatch();
   const { preferredLanguage } = useSelector((state: AppState) => state.card);
-  const languages = useSelector((state: AppState) => state.card.currentCard?.languages);
-
+  const { firstLanguage, secondLanguage } = useSelector((state: AppState) => (
+    state.card.currentCard));
   const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);
 
-  const toggleLanguage = () => {
-    if (languages) {
-      setCurrentLanguage(currentLanguage === languages[0] ? languages[1] : languages[0]);
-      dispatch(setPreferredLanguage(currentLanguage));
-    }
-  };
+  const textFisrtLanguage = `${_.upperFirst(firstLanguage)} first`;
+  const textSecondLanguage = `${_.upperFirst(secondLanguage)} first`;
 
-  if (!languages) return null;
+  const toggleLanguage = () => {
+    setCurrentLanguage(currentLanguage === firstLanguage ? secondLanguage : firstLanguage);
+    dispatch(setPreferredLanguage(currentLanguage));
+  };
 
   return (
     <Stack direction="row" justifyContent="center" alignItems="center" mb={1}>
-      <Typography fontSize="12px">
-        {languages[0]}
-        {' '}
-        first
-      </Typography>
+      <Typography fontSize="12px">{textFisrtLanguage}</Typography>
       <Switch size="small" color="primary" onChange={toggleLanguage} />
-      <Typography fontSize="12px">
-        {languages[1]}
-        {' '}
-        first
-      </Typography>
+      <Typography fontSize="12px">{textSecondLanguage}</Typography>
     </Stack>
   );
 }

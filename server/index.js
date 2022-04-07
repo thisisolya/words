@@ -50,13 +50,11 @@ client.connect((error, client) => {
     getCardsByUserId({ userId, collection: cardsCollection, result });
   });
 
-  app.post("/cards/create", (request, result) => {
-    const userId = new ObjectId(request.body.userId);
-    const { russianWord, englishWord } = request.body;
+  app.post("/cards/create", (request, result) => { 
+    const { userId, ...words } = request.body;
     createNewCard({
-      userId,
-      russian: russianWord,
-      english: englishWord,
+      userId: new ObjectId(userId),
+      words,
       collection: cardsCollection,
       result,
     });

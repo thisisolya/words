@@ -1,19 +1,47 @@
 import React from 'react';
-import {
-  FormControl, FormControlLabel, RadioGroup, Radio, Typography,
-} from '@mui/material';
-import styled from '@emotion/styled';
+import { Stack, Chip, Typography } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
+import { AppState } from '../../store';
+import { NewCard } from '../../types';
+import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
 
-function LanguageSelector({ changeHandler }: { changeHandler: () => void }) {
+interface LanguagesSelectorProps {
+  languageNumber: string,
+  specificLanguage?: Record<string, string>[],
+  actionType: any,
+}
+
+function LanguageSelector({ languageNumber, specificLanguage, actionType }:LanguagesSelectorProps) {
+  const dispatch = useDispatch();
+  const { newCard } = useSelector((state: AppState) => state.card);
+
+  const languages = specificLanguage || allLanguages;
+  const languageKey = `${languageNumber}Language`;
+  const notToBeEqualToLanguage = languageKey === 'firstLanguage' ? 'secondLanguage' : 'firstLanguage';
+
+  const handleClick = (language: string) => dispatch(actionType({ [languageKey]: language }));
+
   return (
-    <FormControl>
-      <Typography fontWeight={600}>Language</Typography>
-      <RadioGroup onChange={changeHandler}>
-        <FormControlLabel value="russian" control={<Radio />} label="russian" />
-        <FormControlLabel value="english" control={<Radio />} label="english" />
-        <FormControlLabel value="german" control={<Radio />} label="german" disabled />
-      </RadioGroup>
-    </FormControl>
+    <Stack direction="row" spacing={2} alignItems="center">
+      <Typography>
+        {_.upperFirst(languageNumber)}
+        {' '}
+        language
+      </Typography>
+      <Stack direction="row" flex={1} gap={2}>
+        {languages.map((language: Record<string, string>) => (
+          <Chip
+            key={React.useId()}
+            label={language.short}
+            variant={newCard[languageKey as keyof NewCard] === language.full ? 'filled' : 'outlined'}
+            clickable
+            onClick={() => handleClick(language.full)}
+            disabled={language.full === newCard[notToBeEqualToLanguage]}
+          />
+        ))}
+      </Stack>
+    </Stack>
   );
 }
 

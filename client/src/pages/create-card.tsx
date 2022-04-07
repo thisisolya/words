@@ -1,34 +1,29 @@
 import React from 'react';
-import {
-  FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, Typography,
-} from '@mui/material';
+import { Divider, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { useCreateNewCardMutation } from '../store/api';
-import useAlert from '../hooks/use-alert';
 
-import ButtonContained from '../components/shared/button-contained';
+import useAlert from '../hooks/use-alert';
+import { AppState } from '../store';
+import { useCreateNewCardMutation } from '../store/api';
+import { clearNewCard, setNewCard } from '../store/slices/card-slice';
+import { NewCard } from '../types';
+
+import LanguageSelector from '../components/card/language-selector';
 import Container from '../components/shared/container';
 import Card from '../components/shared/card';
 import Autocomplete from '../components/autocomplete';
-import { AppState } from '../store';
-import { NewCard } from '../types';
-import { setNewCard } from '../store/slices/card-slice';
-import LanguageSelector from '../components/card/language-selector';
+
+import ButtonContained from '../components/shared/button-contained';
 
 function CreateCard() {
   const { showAlert } = useAlert();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const firstWord = useSelector((state: AppState) => state.card.newCard?.firstWord);
-  const firstLanguage = useSelector((state: AppState) => state.card.newCard?.firstLanguage);
-  const secondWord = useSelector((state: AppState) => state.card.newCard?.secondWord);
-  const secondLanguage = useSelector((state: AppState) => state.card.newCard?.secondLanguage);
-
+  const {
+    firstLanguage, secondLanguage, firstWord, secondWord,
+  } = useSelector((state: AppState) => state.card.newCard);
   const [createCard, { data: creationResult }] = useCreateNewCardMutation();
-
   const userId = localStorage.getItem('userId');
 
   React.useEffect(() => {
@@ -38,6 +33,7 @@ function CreateCard() {
           text: 'Word was sucessfullly created!',
           severity: 'success',
         });
+        dispatch(clearNewCard());
       } else {
         showAlert({ text: 'Something went wrong:(', severity: 'error' });
       }
@@ -55,16 +51,18 @@ function CreateCard() {
   return (
     <Container>
       <Card size="medium">
-        <Typography variant="body1" textAlign="center">
-          Please type a word and its equivalent in English and hit &ldquo;submit&rdquo;
-        </Typography>
-        <LanguageSelector changeHandler={() => console.log('lala')} />
-
-        <Autocomplete language="russian" />
-        <Autocomplete language="english" />
+        <Stack gap={1.5} my={3}>
+          <LanguageSelector languageNumber="first" actionType={setNewCard} />
+          <Autocomplete language={firstLanguage} languageNumber="first" actionType={setNewCard} disabled={!firstLanguage} />
+        </Stack>
+        <Divider variant="fullWidth" />
+        <Stack gap={1.5} my={3}>
+          <LanguageSelector languageNumber="second" actionType={setNewCard} />
+          <Autocomplete language={secondLanguage} languageNumber="second" actionType={setNewCard} disabled={!secondLanguage} />
+        </Stack>
         <ButtonContained
           clickHandler={handleCreateCard}
-          disabled={!secondLanguage || !firstLanguage}
+          disabled={!secondWord || !firstWord}
           text="Submit"
         />
       </Card>
@@ -74,6 +72,3 @@ function CreateCard() {
 }
 
 export default CreateCard;
-
-// onChange={(e) => setRussianWord(e.target.value)}
-// eslint-disable-next-line react/jsx-props-no-spreading

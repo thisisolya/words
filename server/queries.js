@@ -25,9 +25,9 @@ const createNewUser = ({ collection, firstName, lastName, result }) => {
   );
 };
 
-const createNewCard = ({ collection, russian, english, userId, result }) => {
+const createNewCard = ({ collection, words, userId, result }) => {
   collection.insertOne(
-    { russian, english, user_id: userId },
+    { ...words, user_id: userId },
     (error, response) => {
       error ? result.send("Cannot create card") : result.send(response);
     }

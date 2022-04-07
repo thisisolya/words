@@ -16,9 +16,10 @@
             "jsx": true
         },
         "ecmaVersion": "latest",
-        "sourceType": "module",
-        "eslint.workingDirectories": [ "./client", "./server" ],
-        "project":  "client/tsconfig.json" 
+        "sourceType": "module", 
+        "project": "tsconfig.json",
+        "tsconfigRootDir": "client",
+        "experimentalObjectRestSpread": true
     },
     "plugins": [
         "react",

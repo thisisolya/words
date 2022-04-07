@@ -12,7 +12,7 @@ import EditableText from '../shared/editable-text';
 import Card from '../shared/card';
 import CardToolbar from '../shared/card-toolbar';
 import useModal from '../../hooks/use-modal';
-import { setCurrentCard } from '../../store/slices/card-slice';
+import { setCurrentCard, setPreferredLanguage } from '../../store/slices/card-slice';
 
 interface WordCardProps {
   currentCard: CardType;
@@ -59,10 +59,21 @@ function CardWords({
 
   React.useEffect(() => {
     dispatch(
+      setPreferredLanguage(
+        Object.keys(words)[0],
+      ),
+    );
+  }, []);
+
+  React.useEffect(() => {
+    dispatch(
       setCurrentCard({
-        languages: Object.keys(words),
+        firstLanguage: Object.keys(words)[0],
         firstWord: Object.values(words)[0],
+        secondLanguage: Object.keys(words)[1],
         secondWord: Object.values(words)[1],
+        userId,
+        cardId,
       }),
     );
   }, [currentCard]);

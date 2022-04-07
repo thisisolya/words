@@ -36,20 +36,27 @@ const theme = createTheme({
         },
       ],
     },
-    MuiFormControl: {
+    MuiChip: {
       styleOverrides: {
         root: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: '10%',
+          borderColor: palette.primary.main,
+          color: palette.primary.contrastText,
+          fontSize: '12px',
+          height: '25px',
+          '& .MuiChip-label': {
+            padding: '5px',
+          },
+        },
+        filled: {
+          backgroundColor: palette.primary.dark,
+          color: palette.primary.light,
         },
       },
     },
-    MuiFormGroup: {
+    MuiDivider: {
       styleOverrides: {
         root: {
-          flexDirection: 'row',
-          wrap: 'wrap',
+          borderColor: palette.primary.main,
         },
       },
     },
@@ -76,14 +83,6 @@ const theme = createTheme({
       styleOverrides: {
         notchedOutline: {
           border: `0.5px solid ${palette.primary.dark}`,
-        },
-      },
-    },
-    MuiRadio: {
-      styleOverrides: {
-        root: {
-          color: palette.primary.main,
-          padding: '5px',
         },
       },
     },
