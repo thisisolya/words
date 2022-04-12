@@ -7,6 +7,7 @@ export interface CardSlice {
   newCard: NewCard,
   editedCard: CurrentCard,
   preferredLanguage: string,
+  selectedLanguages: string[],
 }
 
 const initialState: CardSlice = {
@@ -33,6 +34,7 @@ const initialState: CardSlice = {
     secondWord: '',
   },
   preferredLanguage: '',
+  selectedLanguages: [],
 };
 
 const cardSlice = createSlice({
@@ -49,19 +51,32 @@ const cardSlice = createSlice({
       state.newCard = initialState.newCard;
     },
     setEditedCard: (state, action) => {
-      state.newCard = { ...state.newCard, ...action.payload };
+      state.editedCard = { ...state.editedCard, ...action.payload };
     },
     setPreferredLanguage: (state, action) => {
       state.preferredLanguage = action.payload;
+    },
+    setCardLanguages: (state, action) => {
+      state.selectedLanguages = action.payload;
     },
   },
 });
 
 const {
-  setPreferredLanguage, setCurrentCard, setNewCard, clearNewCard,
+  setPreferredLanguage,
+  setCurrentCard,
+  setNewCard,
+  clearNewCard,
+  setEditedCard,
+  setCardLanguages,
 } = cardSlice.actions;
 export {
-  setPreferredLanguage, setCurrentCard, setNewCard, clearNewCard,
+  setPreferredLanguage,
+  setCurrentCard,
+  setNewCard,
+  clearNewCard,
+  setEditedCard,
+  setCardLanguages,
 };
 
 export default cardSlice;

@@ -9,12 +9,11 @@ import { useCreateNewCardMutation } from '../store/api';
 import { clearNewCard, setNewCard } from '../store/slices/card-slice';
 import { NewCard } from '../types';
 
-import LanguageSelector from '../components/card/language-selector';
-import Container from '../components/shared/container';
-import Card from '../components/shared/card';
 import Autocomplete from '../components/autocomplete';
-
 import ButtonContained from '../components/shared/button-contained';
+import Card from '../components/shared/card';
+import Container from '../components/shared/container';
+import LanguageSelector from '../components/card/language-selector';
 
 function CreateCard() {
   const { showAlert } = useAlert();
@@ -66,7 +65,7 @@ function CreateCard() {
           text="Submit"
         />
       </Card>
-      <ButtonContained text="Start practicing!" clickHandler={() => navigate(`/cards/${userId}`)} />
+      <ButtonContained text="Back to menu" clickHandler={() => navigate('/')} />
     </Container>
   );
 }

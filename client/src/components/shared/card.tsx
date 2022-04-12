@@ -20,8 +20,7 @@ const CustomCard = styled(Stack)<CustomCardProps>`
   min-width: ${(props) => (props.size === 'large' ? '200px' : '280px')};
   min-width: ${(props) => (props.size === 'small' && '100px')};
   gap: ${(props) => (props.size !== 'small' ? '15px' : undefined)};
-  padding: ${(props) => (props.size === 'large' && '5px 10px')};
-  padding: ${(props) => (props.size === 'medium' && '25px')};
+  padding: ${(props) => (props.size !== 'medium' ? '5px 10px' : '25px')}; 
   margin: ${(props) => (props.size !== 'small' && '10px')};
 `;
 function Card({ children, size }: CardProps) {

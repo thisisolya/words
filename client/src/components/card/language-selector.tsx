@@ -1,22 +1,24 @@
 import React from 'react';
 import { Stack, Chip, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
+
 import _ from 'lodash';
+import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
+
 import { AppState } from '../../store';
 import { NewCard } from '../../types';
-import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
 
 interface LanguagesSelectorProps {
   languageNumber: string,
-  specificLanguage?: Record<string, string>[],
-  actionType: any,
+  specificLanguage?: Record<string, string>,
+  actionType: ActionCreatorWithPayload<Record<string, string>, string>,
 }
 
 function LanguageSelector({ languageNumber, specificLanguage, actionType }:LanguagesSelectorProps) {
   const dispatch = useDispatch();
   const { newCard } = useSelector((state: AppState) => state.card);
-
-  const languages = specificLanguage || allLanguages;
+  const languages = specificLanguage ? [specificLanguage] : allLanguages;
   const languageKey = `${languageNumber}Language`;
   const notToBeEqualToLanguage = languageKey === 'firstLanguage' ? 'secondLanguage' : 'firstLanguage';
 
@@ -34,7 +36,7 @@ function LanguageSelector({ languageNumber, specificLanguage, actionType }:Langu
           <Chip
             key={React.useId()}
             label={language.short}
-            variant={newCard[languageKey as keyof NewCard] === language.full ? 'filled' : 'outlined'}
+            variant={newCard[languageKey as keyof NewCard] === language.full || specificLanguage ? 'filled' : 'outlined'}
             clickable
             onClick={() => handleClick(language.full)}
             disabled={language.full === newCard[notToBeEqualToLanguage]}

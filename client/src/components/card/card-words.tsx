@@ -8,11 +8,14 @@ import { AppState } from '../../store';
 import { useDeleteCardMutation, useEditCardMutation } from '../../store/api';
 import useAlert from '../../hooks/use-alert';
 
-import EditableText from '../shared/editable-text';
+import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
+
 import Card from '../shared/card';
 import CardToolbar from '../shared/card-toolbar';
 import useModal from '../../hooks/use-modal';
-import { setCurrentCard, setPreferredLanguage } from '../../store/slices/card-slice';
+import { setCurrentCard, setEditedCard, setPreferredLanguage } from '../../store/slices/card-slice';
+import Autocomplete from '../autocomplete';
+import LanguageSelector from './language-selector';
 
 interface WordCardProps {
   currentCard: CardType;
@@ -45,17 +48,19 @@ function CardWords({
   const { showAlert } = useAlert();
   const { showModal } = useModal();
 
-  const [editedFirstWord, setEditedFirstWord] = React.useState(
-    currentCard.firstWord,
-  );
-  const [editedSecondWord, setEditedSecondWord] = React.useState(
-    currentCard.secondWord,
-  );
+  const firstWordEdited = useSelector((state: AppState) => state.card.editedCard.firstWord);
+  const secondWordEdited = useSelector((state: AppState) => state.card.editedCard.secondWord);
+
   const [editingMode, setEditingMode] = React.useState(false);
   const preferredLanguage = useSelector((state: AppState) => state.card.preferredLanguage);
   const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);
   const { userId, cardId, ...words } = currentCard;
   const languages = Object.keys(words);
+
+  const firstLanguage = Object.keys(words)[0];
+  const firstWord = Object.values(words)[0];
+  const secondLanguage = Object.keys(words)[1];
+  const secondWord = Object.values(words)[1];
 
   React.useEffect(() => {
     dispatch(
@@ -68,15 +73,19 @@ function CardWords({
   React.useEffect(() => {
     dispatch(
       setCurrentCard({
-        firstLanguage: Object.keys(words)[0],
-        firstWord: Object.values(words)[0],
-        secondLanguage: Object.keys(words)[1],
-        secondWord: Object.values(words)[1],
+        firstLanguage,
+        firstWord,
+        secondLanguage,
+        secondWord,
         userId,
         cardId,
       }),
     );
   }, [currentCard]);
+
+  React.useEffect(() => {
+    setCurrentLanguage(preferredLanguage);
+  }, [preferredLanguage]);
 
   const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
   const [editCard, { data: editResult }] = useEditCardMutation();
@@ -84,12 +93,6 @@ function CardWords({
   React.useEffect(() => {
     setCurrentLanguage(preferredLanguage);
   }, [preferredLanguage, currentCardNumber]);
-
-  const handleModeChange = () => {
-    setEditingMode(!editingMode);
-    setEditedFirstWord(currentCard.firstWord);
-    setEditedSecondWord(currentCard.secondWord);
-  };
 
   React.useEffect(() => {
     if (editResult) {
@@ -131,25 +134,12 @@ function CardWords({
   const handleCardEdit = () => {
     editCard({
       userId,
-      [languages[0]]: editedFirstWord,
-      [languages[1]]: editedSecondWord,
+      [languages[0]]: firstWordEdited,
+      [languages[1]]: secondWordEdited,
       cardId,
     }).unwrap();
-    handleModeChange();
+    setEditingMode(!editingMode);
   };
-
-  const editableObjects = [
-    {
-      id: React.useId(),
-      setNewValue: setEditedFirstWord,
-      value: editedFirstWord,
-    },
-    {
-      id: React.useId(),
-      setNewValue: setEditedSecondWord,
-      value: editedSecondWord,
-    },
-  ];
 
   return (
     <Card size="large">
@@ -161,13 +151,34 @@ function CardWords({
         justifyContent="center"
       >
         {editingMode ? (
-          editableObjects.map((object) => (
-            <EditableText
-              key={object.id}
-              value={object.value}
-              setNewValue={object.setNewValue}
+          <Stack spacing={3} m={3}>
+            <LanguageSelector
+              languageNumber="first"
+              specificLanguage={allLanguages.find((obj) => obj.full === firstLanguage)}
+              actionType={setEditedCard}
             />
-          ))
+            <Autocomplete
+              languageNumber="first"
+              language={firstLanguage}
+              actionType={setEditedCard}
+              disabled={false}
+              value={firstWord}
+              variant="standard"
+            />
+            <LanguageSelector
+              languageNumber="first"
+              specificLanguage={allLanguages.find((obj) => obj.full === secondLanguage)}
+              actionType={setEditedCard}
+            />
+            <Autocomplete
+              languageNumber="second"
+              language={secondLanguage}
+              actionType={setEditedCard}
+              disabled={false}
+              value={secondWord}
+              variant="standard"
+            />
+          </Stack>
         ) : (
           <ReadonlyText
             text={currentCard[currentLanguage as keyof CardType]}
@@ -176,7 +187,7 @@ function CardWords({
       </Stack>
       <CardToolbar
         handleCardDelete={() => handleCardDelete()}
-        handleModeChange={handleModeChange}
+        handleModeChange={() => setEditingMode(!editingMode)}
         handleCardEdit={handleCardEdit}
         editingMode={editingMode}
       />

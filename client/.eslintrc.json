@@ -17,8 +17,7 @@
         },
         "ecmaVersion": "latest",
         "sourceType": "module", 
-        "project": "tsconfig.json",
-        "tsconfigRootDir": "client",
+        "project": "tsconfig.json", 
         "experimentalObjectRestSpread": true
     },
     "plugins": [

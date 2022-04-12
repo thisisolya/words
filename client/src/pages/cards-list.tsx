@@ -3,7 +3,11 @@ import { Stack, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import _ from 'lodash';
+
 import useCardsList from '../hooks/use-cards-list';
+import { AppState } from '../store';
 
 import ButtonContained from '../components/shared/button-contained';
 import CardContainer from '../components/card/container';
@@ -11,6 +15,7 @@ import Container from '../components/shared/container';
 import IconButton from '../components/shared/icon-button';
 import LanguagesSwitcher from '../components/card/language-switcher';
 import CardWords from '../components/card/card-words';
+import { Card } from '../types';
 
 function EmptyCardList() {
   const navigate = useNavigate();
@@ -30,11 +35,27 @@ function EmptyCardList() {
 }
 
 function CardsList() {
-  const cards = useCardsList();
+  const cardsList = useCardsList();
   const navigate = useNavigate();
 
   const [currentCardNumber, setCurrentCardNumber] = React.useState(0);
   const [paginateForwards, setPaginateForwards] = React.useState(true);
+  const [cards, setCards] = React.useState<Card[]>([]);
+  const selectedLanguages = useSelector((state: AppState) => state.card.selectedLanguages);
+
+  React.useEffect(() => {
+    if (selectedLanguages.length === 0) {
+      navigate('/');
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const selectedCards: Card[] = [];
+    cardsList?.map((card) => (
+      Object.keys(_.pick(card, [selectedLanguages[0], selectedLanguages[1]])).length === 2
+      && selectedCards.push(card)));
+    setCards(selectedCards);
+  }, [cardsList]);
 
   React.useEffect(() => {
     if (currentCardNumber > 0) {
