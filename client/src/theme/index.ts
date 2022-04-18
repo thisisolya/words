@@ -12,7 +12,16 @@ const theme = createTheme({
           color: 'white',
           flexDirection: 'row',
           justifyContent: 'space-between',
-          padding: '10px 15px',
+          padding: '15px',
+          '& .MuiSvgIcon-root': {
+            fontSize: '25px',
+            transition: '1s',
+            '&: hover': {
+              color: palette.primary.light,
+              transform: 'scale(1.2)',
+              transition: '0.5s',
+            },
+          },
         },
 
       },
@@ -25,6 +34,8 @@ const theme = createTheme({
             backgroundColor: palette.primary.dark,
             color: 'white',
             textTransform: 'none',
+            padding: '5px 10px',
+            boxShadow: `3px 3px 1px 0.1px ${palette.primary.light}`,
           },
         },
         {
@@ -50,6 +61,19 @@ const theme = createTheme({
         filled: {
           backgroundColor: palette.primary.dark,
           color: palette.primary.light,
+        },
+      },
+    },
+    MuiCircularProgress: {
+      styleOverrides: {
+        root: {
+          marginTop: '30%',
+          color: palette.primary.dark,
+
+        },
+        svg: {
+          width: '60px',
+          height: '60px',
         },
       },
     },

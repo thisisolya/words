@@ -24,7 +24,7 @@ export interface User {
   firstName: string;
   lastName: string;
   id: string;
-  cards: Card[];
+  cards?: Card[];
 }
 export interface CardModelFromServer {
   _id: string,

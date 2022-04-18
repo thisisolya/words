@@ -21,7 +21,13 @@ const CustomCard = styled(Stack)<CustomCardProps>`
   min-width: ${(props) => (props.size === 'small' && '100px')};
   gap: ${(props) => (props.size !== 'small' ? '15px' : undefined)};
   padding: ${(props) => (props.size !== 'medium' ? '5px 10px' : '25px')}; 
+  transition: 1s;
   margin: ${(props) => (props.size !== 'small' && '10px')};
+  &:hover {
+    transform: ${(props) => (props.size === 'small' && 'scale(1.05)')};
+    transition: 0.5s;
+    
+  }
 `;
 function Card({ children, size }: CardProps) {
   return <CustomCard size={size}>{children}</CustomCard>;

@@ -1,8 +1,13 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { CurrentCard, NewCard } from '../../types';
+import {
+  Card, CardModelFromServer, CurrentCard, NewCard,
+} from '../../types';
+import { appAPI } from '../api';
 
 export interface CardSlice {
+  allCards?: Card[],
+  selectedCards?: Card[],
   currentCard: CurrentCard,
   newCard: NewCard,
   editedCard: CurrentCard,
@@ -11,6 +16,8 @@ export interface CardSlice {
 }
 
 const initialState: CardSlice = {
+  allCards: undefined,
+  selectedCards: undefined,
   currentCard: {
     firstLanguage: '',
     secondLanguage: '',
@@ -41,6 +48,9 @@ const cardSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
+    setSelectedCards: (state, action) => {
+      state.selectedCards = action.payload;
+    },
     setCurrentCard: (state, action) => {
       state.currentCard = action.payload;
     },
@@ -56,9 +66,25 @@ const cardSlice = createSlice({
     setPreferredLanguage: (state, action) => {
       state.preferredLanguage = action.payload;
     },
-    setCardLanguages: (state, action) => {
+    setSelectedLanguages: (state, action) => {
       state.selectedLanguages = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      appAPI.endpoints.getAllCards.matchFulfilled,
+      (state, { payload }) => {
+        state.allCards = payload.map((card: CardModelFromServer) => {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          const { user_id, _id, ...words } = card;
+          return ({
+            ...words,
+            userId: card.user_id,
+            cardId: card._id,
+          });
+        });
+      },
+    );
   },
 });
 
@@ -68,7 +94,7 @@ const {
   setNewCard,
   clearNewCard,
   setEditedCard,
-  setCardLanguages,
+  setSelectedLanguages, setSelectedCards,
 } = cardSlice.actions;
 export {
   setPreferredLanguage,
@@ -76,7 +102,7 @@ export {
   setNewCard,
   clearNewCard,
   setEditedCard,
-  setCardLanguages,
+  setSelectedLanguages, setSelectedCards,
 };
 
 export default cardSlice;

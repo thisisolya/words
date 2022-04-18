@@ -1,111 +1,47 @@
 import React from 'react';
-import { Typography, Grid } from '@mui/material';
+import { Typography, Grid, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import _ from 'lodash';
+import { useSelector } from 'react-redux';
 
-import { setPreferredLanguage, setCardLanguages } from '../store/slices/card-slice';
-import useUserInfo from '../hooks/use-user-info';
-import useCardsList from '../hooks/use-cards-list';
-import { Card as CardType } from '../types';
+import { useGetAllCardsQuery, useGetUserInfoQuery } from '../store/api';
+import { selectedUserInfo } from '../store/selectors/user';
 
 import ButtonContained from '../components/shared/button-contained';
 import Container from '../components/shared/container';
-import Card from '../components/shared/card';
-
-interface LanguageOptionsProps {
-  cardsList: CardType[],
-  clickHandler:({ firstLanguage, secondLanguage }:
-  { firstLanguage: string; secondLanguage: string; }) => void,
-}
-
-function LanguageOptions({ cardsList, clickHandler }: LanguageOptionsProps) {
-  const languageKeys = cardsList?.map((card) => Object.keys(card).filter((key) => (
-    key !== 'userId' && key !== 'cardId')));
-
-  const DeEng = languageKeys?.map((keyPair) => (keyPair[0] === 'german' || keyPair[1] === 'german') && (keyPair[0] === 'english' || keyPair[1] === 'english')).includes(true);
-  const DeRu = languageKeys?.map((keyPair) => (keyPair[0] === 'german' || keyPair[1] === 'german') && (keyPair[0] === 'russian' || keyPair[1] === 'russian')).includes(true);
-  const EngRu = languageKeys?.map((keyPair) => (keyPair[0] === 'english' || keyPair[1] === 'english') && (keyPair[0] === 'russian' || keyPair[1] === 'russian')).includes(true);
-  const options = [
-    {
-      firstLanguage: 'german',
-      secondLanguage: 'english',
-      isPresent: DeEng,
-    },
-    {
-      firstLanguage: 'german',
-      secondLanguage: 'russian',
-      isPresent: DeRu,
-    },
-    {
-      firstLanguage: 'english',
-      secondLanguage: 'russian',
-      isPresent: EngRu,
-    },
-  ];
-  return (
-    <Grid container gap={2} justifyContent="center">
-      {options.map((option) => option.isPresent
-     && (
-     <Card size="small" key={React.useId()}>
-       <div
-         aria-hidden
-         onClick={() => clickHandler({
-           firstLanguage: option.firstLanguage,
-           secondLanguage: option.secondLanguage,
-         })}
-         style={{ cursor: 'pointer' }}
-       >
-         <Typography textAlign="center" fontWeight="bold">
-           Practice
-         </Typography>
-         <Typography>
-           {_.upperFirst(option.firstLanguage)}
-           {' '}
-           &ndash;
-           {' '}
-           {_.upperFirst(option.secondLanguage)}
-         </Typography>
-       </div>
-     </Card>
-     ))}
-    </Grid>
-  );
-}
+import LanguageOptions from '../components/language-options';
 
 function UserMenu() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const selectedUser = useUserInfo();
-  const cardsList = useCardsList();
+  const userId = localStorage.getItem('userId');
+  const selectedUser = useSelector(selectedUserInfo);
 
-  const clickHandler = ({ firstLanguage, secondLanguage }:
-  { firstLanguage: string, secondLanguage: string }) => {
-    navigate(`/cards/${selectedUser?.id}`);
-    dispatch(setPreferredLanguage(firstLanguage));
-    dispatch(setCardLanguages([firstLanguage, secondLanguage]));
-  };
+  const { isLoading } = useGetUserInfoQuery({ userId });
+  const { isError } = useGetAllCardsQuery({ userId: selectedUser?.id });
 
-  if (!cardsList || !selectedUser) return null;
+  React.useEffect(() => {
+    if (!userId) navigate('/');
+  }, []);
+
+  if (isLoading) return <CircularProgress />;
 
   return (
     <Container>
       <Typography variant="h2" textAlign="center">
         Welcome,
         {' '}
-        {selectedUser.firstName}
+        {selectedUser?.firstName}
         !
       </Typography>
       <Typography textAlign="center">What would you like to do?</Typography>
-      <LanguageOptions cardsList={cardsList} clickHandler={clickHandler} />
+      {!isError && <LanguageOptions />}
       <Grid container gap={2} justifyContent="center">
         <ButtonContained
           text="Add card"
-          clickHandler={() => navigate('/cards/create')}
+          clickHandler={() => navigate('cards/create')}
         />
         <ButtonContained
           text="Settings"
-          clickHandler={() => navigate('/user/settings')}
+          clickHandler={() => navigate('settings')}
         />
       </Grid>
     </Container>

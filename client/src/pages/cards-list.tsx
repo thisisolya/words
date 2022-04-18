@@ -1,13 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React from 'react';
 import { Stack, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import _ from 'lodash';
-
-import useCardsList from '../hooks/use-cards-list';
-import { AppState } from '../store';
+import { selectedCardsList } from '../store/selectors/cards';
 
 import ButtonContained from '../components/shared/button-contained';
 import CardContainer from '../components/card/container';
@@ -15,7 +13,6 @@ import Container from '../components/shared/container';
 import IconButton from '../components/shared/icon-button';
 import LanguagesSwitcher from '../components/card/language-switcher';
 import CardWords from '../components/card/card-words';
-import { Card } from '../types';
 
 function EmptyCardList() {
   const navigate = useNavigate();
@@ -35,40 +32,24 @@ function EmptyCardList() {
 }
 
 function CardsList() {
-  const cardsList = useCardsList();
   const navigate = useNavigate();
 
   const [currentCardNumber, setCurrentCardNumber] = React.useState(0);
   const [paginateForwards, setPaginateForwards] = React.useState(true);
-  const [cards, setCards] = React.useState<Card[]>([]);
-  const selectedLanguages = useSelector((state: AppState) => state.card.selectedLanguages);
+  const selectedLanguages = useSelector(selectedCardsList);
 
   React.useEffect(() => {
-    if (selectedLanguages.length === 0) {
+    if (!selectedLanguages) {
       navigate('/');
     }
   }, []);
-
-  React.useEffect(() => {
-    const selectedCards: Card[] = [];
-    cardsList?.map((card) => (
-      Object.keys(_.pick(card, [selectedLanguages[0], selectedLanguages[1]])).length === 2
-      && selectedCards.push(card)));
-    setCards(selectedCards);
-  }, [cardsList]);
-
-  React.useEffect(() => {
-    if (currentCardNumber > 0) {
-      setCurrentCardNumber(currentCardNumber - 1);
-    }
-  }, [cards?.length]);
 
   const handlePagination = (direction: number) => {
     setCurrentCardNumber(currentCardNumber + direction);
     setPaginateForwards(direction === 1);
   };
 
-  if (!cards || cards.length === 0) {
+  if (!selectedLanguages || selectedLanguages.length === 0) {
     return <EmptyCardList />;
   }
 
@@ -86,19 +67,19 @@ function CardsList() {
           cardId={currentCardNumber}
         >
           <CardWords
-            currentCard={cards[currentCardNumber]}
+            currentCard={selectedLanguages[currentCardNumber]}
             currentCardNumber={currentCardNumber}
           />
         </CardContainer>
         <IconButton
-          disabled={currentCardNumber === cards.length - 1}
+          disabled={currentCardNumber === selectedLanguages.length - 1}
           clickHandler={() => handlePagination(1)}
           Icon={ArrowForwardIosIcon}
         />
       </Stack>
       <ButtonContained
         text="Create card"
-        clickHandler={() => navigate('/cards/create')}
+        clickHandler={() => navigate('create')}
       />
     </Container>
   );

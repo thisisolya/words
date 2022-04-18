@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack, Typography } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card as CardType } from '../../types';
@@ -13,7 +13,7 @@ import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
 import Card from '../shared/card';
 import CardToolbar from '../shared/card-toolbar';
 import useModal from '../../hooks/use-modal';
-import { setCurrentCard, setEditedCard, setPreferredLanguage } from '../../store/slices/card-slice';
+import { setEditedCard } from '../../store/slices/card-slice';
 import Autocomplete from '../autocomplete';
 import LanguageSelector from './language-selector';
 
@@ -44,51 +44,31 @@ function CardWords({
   currentCard,
   currentCardNumber,
 }: WordCardProps) {
-  const dispatch = useDispatch();
   const { showAlert } = useAlert();
   const { showModal } = useModal();
 
   const firstWordEdited = useSelector((state: AppState) => state.card.editedCard.firstWord);
   const secondWordEdited = useSelector((state: AppState) => state.card.editedCard.secondWord);
+  const { preferredLanguage, selectedLanguages } = useSelector((state: AppState) => state.card);
 
   const [editingMode, setEditingMode] = React.useState(false);
-  const preferredLanguage = useSelector((state: AppState) => state.card.preferredLanguage);
   const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);
   const { userId, cardId, ...words } = currentCard;
-  const languages = Object.keys(words);
-
-  const firstLanguage = Object.keys(words)[0];
-  const firstWord = Object.values(words)[0];
-  const secondLanguage = Object.keys(words)[1];
-  const secondWord = Object.values(words)[1];
-
-  React.useEffect(() => {
-    dispatch(
-      setPreferredLanguage(
-        Object.keys(words)[0],
-      ),
-    );
-  }, []);
-
-  React.useEffect(() => {
-    dispatch(
-      setCurrentCard({
-        firstLanguage,
-        firstWord,
-        secondLanguage,
-        secondWord,
-        userId,
-        cardId,
-      }),
-    );
-  }, [currentCard]);
 
   React.useEffect(() => {
     setCurrentLanguage(preferredLanguage);
-  }, [preferredLanguage]);
+  }, [preferredLanguage, currentCard]);
 
   const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
   const [editCard, { data: editResult }] = useEditCardMutation();
+
+  const toggleLanguage = () => setCurrentLanguage(
+    currentLanguage === selectedLanguages[0]
+      ? selectedLanguages[1]
+      : selectedLanguages[0],
+  );
+
+  const getWordLanguage = (word: string) => allLanguages.find((obj) => obj.full === word);
 
   React.useEffect(() => {
     setCurrentLanguage(preferredLanguage);
@@ -134,8 +114,8 @@ function CardWords({
   const handleCardEdit = () => {
     editCard({
       userId,
-      [languages[0]]: firstWordEdited,
-      [languages[1]]: secondWordEdited,
+      [selectedLanguages[0]]: firstWordEdited,
+      [selectedLanguages[1]]: secondWordEdited,
       cardId,
     }).unwrap();
     setEditingMode(!editingMode);
@@ -145,37 +125,35 @@ function CardWords({
     <Card size="large">
       <Stack
         flex={10}
-        onClick={() => setCurrentLanguage(
-          currentLanguage === languages[0] ? languages[1] : languages[0],
-        )}
+        onClick={toggleLanguage}
         justifyContent="center"
       >
         {editingMode ? (
           <Stack spacing={3} m={3}>
             <LanguageSelector
               languageNumber="first"
-              specificLanguage={allLanguages.find((obj) => obj.full === firstLanguage)}
+              specificLanguage={getWordLanguage(selectedLanguages[0])}
               actionType={setEditedCard}
             />
             <Autocomplete
               languageNumber="first"
-              language={firstLanguage}
+              language={selectedLanguages[0]}
               actionType={setEditedCard}
               disabled={false}
-              value={firstWord}
+              value={words[selectedLanguages[0] as keyof typeof words]}
               variant="standard"
             />
             <LanguageSelector
-              languageNumber="first"
-              specificLanguage={allLanguages.find((obj) => obj.full === secondLanguage)}
+              languageNumber="second"
+              specificLanguage={getWordLanguage(selectedLanguages[1])}
               actionType={setEditedCard}
             />
             <Autocomplete
               languageNumber="second"
-              language={secondLanguage}
+              language={selectedLanguages[1]}
               actionType={setEditedCard}
               disabled={false}
-              value={secondWord}
+              value={words[selectedLanguages[1] as keyof typeof words]}
               variant="standard"
             />
           </Stack>
