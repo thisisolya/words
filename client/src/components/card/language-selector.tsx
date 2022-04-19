@@ -36,10 +36,10 @@ function LanguageSelector({ languageNumber, specificLanguage, actionType }:Langu
           <Chip
             key={React.useId()}
             label={language.short}
-            variant={newCard[languageKey as keyof NewCard] === language.full || specificLanguage ? 'filled' : 'outlined'}
+            variant={newCard && newCard[languageKey as keyof NewCard] === (language.full || specificLanguage) ? 'filled' : 'outlined'}
             clickable
             onClick={() => handleClick(language.full)}
-            disabled={language.full === newCard[notToBeEqualToLanguage]}
+            disabled={newCard && language.full === newCard[notToBeEqualToLanguage]}
           />
         ))}
       </Stack>

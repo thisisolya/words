@@ -4,16 +4,6 @@ export interface Card {
   firstWord:string,
   secondWord: string,
 }
-
-export interface CurrentCard {
-  firstLanguage: string,
-  secondLanguage: string,
-  firstWord: string,
-  secondWord: string,
-  cardId: string,
-  userId: string,
-}
-
 export interface NewCard {
   firstLanguage: string,
   secondLanguage: string,

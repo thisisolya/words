@@ -6,12 +6,13 @@ import {
   omit, keys, filter, map, includes, reverse,
 } from 'ramda';
 import _ from 'lodash';
+
 import {
   setPreferredLanguage,
   setSelectedCards as saveSelectedCards,
   setSelectedLanguages,
 } from '../store/slices/card-slice';
-import { allCardsList } from '../store/selectors/cards';
+import { allCardsSelector } from '../store/selectors/cards';
 import { Card as CardType } from '../types';
 
 import Card from './shared/card';
@@ -19,7 +20,7 @@ import Card from './shared/card';
 function LanguageOptions() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const cards = useSelector(allCardsList);
+  const cards = useSelector(allCardsSelector);
   const [languagesPairs, setLanguagePairs] = React.useState<string[][]>([]);
   const uniqueLanguagePairs: string[][] = [];
 
@@ -37,7 +38,7 @@ function LanguageOptions() {
 
   if (!cards) {
     return (
-      <Typography>You haven`&apos;`t added any cards yet.</Typography>
+      <Typography>You haven&apos;t added any cards yet.</Typography>
     );
   }
 

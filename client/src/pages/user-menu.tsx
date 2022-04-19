@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { useGetAllCardsQuery, useGetUserInfoQuery } from '../store/api';
-import { selectedUserInfo } from '../store/selectors/user';
+import { selectedUserSelector } from '../store/selectors/user';
 
 import ButtonContained from '../components/shared/button-contained';
 import Container from '../components/shared/container';
@@ -13,16 +13,16 @@ import LanguageOptions from '../components/language-options';
 function UserMenu() {
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
-  const selectedUser = useSelector(selectedUserInfo);
+  const selectedUser = useSelector(selectedUserSelector);
 
-  const { isLoading } = useGetUserInfoQuery({ userId });
+  const { data } = useGetUserInfoQuery({ userId });
   const { isError } = useGetAllCardsQuery({ userId: selectedUser?.id });
 
   React.useEffect(() => {
     if (!userId) navigate('/');
   }, []);
 
-  if (isLoading) return <CircularProgress />;
+  if (userId && !data) return <CircularProgress />;
 
   return (
     <Container>

@@ -1,45 +1,22 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import {
-  Card, CardModelFromServer, CurrentCard, NewCard,
-} from '../../types';
-import { appAPI } from '../api';
+import { Card, CardModelFromServer, NewCard } from '../../types';
+import cardApi from '../api/cardApi';
 
 export interface CardSlice {
   allCards?: Card[],
+  editedCard?: NewCard,
+  newCard?: NewCard,
   selectedCards?: Card[],
-  currentCard: CurrentCard,
-  newCard: NewCard,
-  editedCard: CurrentCard,
-  preferredLanguage: string,
   selectedLanguages: string[],
+  preferredLanguage: string,
 }
 
 const initialState: CardSlice = {
   allCards: undefined,
   selectedCards: undefined,
-  currentCard: {
-    firstLanguage: '',
-    secondLanguage: '',
-    firstWord: '',
-    secondWord: '',
-    cardId: '',
-    userId: '',
-  },
-  editedCard: {
-    firstLanguage: '',
-    secondLanguage: '',
-    firstWord: '',
-    secondWord: '',
-    cardId: '',
-    userId: '',
-  },
-  newCard: {
-    firstLanguage: '',
-    secondLanguage: '',
-    firstWord: '',
-    secondWord: '',
-  },
+  editedCard: undefined,
+  newCard: undefined,
   preferredLanguage: '',
   selectedLanguages: [],
 };
@@ -50,9 +27,6 @@ const cardSlice = createSlice({
   reducers: {
     setSelectedCards: (state, action) => {
       state.selectedCards = action.payload;
-    },
-    setCurrentCard: (state, action) => {
-      state.currentCard = action.payload;
     },
     setNewCard: (state, action) => {
       state.newCard = { ...state.newCard, ...action.payload };
@@ -72,7 +46,7 @@ const cardSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(
-      appAPI.endpoints.getAllCards.matchFulfilled,
+      cardApi.endpoints.getAllCards.matchFulfilled,
       (state, { payload }) => {
         state.allCards = payload.map((card: CardModelFromServer) => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -90,7 +64,6 @@ const cardSlice = createSlice({
 
 const {
   setPreferredLanguage,
-  setCurrentCard,
   setNewCard,
   clearNewCard,
   setEditedCard,
@@ -98,7 +71,6 @@ const {
 } = cardSlice.actions;
 export {
   setPreferredLanguage,
-  setCurrentCard,
   setNewCard,
   clearNewCard,
   setEditedCard,

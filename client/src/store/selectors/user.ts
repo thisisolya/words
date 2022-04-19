@@ -1,16 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { AppState } from '..';
+import { AppState } from '../index';
 
-const localState = ((state: AppState) => state.user);
+const userState = ((state: AppState) => state.user);
 
-const allUsersList = createSelector(
-  localState,
+const allUsersSelector = createSelector(
+  userState,
   ({ allUsers }) => allUsers,
 );
 
-const selectedUserInfo = createSelector(
-  localState,
+const selectedUserSelector = createSelector(
+  userState,
   ({ selectedUser }) => selectedUser,
 );
 
-export { allUsersList, selectedUserInfo };
+export { allUsersSelector, selectedUserSelector };

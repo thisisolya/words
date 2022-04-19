@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 
 import { AppState } from '../store';
 import { useDeleteUserMutation, useEditUserInfoMutation } from '../store/api';
+import { selectedUserSelector } from '../store/selectors/user';
+
 import useAlert from '../hooks/use-alert';
 import useModal from '../hooks/use-modal';
 import useLogout from '../hooks/use-logout';
@@ -20,7 +22,7 @@ function Settings() {
   const { showAlert } = useAlert();
   const { showModal } = useModal();
   const { logout } = useLogout();
-  const { selectedUser } = useSelector((state: AppState) => state.user);
+  const selectedUser = useSelector(selectedUserSelector);
 
   const [editingMode, setEdidingMode] = React.useState(false);
   const [editedFirstName, setEdiditedFirstName] = React.useState(

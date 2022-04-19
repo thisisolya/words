@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import useAlert from '../hooks/use-alert';
-import { AppState } from '../store';
 import { useCreateNewCardMutation } from '../store/api';
 import { clearNewCard, setNewCard } from '../store/slices/card-slice';
+import { newCardSelector } from '../store/selectors/cards';
 import { NewCard } from '../types';
 
 import Autocomplete from '../components/autocomplete';
@@ -21,7 +21,7 @@ function CreateCard() {
   const dispatch = useDispatch();
   const {
     firstLanguage, secondLanguage, firstWord, secondWord,
-  } = useSelector((state: AppState) => state.card.newCard);
+  } = useSelector(newCardSelector) || {};
   const [createCard, { data: creationResult }] = useCreateNewCardMutation();
   const userId = localStorage.getItem('userId');
 
@@ -52,12 +52,12 @@ function CreateCard() {
       <Card size="medium">
         <Stack gap={1.5} my={3}>
           <LanguageSelector languageNumber="first" actionType={setNewCard} />
-          <Autocomplete language={firstLanguage} languageNumber="first" actionType={setNewCard} disabled={!firstLanguage} />
+          <Autocomplete language={firstLanguage || ''} languageNumber="first" actionType={setNewCard} disabled={!firstLanguage} />
         </Stack>
         <Divider variant="fullWidth" />
         <Stack gap={1.5} my={3}>
           <LanguageSelector languageNumber="second" actionType={setNewCard} />
-          <Autocomplete language={secondLanguage} languageNumber="second" actionType={setNewCard} disabled={!secondLanguage} />
+          <Autocomplete language={secondLanguage || ''} languageNumber="second" actionType={setNewCard} disabled={!secondLanguage} />
         </Stack>
         <ButtonContained
           clickHandler={handleCreateCard}

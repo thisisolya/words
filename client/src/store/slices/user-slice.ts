@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { User, UserModelFromServer } from '../../types';
-import { appAPI } from '../api';
+import userApi from '../api/userApi';
 
 export interface UserSlice {
   allUsers?: User[],
@@ -26,7 +26,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(
-      appAPI.endpoints.getUserInfo.matchFulfilled,
+      userApi.endpoints.getUserInfo.matchFulfilled,
       (state, { payload }) => {
         state.selectedUser = {
           firstName: payload.first_name,
@@ -36,7 +36,7 @@ const userSlice = createSlice({
       },
     );
     builder.addMatcher(
-      appAPI.endpoints.getAllUsers.matchFulfilled,
+      userApi.endpoints.getAllUsers.matchFulfilled,
       (state, { payload }) => {
         state.allUsers = payload.map((user: UserModelFromServer) => ({
           firstName: user.first_name,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { negate } from 'ramda';
 
 interface CardContainerProps {
   children: React.ReactNode;
@@ -7,20 +8,27 @@ interface CardContainerProps {
   cardId: number;
 }
 
+const transitionValue = 100;
+const positiveTransition = `${transitionValue}%`;
+const negativeTransition = `${negate(transitionValue)}%`;
+
 function CardContainer({
   children, cardId, paginateForwards,
 }: CardContainerProps) {
-  const transitionInitialValue = paginateForwards ? '100%' : '-100%';
-  const transitionExitValue = paginateForwards ? '-100%' : '100%';
-
   return (
     <AnimatePresence>
       <div style={{ overflow: 'hidden' }}>
         <motion.div
           key={cardId}
-          initial={{ x: transitionInitialValue, opacity: 0 }}
+          initial={{
+            x: paginateForwards ? positiveTransition : negativeTransition,
+            opacity: 0,
+          }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: transitionExitValue, opacity: 0 }}
+          exit={{
+            x: paginateForwards ? negativeTransition : positiveTransition,
+            opacity: 0,
+          }}
           transition={{ duration: 0.5 }}
         >
           {children}

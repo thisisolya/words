@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { Autocomplete as MuiAutocomplete, TextField } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
+import { filter, startsWith } from 'ramda';
 import allRussianWords from '../helpers/ru_words.json';
 import allEnglishWords from '../helpers/en_words.json';
 import allGermanWords from '../helpers/de_words.json';
@@ -16,8 +17,8 @@ interface AutocompleteProps {
   variant?: 'standard' | 'filled' | 'outlined',
 }
 
-const options: Record<string, any> = {
-  english: allEnglishWords,
+const options: Record<string, string[]> = {
+  english: allEnglishWords as string[],
   russian: allRussianWords,
   german: allGermanWords,
 };
@@ -43,11 +44,14 @@ function Autocomplete({
     if (event) {
       const target = event.target as HTMLInputElement;
       const currentInputValue = target.value;
+
       if (currentInputValue && currentInputValue.length >= 3) {
+        const checkIfStartsWith = (option: string) => startsWith(currentInputValue, option);
         setNoOptionsText('Lack of corresponding words');
-        setAutocompleteOptions(options[language as keyof typeof options].filter((word: string) => (
-          word.startsWith(currentInputValue)
-        )));
+        setAutocompleteOptions(filter(
+          checkIfStartsWith,
+          options[language as keyof typeof options],
+        ));
       } else {
         setNoOptionsText('Please enter at least 3 characters');
       }

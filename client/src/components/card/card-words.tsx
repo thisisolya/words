@@ -1,43 +1,22 @@
 import React from 'react';
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { Card as CardType } from '../../types';
 import { AppState } from '../../store';
 import { useDeleteCardMutation, useEditCardMutation } from '../../store/api';
+import { editedCardSelector } from '../../store/selectors/cards';
+import { Card as CardType } from '../../types';
+import useModal from '../../hooks/use-modal';
 import useAlert from '../../hooks/use-alert';
-
-import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
 
 import Card from '../shared/card';
 import CardToolbar from '../shared/card-toolbar';
-import useModal from '../../hooks/use-modal';
-import { setEditedCard } from '../../store/slices/card-slice';
-import Autocomplete from '../autocomplete';
-import LanguageSelector from './language-selector';
+import EditableWords from './editable-words';
+import ReadonlyWords from './readonly-words';
 
 interface WordCardProps {
   currentCard: CardType;
   currentCardNumber: number;
-}
-
-function ReadonlyText({ text }: { text: string }) {
-  return (
-    <AnimatePresence>
-      <Typography
-        key={text}
-        fontWeight="600"
-        textAlign="center"
-        component={motion.p}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {text}
-      </Typography>
-    </AnimatePresence>
-  );
 }
 
 function CardWords({
@@ -47,13 +26,17 @@ function CardWords({
   const { showAlert } = useAlert();
   const { showModal } = useModal();
 
-  const firstWordEdited = useSelector((state: AppState) => state.card.editedCard.firstWord);
-  const secondWordEdited = useSelector((state: AppState) => state.card.editedCard.secondWord);
   const { preferredLanguage, selectedLanguages } = useSelector((state: AppState) => state.card);
-
   const [editingMode, setEditingMode] = React.useState(false);
   const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);
+
   const { userId, cardId, ...words } = currentCard;
+  const firstWord = words[selectedLanguages[0] as keyof typeof words];
+  const secondWord = words[selectedLanguages[1] as keyof typeof words];
+  const {
+    firstWord: firstWordEdited,
+    secondWord: secondWordEdited,
+  } = useSelector(editedCardSelector) || {};
 
   React.useEffect(() => {
     setCurrentLanguage(preferredLanguage);
@@ -67,8 +50,6 @@ function CardWords({
       ? selectedLanguages[1]
       : selectedLanguages[0],
   );
-
-  const getWordLanguage = (word: string) => allLanguages.find((obj) => obj.full === word);
 
   React.useEffect(() => {
     setCurrentLanguage(preferredLanguage);
@@ -114,12 +95,25 @@ function CardWords({
   const handleCardEdit = () => {
     editCard({
       userId,
-      [selectedLanguages[0]]: firstWordEdited,
-      [selectedLanguages[1]]: secondWordEdited,
+      [selectedLanguages[0]]: firstWordEdited || firstWord,
+      [selectedLanguages[1]]: secondWordEdited || secondWord,
       cardId,
     }).unwrap();
     setEditingMode(!editingMode);
   };
+
+  const editableObjects = [
+    {
+      value: firstWord,
+      language: selectedLanguages[0],
+      index: 'first',
+    },
+    {
+      value: secondWord,
+      language: selectedLanguages[1],
+      index: 'second',
+    },
+  ];
 
   return (
     <Card size="large">
@@ -129,36 +123,9 @@ function CardWords({
         justifyContent="center"
       >
         {editingMode ? (
-          <Stack spacing={3} m={3}>
-            <LanguageSelector
-              languageNumber="first"
-              specificLanguage={getWordLanguage(selectedLanguages[0])}
-              actionType={setEditedCard}
-            />
-            <Autocomplete
-              languageNumber="first"
-              language={selectedLanguages[0]}
-              actionType={setEditedCard}
-              disabled={false}
-              value={words[selectedLanguages[0] as keyof typeof words]}
-              variant="standard"
-            />
-            <LanguageSelector
-              languageNumber="second"
-              specificLanguage={getWordLanguage(selectedLanguages[1])}
-              actionType={setEditedCard}
-            />
-            <Autocomplete
-              languageNumber="second"
-              language={selectedLanguages[1]}
-              actionType={setEditedCard}
-              disabled={false}
-              value={words[selectedLanguages[1] as keyof typeof words]}
-              variant="standard"
-            />
-          </Stack>
+          <EditableWords editableObjects={editableObjects} />
         ) : (
-          <ReadonlyText
+          <ReadonlyWords
             text={currentCard[currentLanguage as keyof CardType]}
           />
         )}

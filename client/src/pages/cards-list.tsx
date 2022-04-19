@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React from 'react';
 import { Stack, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectedCardsList } from '../store/selectors/cards';
+
+import { selectedCardsSelector } from '../store/selectors/cards';
 
 import ButtonContained from '../components/shared/button-contained';
 import CardContainer from '../components/card/container';
@@ -36,7 +36,7 @@ function CardsList() {
 
   const [currentCardNumber, setCurrentCardNumber] = React.useState(0);
   const [paginateForwards, setPaginateForwards] = React.useState(true);
-  const selectedLanguages = useSelector(selectedCardsList);
+  const selectedLanguages = useSelector(selectedCardsSelector);
 
   React.useEffect(() => {
     if (!selectedLanguages) {

@@ -1,17 +1,31 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { AppState } from '..';
+import { AppState } from '../index';
 
-const localState = ((state: AppState) => state.card);
+const cardState = ((state: AppState) => state.card);
 
-const allCardsList = createSelector(
-  localState,
+const allCardsSelector = createSelector(
+  cardState,
   ({ allCards }) => allCards,
 );
 
-const selectedCardsList = createSelector(
-  localState,
+const selectedCardsSelector = createSelector(
+  cardState,
   ({ selectedCards }) => selectedCards,
 );
 
-// eslint-disable-next-line import/prefer-default-export
-export { allCardsList, selectedCardsList };
+const editedCardSelector = createSelector(
+  cardState,
+  ({ editedCard }) => editedCard,
+);
+
+const newCardSelector = createSelector(
+  cardState,
+  ({ newCard }) => newCard,
+);
+
+export {
+  allCardsSelector,
+  selectedCardsSelector,
+  editedCardSelector,
+  newCardSelector,
+};
