@@ -13,6 +13,11 @@ const selectedCardsSelector = createSelector(
   ({ selectedCards }) => selectedCards,
 );
 
+const currentCardNumberSelector = createSelector(
+  cardState,
+  ({ currentCardNumber }) => currentCardNumber,
+);
+
 const editedCardSelector = createSelector(
   cardState,
   ({ editedCard }) => editedCard,
@@ -40,4 +45,5 @@ export {
   newCardSelector,
   selectedLanguagesSelector,
   preferredLanguageSelector,
+  currentCardNumberSelector,
 };

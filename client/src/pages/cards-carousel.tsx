@@ -3,9 +3,10 @@ import { Stack, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { selectedCardsSelector } from '../store/selectors/cards';
+import { selectedCardsSelector, currentCardNumberSelector } from '../store/selectors/cards';
+import { setCurrentCardNumber } from '../store/slices/card-slice';
 
 import ButtonContained from '../components/shared/button-contained';
 import CardContainer from '../components/card/container';
@@ -14,7 +15,7 @@ import IconButton from '../components/shared/icon-button';
 import LanguagesSwitcher from '../components/card/language-switcher';
 import CardWords from '../containers/CardWords';
 
-function EmptyCardList() {
+function EmptyCarousel() {
   const navigate = useNavigate();
   return (
     <Container>
@@ -31,10 +32,12 @@ function EmptyCardList() {
   );
 }
 
-function CardsList() {
+function CardsCarousel() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [currentCardNumber, setCurrentCardNumber] = React.useState(0);
+  const currentCardNumber = useSelector(currentCardNumberSelector);
+
   const [paginateForwards, setPaginateForwards] = React.useState(true);
   const selectedLanguages = useSelector(selectedCardsSelector);
 
@@ -45,12 +48,14 @@ function CardsList() {
   }, []);
 
   const handlePagination = (direction: number) => {
-    setCurrentCardNumber(currentCardNumber + direction);
+    dispatch(
+      setCurrentCardNumber(direction),
+    );
     setPaginateForwards(direction === 1);
   };
 
   if (!selectedLanguages || selectedLanguages.length === 0) {
-    return <EmptyCardList />;
+    return <EmptyCarousel />;
   }
 
   return (
@@ -66,10 +71,7 @@ function CardsList() {
           paginateForwards={paginateForwards}
           cardId={currentCardNumber}
         >
-          <CardWords
-            currentCard={selectedLanguages[currentCardNumber]}
-            currentCardNumber={currentCardNumber}
-          />
+          <CardWords />
         </CardContainer>
         <IconButton
           disabled={currentCardNumber === selectedLanguages.length - 1}
@@ -85,4 +87,4 @@ function CardsList() {
   );
 }
 
-export default CardsList;
+export default CardsCarousel;

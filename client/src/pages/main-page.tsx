@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ModalProvider } from '../context/modal-context';
 import { AlertProvider } from '../context/alert-context';
 
-import CardsList from './cards-list';
+import CardsCarousel from './cards-carousel';
 import CreateCard from './create-card';
 import CreateUser from './create-user';
 import NavBar from '../components/nav-bar';
@@ -22,7 +22,7 @@ function MainPage() {
           <Routes>
             <Route path="/" element={<UsersList />} />
             <Route path="/user/:id" element={<UserMenu />} />
-            <Route path="/user/:id/cards" element={<CardsList />} />
+            <Route path="/user/:id/cards" element={<CardsCarousel />} />
             <Route path="/user/:id/cards/create" element={<CreateCard />} />
             <Route path="/user/create" element={<CreateUser />} />
             <Route path="/user/:id/settings" element={<Settings />} />

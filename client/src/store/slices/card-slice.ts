@@ -10,6 +10,7 @@ export interface CardSlice {
   selectedCards?: Card[],
   selectedLanguages: string[],
   preferredLanguage: string,
+  currentCardNumber: number,
 }
 
 const initialState: CardSlice = {
@@ -19,6 +20,7 @@ const initialState: CardSlice = {
   newCard: undefined,
   preferredLanguage: '',
   selectedLanguages: [],
+  currentCardNumber: 0,
 };
 
 const cardSlice = createSlice({
@@ -42,6 +44,9 @@ const cardSlice = createSlice({
     },
     setSelectedLanguages: (state, action) => {
       state.selectedLanguages = action.payload;
+    },
+    setCurrentCardNumber: (state, action) => {
+      state.currentCardNumber += action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -81,14 +86,18 @@ const {
   setNewCard,
   clearNewCard,
   setEditedCard,
-  setSelectedLanguages, setSelectedCards,
+  setSelectedLanguages,
+  setSelectedCards,
+  setCurrentCardNumber,
 } = cardSlice.actions;
 export {
   setPreferredLanguage,
   setNewCard,
   clearNewCard,
   setEditedCard,
-  setSelectedLanguages, setSelectedCards,
+  setSelectedLanguages,
+  setSelectedCards,
+  setCurrentCardNumber,
 };
 
 export default cardSlice;

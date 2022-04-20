@@ -1,38 +1,36 @@
 import React from 'react';
 import { Stack } from '@mui/material';
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
 
-import { setEditedCard } from '../../store/slices/card-slice';
 import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
 
 import Autocomplete from '../autocomplete';
 import LanguageSelector from './language-selector';
 
 interface EditableWordsProps {
-  editableObjects : {
-    language: string,
-    value: string,
-    index:string,
-  }[]
+  words: Record<string, string>[],
+  actionType: ActionCreatorWithPayload<Record<string, string>, string>
 }
 
-function EditableWords({ editableObjects }: EditableWordsProps) {
+function EditableWords({ words, actionType }: EditableWordsProps) {
   const getLanguageInfo = (word: string) => allLanguages.find((obj) => obj.full === word);
+  const getIndex = (index: number) => (index ? 'second' : 'first');
 
   return (
     <Stack spacing={3} m={3}>
-      { editableObjects.map((object) => (
-        <div key={object.index}>
+      { words.map((word, index) => (
+        <div key={word[0]}>
           <LanguageSelector
-            languageNumber={object.index}
-            specificLanguage={getLanguageInfo(object.language)}
-            actionType={setEditedCard}
+            languageNumber={getIndex(index)}
+            specificLanguage={getLanguageInfo(word[0])}
+            actionType={actionType}
           />
           <Autocomplete
-            languageNumber={object.index}
-            language={object.language}
-            actionType={setEditedCard}
+            languageNumber={getIndex(index)}
+            language={word[0]}
+            actionType={actionType}
             disabled={false}
-            value={object.value}
+            value={word[1]}
             variant="standard"
           />
         </div>

@@ -1,8 +1,20 @@
 import React from 'react';
 
 import { useSelector } from 'react-redux';
-import { editedCardSelector, preferredLanguageSelector, selectedLanguagesSelector } from '../../store/selectors/cards';
-import { useDeleteCardMutation, useEditCardMutation, useLazyGetSelectedCardsQuery } from '../../store/apis/card-api';
+import { toPairs } from 'ramda';
+import {
+  currentCardNumberSelector,
+  editedCardSelector,
+  preferredLanguageSelector,
+  selectedCardsSelector,
+  selectedLanguagesSelector,
+} from '../../store/selectors/cards';
+import {
+  useDeleteCardMutation,
+  useEditCardMutation,
+  useLazyGetSelectedCardsQuery,
+} from '../../store/apis/card-api';
+import { setEditedCard } from '../../store/slices/card-slice';
 
 import { Card as CardType } from '../../types';
 import useAlert from '../../hooks/use-alert';
@@ -12,18 +24,14 @@ import Card from '../../components/card/card';
 import ReadonlyWords from '../../components/card/readonly-words';
 import EditableWords from '../../components/card/editable-words';
 
-interface WordCardProps {
-  currentCard: CardType;
-  currentCardNumber: number;
-}
-
-function CardWords({ currentCard, currentCardNumber }: WordCardProps) {
+function CardWords() {
   const { showAlert } = useAlert();
   const { showModal } = useModal();
 
+  const selectedCards = useSelector(selectedCardsSelector) || [];
   const selectedLanguages = useSelector(selectedLanguagesSelector);
   const preferredLanguage = useSelector(preferredLanguageSelector);
-
+  const currentCardNumber = useSelector(currentCardNumberSelector);
   const {
     firstWord: firstWordEdited,
     secondWord: secondWordEdited,
@@ -32,17 +40,19 @@ function CardWords({ currentCard, currentCardNumber }: WordCardProps) {
   const [editingMode, setEditingMode] = React.useState(false);
   const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);
 
+  const currentCard = selectedCards[currentCardNumber];
+  const { userId, cardId, ...words } = currentCard;
+  const currentWord = currentCard[currentLanguage as keyof CardType];
+  const firstWord = words[selectedLanguages[0] as keyof typeof words];
+  const secondWord = words[selectedLanguages[1] as keyof typeof words];
+
   const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
   const [editCard, { data: editResult }] = useEditCardMutation();
   const [trigger] = useLazyGetSelectedCardsQuery();
 
-  const { userId, cardId, ...words } = currentCard;
-  const firstWord = words[selectedLanguages[0] as keyof typeof words];
-  const secondWord = words[selectedLanguages[1] as keyof typeof words];
-
   React.useEffect(() => {
     setCurrentLanguage(preferredLanguage);
-  }, [preferredLanguage, currentCard]);
+  }, [preferredLanguage, currentCardNumber]);
 
   const toggleLanguage = () => setCurrentLanguage(
     currentLanguage === selectedLanguages[0]
@@ -85,7 +95,7 @@ function CardWords({ currentCard, currentCardNumber }: WordCardProps) {
   const handleCardDelete = () => {
     showModal({
       text: ' This is going to delete this card forever. There is no possibility to restore deleted cards',
-      acceptFunction: () => deleteCard({ userId, cardId: currentCard.cardId }).unwrap(),
+      acceptFunction: () => deleteCard({ userId, cardId }).unwrap(),
     });
   };
 
@@ -99,30 +109,17 @@ function CardWords({ currentCard, currentCardNumber }: WordCardProps) {
     setEditingMode(!editingMode);
   };
 
-  const editableObjects = [
-    {
-      value: firstWord,
-      language: selectedLanguages[0],
-      index: 'first',
-    },
-    {
-      value: secondWord,
-      language: selectedLanguages[1],
-      index: 'second',
-    },
-  ];
-
-  const text = editingMode ? (
-    <EditableWords editableObjects={editableObjects} />
+  const cardText = editingMode ? (
+    <EditableWords words={toPairs(words)} actionType={setEditedCard} />
   ) : (
     <ReadonlyWords
-      text={currentCard[currentLanguage as keyof CardType]}
+      text={currentWord}
     />
   );
 
   return (
     <Card
-      text={text}
+      text={cardText}
       toggleLanguage={toggleLanguage}
       editingMode={editingMode}
       handleCardEdit={handleCardEdit}
