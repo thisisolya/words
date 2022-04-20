@@ -12,7 +12,7 @@ import CardContainer from '../components/card/container';
 import Container from '../components/shared/container';
 import IconButton from '../components/shared/icon-button';
 import LanguagesSwitcher from '../components/card/language-switcher';
-import CardWords from '../components/card/card-words';
+import CardWords from '../containers/CardWords';
 
 function EmptyCardList() {
   const navigate = useNavigate();

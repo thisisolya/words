@@ -23,9 +23,21 @@ const newCardSelector = createSelector(
   ({ newCard }) => newCard,
 );
 
+const selectedLanguagesSelector = createSelector(
+  cardState,
+  ({ selectedLanguages }) => selectedLanguages,
+);
+
+const preferredLanguageSelector = createSelector(
+  cardState,
+  ({ preferredLanguage }) => preferredLanguage,
+);
+
 export {
   allCardsSelector,
   selectedCardsSelector,
   editedCardSelector,
   newCardSelector,
+  selectedLanguagesSelector,
+  preferredLanguageSelector,
 };

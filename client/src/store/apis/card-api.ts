@@ -35,7 +35,7 @@ const cardApi = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['SelectedCards'],
+      invalidatesTags: ['SelectedCards', 'Cards'],
     }),
     editCard: build.mutation({
       query: (body) => ({
@@ -43,7 +43,7 @@ const cardApi = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['SelectedCards'],
+      invalidatesTags: ['SelectedCards', 'Cards'],
     }),
   }),
 });

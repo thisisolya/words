@@ -1,49 +1,48 @@
 import React from 'react';
-import { Stack } from '@mui/material';
+
 import { useSelector } from 'react-redux';
+import { editedCardSelector, preferredLanguageSelector, selectedLanguagesSelector } from '../../store/selectors/cards';
+import { useDeleteCardMutation, useEditCardMutation, useLazyGetSelectedCardsQuery } from '../../store/apis/card-api';
 
-import { useDeleteCardMutation, useEditCardMutation } from '../../store/apis/card-api';
-import { editedCardSelector } from '../../store/selectors/cards';
-import { AppState } from '../../store';
 import { Card as CardType } from '../../types';
-import useModal from '../../hooks/use-modal';
 import useAlert from '../../hooks/use-alert';
+import useModal from '../../hooks/use-modal';
 
-import Card from '../shared/card';
-import CardToolbar from '../shared/card-toolbar';
-import EditableWords from './editable-words';
-import ReadonlyWords from './readonly-words';
+import Card from '../../components/card/card';
+import ReadonlyWords from '../../components/card/readonly-words';
+import EditableWords from '../../components/card/editable-words';
 
 interface WordCardProps {
   currentCard: CardType;
   currentCardNumber: number;
 }
 
-function CardWords({
-  currentCard,
-  currentCardNumber,
-}: WordCardProps) {
+function CardWords({ currentCard, currentCardNumber }: WordCardProps) {
   const { showAlert } = useAlert();
   const { showModal } = useModal();
 
-  const { preferredLanguage, selectedLanguages } = useSelector((state: AppState) => state.card);
-  const [editingMode, setEditingMode] = React.useState(false);
-  const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);
+  const selectedLanguages = useSelector(selectedLanguagesSelector);
+  const preferredLanguage = useSelector(preferredLanguageSelector);
 
-  const { userId, cardId, ...words } = currentCard;
-  const firstWord = words[selectedLanguages[0] as keyof typeof words];
-  const secondWord = words[selectedLanguages[1] as keyof typeof words];
   const {
     firstWord: firstWordEdited,
     secondWord: secondWordEdited,
   } = useSelector(editedCardSelector) || {};
 
-  React.useEffect(() => {
-    setCurrentLanguage(preferredLanguage);
-  }, [preferredLanguage, currentCard]);
+  const [editingMode, setEditingMode] = React.useState(false);
+  const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);
 
   const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
   const [editCard, { data: editResult }] = useEditCardMutation();
+  const [trigger] = useLazyGetSelectedCardsQuery();
+
+  const { userId, cardId, ...words } = currentCard;
+  const firstWord = words[selectedLanguages[0] as keyof typeof words];
+  const secondWord = words[selectedLanguages[1] as keyof typeof words];
+
+  React.useEffect(() => {
+    setCurrentLanguage(preferredLanguage);
+  }, [preferredLanguage, currentCard]);
 
   const toggleLanguage = () => setCurrentLanguage(
     currentLanguage === selectedLanguages[0]
@@ -62,6 +61,7 @@ function CardWords({
           text: 'Word was sucessfullly edited!',
           severity: 'success',
         });
+        trigger({ userId, languages: selectedLanguages });
       } else {
         showAlert({ text: 'Something went wrong:(', severity: 'error' });
       }
@@ -69,6 +69,7 @@ function CardWords({
   }, [editResult]);
 
   React.useEffect(() => {
+    trigger({ userId, languages: selectedLanguages });
     if (deleteResult) {
       if (deleteResult.deletedCount === 1) {
         showAlert({
@@ -81,14 +82,10 @@ function CardWords({
     }
   }, [deleteResult]);
 
-  const deleteCardFunction = () => {
-    deleteCard({ userId, cardId: currentCard.cardId }).unwrap();
-  };
-
   const handleCardDelete = () => {
     showModal({
       text: ' This is going to delete this card forever. There is no possibility to restore deleted cards',
-      acceptFunction: () => deleteCardFunction,
+      acceptFunction: () => deleteCard({ userId, cardId: currentCard.cardId }).unwrap(),
     });
   };
 
@@ -115,28 +112,23 @@ function CardWords({
     },
   ];
 
+  const text = editingMode ? (
+    <EditableWords editableObjects={editableObjects} />
+  ) : (
+    <ReadonlyWords
+      text={currentCard[currentLanguage as keyof CardType]}
+    />
+  );
+
   return (
-    <Card size="large">
-      <Stack
-        flex={10}
-        onClick={toggleLanguage}
-        justifyContent="center"
-      >
-        {editingMode ? (
-          <EditableWords editableObjects={editableObjects} />
-        ) : (
-          <ReadonlyWords
-            text={currentCard[currentLanguage as keyof CardType]}
-          />
-        )}
-      </Stack>
-      <CardToolbar
-        handleCardDelete={() => handleCardDelete()}
-        handleModeChange={() => setEditingMode(!editingMode)}
-        handleCardEdit={handleCardEdit}
-        editingMode={editingMode}
-      />
-    </Card>
+    <Card
+      text={text}
+      toggleLanguage={toggleLanguage}
+      editingMode={editingMode}
+      handleCardEdit={handleCardEdit}
+      handleCardDelete={handleCardDelete}
+      handleModeChange={() => setEditingMode(!editingMode)}
+    />
   );
 }
 
