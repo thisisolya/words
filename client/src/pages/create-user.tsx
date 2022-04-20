@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { useCreateNewUserMutation } from '../store/api';
+import { useCreateNewUserMutation } from '../store/apis/userApi';
 import useAlert from '../hooks/use-alert';
 
 import Card from '../components/shared/card';

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { Card, CardModelFromServer, NewCard } from '../../types';
-import cardApi from '../api/cardApi';
+import cardApi from '../apis/cardApi';
 
 export interface CardSlice {
   allCards?: Card[],
@@ -22,7 +22,7 @@ const initialState: CardSlice = {
 };
 
 const cardSlice = createSlice({
-  name: 'users',
+  name: 'card',
   initialState,
   reducers: {
     setSelectedCards: (state, action) => {

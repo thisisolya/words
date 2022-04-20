@@ -48,6 +48,7 @@ export default userApi;
 
 export const {
   useGetAllUsersQuery,
+  useGetUserInfoQuery,
   useCreateNewUserMutation,
   useDeleteUserMutation,
   useEditUserInfoMutation,

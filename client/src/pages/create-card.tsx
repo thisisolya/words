@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import useAlert from '../hooks/use-alert';
-import { useCreateNewCardMutation } from '../store/api';
+import { useCreateNewCardMutation } from '../store/apis/cardApi';
 import { clearNewCard, setNewCard } from '../store/slices/card-slice';
 import { newCardSelector } from '../store/selectors/cards';
 import { NewCard } from '../types';

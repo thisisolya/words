@@ -3,7 +3,8 @@ import { Typography, Grid, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { useGetAllCardsQuery, useGetUserInfoQuery } from '../store/api';
+import { useGetAllCardsQuery } from '../store/apis/cardApi';
+import { useGetUserInfoQuery } from '../store/apis/userApi';
 import { selectedUserSelector } from '../store/selectors/user';
 
 import ButtonContained from '../components/shared/button-contained';
@@ -15,14 +16,18 @@ function UserMenu() {
   const userId = localStorage.getItem('userId');
   const selectedUser = useSelector(selectedUserSelector);
 
-  const { data } = useGetUserInfoQuery({ userId });
-  const { isError } = useGetAllCardsQuery({ userId: selectedUser?.id });
+  const { isLoading } = useGetUserInfoQuery({ userId });
+  const { data: cards } = useGetAllCardsQuery({ userId: selectedUser?.id });
+
+  const text = cards && cards.length
+    ? 'What would you like to do?'
+    : "You don't have any cards yet. Would you like to add some?";
 
   React.useEffect(() => {
     if (!userId) navigate('/');
   }, []);
 
-  if (userId && !data) return <CircularProgress />;
+  if (isLoading) return <CircularProgress />;
 
   return (
     <Container>
@@ -32,8 +37,8 @@ function UserMenu() {
         {selectedUser?.firstName}
         !
       </Typography>
-      <Typography textAlign="center">What would you like to do?</Typography>
-      {!isError && <LanguageOptions />}
+      <Typography textAlign="center">{text}</Typography>
+      {cards && !!cards.length && <LanguageOptions />}
       <Grid container gap={2} justifyContent="center">
         <ButtonContained
           text="Add card"

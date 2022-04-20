@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import cardApi from './api/cardApi';
-import userApi from './api/userApi';
+import cardApi from './apis/cardApi';
+import userApi from './apis/userApi';
 import { cardSlice, userSlice } from './slices';
 
 const store = configureStore({
