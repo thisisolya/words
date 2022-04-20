@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { User, UserModelFromServer } from '../../types';
-import userApi from '../apis/userApi';
+import userApi from '../apis/user-api';
 
 export interface UserSlice {
   allUsers?: User[],

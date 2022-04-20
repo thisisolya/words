@@ -10,8 +10,9 @@ const {
   deleteCardById,
   editCardById,
   getCardsByUserId,
-  deleteUserById, 
+  deleteUserById,
   editUserById,
+  getSelectedCards
 } = require("./queries");
 
 require("dotenv").config();
@@ -50,7 +51,7 @@ client.connect((error, client) => {
     getCardsByUserId({ userId, collection: cardsCollection, result });
   });
 
-  app.post("/cards/create", (request, result) => { 
+  app.post("/cards/create", (request, result) => {
     const { userId, ...words } = request.body;
     createNewCard({
       userId: new ObjectId(userId),
@@ -60,11 +61,24 @@ client.connect((error, client) => {
     });
   });
 
-  app.post("/cards/edit", (request, result) => { 
-    const { cardId, userId, ...editedWords} = request.body;
+  app.post("/cards/selected", (request, result) => {
+    const userId = new ObjectId(request.body.userId);
+    const firstKey = request.body.languages[0];
+    const secondKey = request.body.languages[1];
+    getSelectedCards({
+      userId,
+      firstKey,
+      secondKey,
+      collection: cardsCollection,
+      result
+    })
+  })
+
+  app.post("/cards/edit", (request, result) => {
+    const { cardId, userId, ...editedWords } = request.body;
     editCardById({
-      userId:new ObjectId(request.body.userId),
-      cardId:new ObjectId(request.body.cardId),
+      userId: new ObjectId(request.body.userId),
+      cardId: new ObjectId(request.body.cardId),
       editedWords,
       collection: cardsCollection,
       result,
@@ -90,7 +104,7 @@ client.connect((error, client) => {
   });
 
   app.post("/user/delete", (request, result) => {
-    const userId = new ObjectId(request.body.userId); 
+    const userId = new ObjectId(request.body.userId);
     deleteUserById({ userId, usersCollection, cardsCollection, result });
   });
 });

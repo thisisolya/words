@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { AppState } from '../store';
-import { useDeleteUserMutation, useEditUserInfoMutation } from '../store/apis/userApi';
+import { useDeleteUserMutation, useEditUserInfoMutation } from '../store/apis/user-api';
 import { selectedUserSelector } from '../store/selectors/user';
 
 import useAlert from '../hooks/use-alert';

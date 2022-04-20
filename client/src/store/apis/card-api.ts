@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 const cardApi = createApi({
   reducerPath: 'cardApi',
   baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_FETCH_BASE_URL }),
-  tagTypes: ['Cards'],
+  tagTypes: ['Cards', 'SelectedCards'],
   endpoints: (build) => ({
     getAllCards: build.query({
       query: (body) => ({
@@ -12,6 +12,14 @@ const cardApi = createApi({
         body,
       }),
       providesTags: ['Cards'],
+    }),
+    getSelectedCards: build.query({
+      query: (body) => ({
+        url: '/cards/selected',
+        method: 'POST',
+        body,
+      }),
+      providesTags: ['SelectedCards'],
     }),
     createNewCard: build.mutation({
       query: (body) => ({
@@ -27,7 +35,7 @@ const cardApi = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['Cards'],
+      invalidatesTags: ['SelectedCards'],
     }),
     editCard: build.mutation({
       query: (body) => ({
@@ -35,7 +43,7 @@ const cardApi = createApi({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['Cards'],
+      invalidatesTags: ['SelectedCards'],
     }),
   }),
 });
@@ -47,4 +55,5 @@ export const {
   useCreateNewCardMutation,
   useDeleteCardMutation,
   useEditCardMutation,
+  useLazyGetSelectedCardsQuery,
 } = cardApi;

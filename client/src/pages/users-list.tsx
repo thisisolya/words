@@ -3,7 +3,7 @@ import { Typography, Grid, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { useGetAllUsersQuery } from '../store/apis/userApi';
+import { useGetAllUsersQuery } from '../store/apis/user-api';
 import { allUsersSelector } from '../store/selectors/user';
 import { User } from '../types';
 

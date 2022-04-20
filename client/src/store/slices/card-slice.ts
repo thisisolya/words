@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { Card, CardModelFromServer, NewCard } from '../../types';
-import cardApi from '../apis/cardApi';
+import cardApi from '../apis/card-api';
 
 export interface CardSlice {
   allCards?: Card[],
@@ -49,6 +49,20 @@ const cardSlice = createSlice({
       cardApi.endpoints.getAllCards.matchFulfilled,
       (state, { payload }) => {
         state.allCards = payload.map((card: CardModelFromServer) => {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          const { user_id, _id, ...words } = card;
+          return ({
+            ...words,
+            userId: card.user_id,
+            cardId: card._id,
+          });
+        });
+      },
+    );
+    builder.addMatcher(
+      cardApi.endpoints.getSelectedCards.matchFulfilled,
+      (state, { payload }) => {
+        state.selectedCards = payload.map((card: CardModelFromServer) => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           const { user_id, _id, ...words } = card;
           return ({

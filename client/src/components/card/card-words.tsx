@@ -2,9 +2,9 @@ import React from 'react';
 import { Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 
-import { AppState } from '../../store';
-import { useDeleteCardMutation, useEditCardMutation } from '../../store/apis/cardApi';
+import { useDeleteCardMutation, useEditCardMutation } from '../../store/apis/card-api';
 import { editedCardSelector } from '../../store/selectors/cards';
+import { AppState } from '../../store';
 import { Card as CardType } from '../../types';
 import useModal from '../../hooks/use-modal';
 import useAlert from '../../hooks/use-alert';

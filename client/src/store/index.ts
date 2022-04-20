@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import cardApi from './apis/cardApi';
-import userApi from './apis/userApi';
+import cardApi from './apis/card-api';
+import userApi from './apis/user-api';
 import { cardSlice, userSlice } from './slices';
 
 const store = configureStore({
@@ -10,10 +10,11 @@ const store = configureStore({
     [cardApi.reducerPath]: cardApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
-    cardApi.middleware,
-    userApi.middleware,
-  ),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+  })
+    .concat(cardApi.middleware)
+    .concat(userApi.middleware),
 });
 
 export default store;

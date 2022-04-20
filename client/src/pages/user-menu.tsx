@@ -3,8 +3,8 @@ import { Typography, Grid, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { useGetAllCardsQuery } from '../store/apis/cardApi';
-import { useGetUserInfoQuery } from '../store/apis/userApi';
+import { useGetAllCardsQuery } from '../store/apis/card-api';
+import { useGetUserInfoQuery } from '../store/apis/user-api';
 import { selectedUserSelector } from '../store/selectors/user';
 
 import ButtonContained from '../components/shared/button-contained';
@@ -16,7 +16,7 @@ function UserMenu() {
   const userId = localStorage.getItem('userId');
   const selectedUser = useSelector(selectedUserSelector);
 
-  const { isLoading } = useGetUserInfoQuery({ userId });
+  const { isFetching } = useGetUserInfoQuery({ userId });
   const { data: cards } = useGetAllCardsQuery({ userId: selectedUser?.id });
 
   const text = cards && cards.length
@@ -27,7 +27,7 @@ function UserMenu() {
     if (!userId) navigate('/');
   }, []);
 
-  if (isLoading) return <CircularProgress />;
+  if (isFetching) return <CircularProgress />;
 
   return (
     <Container>

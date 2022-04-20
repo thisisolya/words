@@ -10,6 +10,13 @@ const getUserInfoById = ({ collection, userId, result }) => {
   });
 };
 
+const getSelectedCards = ({userId, firstKey,secondKey, collection, result }) => {    
+  collection.find({user_id: userId, [firstKey]: {$exists: true}, [secondKey]: {$exists: true}})
+  .toArray((error, documents) => {
+    error ? result.send("Cannot find cards") : result.send(documents);
+  });
+}
+
 const getCardsByUserId = ({ collection, userId, result }) => {
   collection.find({ user_id: userId }).toArray((error, documents) => {
     error ? result.send("Cannot find cards") : result.send(documents);
@@ -105,6 +112,7 @@ module.exports = {
   createNewUser,
   createNewCard,
   deleteCardById,
+  getSelectedCards,
   editCardById,
   getCardsByUserId,
   deleteUserById,

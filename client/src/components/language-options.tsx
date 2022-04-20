@@ -3,24 +3,28 @@ import { Typography, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  omit, keys, filter, map, includes, reverse,
+  omit, keys, map, includes, reverse,
 } from 'ramda';
 import _ from 'lodash';
 
 import {
   setPreferredLanguage,
-  setSelectedCards as saveSelectedCards,
   setSelectedLanguages,
 } from '../store/slices/card-slice';
 import { allCardsSelector } from '../store/selectors/cards';
 import { Card as CardType } from '../types';
 
 import Card from './shared/card';
+import { useLazyGetSelectedCardsQuery } from '../store/apis/card-api';
+import { selectedUserSelector } from '../store/selectors/user';
 
 function LanguageOptions() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cards = useSelector(allCardsSelector);
+  const userId = useSelector(selectedUserSelector)?.id;
+  const [trigger, { data }] = useLazyGetSelectedCardsQuery();
+
   const [languagesPairs, setLanguagePairs] = React.useState<string[][]>([]);
   const uniqueLanguagePairs: string[][] = [];
 
@@ -36,23 +40,21 @@ function LanguageOptions() {
     }
   }, [cards]);
 
+  React.useEffect(() => {
+    if (data) navigate('cards');
+  }, [data]);
+
+  const clickHandler = (languages: string[]) => {
+    trigger({ userId, languages });
+    dispatch(setPreferredLanguage(languages[0]));
+    dispatch(setSelectedLanguages(languages));
+  };
+
   if (!cards) {
     return (
       <Typography>You haven&apos;t added any cards yet.</Typography>
     );
   }
-
-  const clickHandler = (languages: string[]) => {
-    const getSelectedCards = (card: CardType) => (
-      includes(languages, [getLanguageKeys(card)])
-       || includes(reverse(languages), [getLanguageKeys(card)]));
-    const selectedCards = filter(getSelectedCards, cards);
-
-    dispatch(setPreferredLanguage(languages[0]));
-    dispatch(setSelectedLanguages(languages));
-    dispatch(saveSelectedCards(selectedCards));
-    navigate('cards');
-  };
 
   return (
     <Grid container gap={2} justifyContent="center">
