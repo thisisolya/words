@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dialog, Typography, Stack } from '@mui/material';
-import Card from './shared/card';
+import CardLayout from './CardLayout';
 import ButtonContained from './shared/button-contained';
 
 interface ModalProps {
@@ -23,14 +23,14 @@ function Modal({
 
   return (
     <Dialog open={isOpen} onClose={toggleModal}>
-      <Card size="medium">
+      <CardLayout size="medium">
         <Typography variant="h2">Are you sure?</Typography>
         <Typography>{text}</Typography>
         <Stack direction="row" justifyContent="center" spacing={3}>
           <ButtonContained text="Yes" clickHandler={handleAcceptButton} />
           <ButtonContained text="No" clickHandler={toggleModal} />
         </Stack>
-      </Card>
+      </CardLayout>
     </Dialog>
   );
 }

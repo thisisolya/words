@@ -77,6 +77,18 @@ const theme = createTheme({
         },
       },
     },
+    MuiDialog: {
+      styleOverrides: {
+        container: {
+          '& .MuiPaper-root': {
+            padding: 0,
+            margin: 0,
+            boxShadow: 'none',
+            backgroundColor: 'transparent',
+          },
+        },
+      },
+    },
     MuiDivider: {
       styleOverrides: {
         root: {

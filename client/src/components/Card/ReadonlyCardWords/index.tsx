@@ -2,7 +2,7 @@ import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Typography } from '@mui/material';
 
-function ReadonlyWords({ text }: { text: string }) {
+function ReadonlyCardWords({ text }: { text: string }) {
   return (
     <AnimatePresence>
       <Typography
@@ -20,4 +20,4 @@ function ReadonlyWords({ text }: { text: string }) {
   );
 }
 
-export default ReadonlyWords;
+export default ReadonlyCardWords;

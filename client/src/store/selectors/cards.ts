@@ -18,6 +18,11 @@ const currentCardNumberSelector = createSelector(
   ({ currentCardNumber }) => currentCardNumber,
 );
 
+const paginationDirectionSelector = createSelector(
+  cardState,
+  ({ paginationDirection }) => paginationDirection,
+);
+
 const editedCardSelector = createSelector(
   cardState,
   ({ editedCard }) => editedCard,
@@ -46,4 +51,5 @@ export {
   selectedLanguagesSelector,
   preferredLanguageSelector,
   currentCardNumberSelector,
+  paginationDirectionSelector,
 };

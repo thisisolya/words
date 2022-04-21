@@ -1,32 +1,24 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { User } from '../types';
+import CardLayout from './CardLayout';
 
-import Card from './shared/card';
-import { setSelectedUser } from '../store/slices/user-slice';
+interface UserCardProps {
+  user: User,
+  clickHandler: () => void
+}
 
-function UserCard({ user }: { user: User }) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const handleClick = () => {
-    localStorage.setItem('userId', user.id);
-    dispatch(setSelectedUser(user));
-    navigate(`user/${user.id}`);
-  };
-
+function UserCard({ user, clickHandler }: UserCardProps) {
   return (
-    <Card key={user.id} size="small">
-      <div aria-hidden onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <CardLayout key={user.id} size="small">
+      <div aria-hidden onClick={clickHandler} style={{ cursor: 'pointer' }}>
         <Typography align="center">
           {user.firstName}
           {' '}
           {user.lastName}
         </Typography>
       </div>
-    </Card>
+    </CardLayout>
   );
 }
 

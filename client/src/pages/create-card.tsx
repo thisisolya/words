@@ -11,19 +11,20 @@ import { NewCard } from '../types';
 
 import Autocomplete from '../components/autocomplete';
 import ButtonContained from '../components/shared/button-contained';
-import Card from '../components/shared/card';
+import CardLayout from '../components/CardLayout';
 import Container from '../components/shared/container';
-import LanguageSelector from '../components/card/language-selector';
+import LanguagePicker from '../components/LanguagePicker';
 
 function CreateCard() {
   const { showAlert } = useAlert();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {
-    firstLanguage, secondLanguage, firstWord, secondWord,
-  } = useSelector(newCardSelector) || {};
+  const newCard = useSelector(newCardSelector);
   const [createCard, { data: creationResult }] = useCreateNewCardMutation();
   const userId = localStorage.getItem('userId');
+  const {
+    firstLanguage, secondLanguage, firstWord, secondWord,
+  } = newCard || {};
 
   React.useEffect(() => {
     if (creationResult) {
@@ -39,32 +40,54 @@ function CreateCard() {
     }
   }, [creationResult]);
 
-  const handleCreateCard = () => {
+  const handleCreateCard = React.useCallback(() => {
     createCard({
       userId,
       [firstLanguage as keyof NewCard]: firstWord,
       [secondLanguage as keyof NewCard]: secondWord,
     }).unwrap();
-  };
+  }, [firstWord, secondWord]);
+
+  const setNewCardInfo = React.useCallback((arg: Record<string, string>) => {
+    dispatch(setNewCard(arg));
+  }, []);
 
   return (
     <Container>
-      <Card size="medium">
+      <CardLayout size="medium">
         <Stack gap={1.5} my={3}>
-          <LanguageSelector languageNumber="first" actionType={setNewCard} />
-          <Autocomplete language={firstLanguage || ''} languageNumber="first" actionType={setNewCard} disabled={!firstLanguage} />
+          <LanguagePicker
+            languageNumber="first"
+            clickHandler={setNewCardInfo}
+            newCard={newCard}
+          />
+          <Autocomplete
+            language={firstLanguage || ''}
+            languageNumber="first"
+            clickHandler={setNewCardInfo}
+            disabled={!firstLanguage}
+          />
         </Stack>
         <Divider variant="fullWidth" />
         <Stack gap={1.5} my={3}>
-          <LanguageSelector languageNumber="second" actionType={setNewCard} />
-          <Autocomplete language={secondLanguage || ''} languageNumber="second" actionType={setNewCard} disabled={!secondLanguage} />
+          <LanguagePicker
+            languageNumber="second"
+            clickHandler={setNewCardInfo}
+            newCard={newCard}
+          />
+          <Autocomplete
+            language={secondLanguage || ''}
+            languageNumber="second"
+            clickHandler={setNewCardInfo}
+            disabled={!secondLanguage}
+          />
         </Stack>
         <ButtonContained
           clickHandler={handleCreateCard}
           disabled={!secondWord || !firstWord}
           text="Submit"
         />
-      </Card>
+      </CardLayout>
       <ButtonContained text="Back to menu" clickHandler={() => navigate('/')} />
     </Container>
   );

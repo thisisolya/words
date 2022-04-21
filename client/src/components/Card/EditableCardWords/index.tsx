@@ -1,18 +1,15 @@
 import React from 'react';
 import { Stack } from '@mui/material';
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
-
-import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
-
-import Autocomplete from '../autocomplete';
-import LanguageSelector from './language-selector';
+import { SUPPORTED_LANGUAGES as allLanguages } from '../../../helpers/constats';
+import Autocomplete from '../../autocomplete';
+import LanguagePicker from '../../LanguagePicker';
 
 interface EditableWordsProps {
   words: Record<string, string>[],
-  actionType: ActionCreatorWithPayload<Record<string, string>, string>
+  clickHandler: (arg: Record<string, string>) => void,
 }
 
-function EditableWords({ words, actionType }: EditableWordsProps) {
+function EditableCardWords({ words, clickHandler }: EditableWordsProps) {
   const getLanguageInfo = (word: string) => allLanguages.find((obj) => obj.full === word);
   const getIndex = (index: number) => (index ? 'second' : 'first');
 
@@ -20,15 +17,15 @@ function EditableWords({ words, actionType }: EditableWordsProps) {
     <Stack spacing={3} m={3}>
       { words.map((word, index) => (
         <div key={word[0]}>
-          <LanguageSelector
+          <LanguagePicker
             languageNumber={getIndex(index)}
             specificLanguage={getLanguageInfo(word[0])}
-            actionType={actionType}
+            clickHandler={clickHandler}
           />
           <Autocomplete
             languageNumber={getIndex(index)}
             language={word[0]}
-            actionType={actionType}
+            clickHandler={clickHandler}
             disabled={false}
             value={word[1]}
             variant="standard"
@@ -39,4 +36,4 @@ function EditableWords({ words, actionType }: EditableWordsProps) {
   );
 }
 
-export default EditableWords;
+export default EditableCardWords;

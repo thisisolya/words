@@ -12,8 +12,8 @@ import useModal from '../hooks/use-modal';
 import useLogout from '../hooks/use-logout';
 
 import EditableText from '../components/shared/editable-text';
+import CardLayout from '../components/CardLayout';
 import CardToolbar from '../components/shared/card-toolbar';
-import Card from '../components/shared/card';
 import Container from '../components/shared/container';
 import ButtonContained from '../components/shared/button-contained';
 
@@ -91,7 +91,7 @@ function Settings() {
 
   return (
     <Container>
-      <Card size="medium">
+      <CardLayout size="medium">
         <Typography variant="h2" mb={1}>
           Change user info
         </Typography>
@@ -128,7 +128,7 @@ function Settings() {
           handleModeChange={handleModeChange}
           handleCardEdit={handleCardEdit}
         />
-      </Card>
+      </CardLayout>
       <ButtonContained
         clickHandler={() => handleUserDelete()}
         text="Delete user"

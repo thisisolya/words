@@ -11,6 +11,7 @@ export interface CardSlice {
   selectedLanguages: string[],
   preferredLanguage: string,
   currentCardNumber: number,
+  paginationDirection: boolean,
 }
 
 const initialState: CardSlice = {
@@ -21,6 +22,7 @@ const initialState: CardSlice = {
   preferredLanguage: '',
   selectedLanguages: [],
   currentCardNumber: 0,
+  paginationDirection: true,
 };
 
 const cardSlice = createSlice({
@@ -47,6 +49,10 @@ const cardSlice = createSlice({
     },
     setCurrentCardNumber: (state, action) => {
       state.currentCardNumber += action.payload;
+      state.paginationDirection = action.payload === 1;
+    },
+    resetCurrentCardNumber: (state) => {
+      state.currentCardNumber = 0;
     },
   },
   extraReducers: (builder) => {
@@ -88,6 +94,7 @@ const {
   setEditedCard,
   setSelectedLanguages,
   setSelectedCards,
+  resetCurrentCardNumber,
   setCurrentCardNumber,
 } = cardSlice.actions;
 export {
@@ -98,6 +105,7 @@ export {
   setSelectedLanguages,
   setSelectedCards,
   setCurrentCardNumber,
+  resetCurrentCardNumber,
 };
 
 export default cardSlice;

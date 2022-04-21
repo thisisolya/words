@@ -1,10 +1,11 @@
 import React from 'react';
-
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toPairs } from 'ramda';
+
 import {
   currentCardNumberSelector,
   editedCardSelector,
+  paginationDirectionSelector,
   preferredLanguageSelector,
   selectedCardsSelector,
   selectedLanguagesSelector,
@@ -20,11 +21,12 @@ import { Card as CardType } from '../../types';
 import useAlert from '../../hooks/use-alert';
 import useModal from '../../hooks/use-modal';
 
-import Card from '../../components/card/card';
-import ReadonlyWords from '../../components/card/readonly-words';
-import EditableWords from '../../components/card/editable-words';
+import CardComponent from '../../components/Card';
+import ReadonlyCardWords from '../../components/Card/ReadonlyCardWords';
+import EditableCardWords from '../../components/Card/EditableCardWords';
 
-function CardWords() {
+function Card() {
+  const dispatch = useDispatch();
   const { showAlert } = useAlert();
   const { showModal } = useModal();
 
@@ -32,6 +34,7 @@ function CardWords() {
   const selectedLanguages = useSelector(selectedLanguagesSelector);
   const preferredLanguage = useSelector(preferredLanguageSelector);
   const currentCardNumber = useSelector(currentCardNumberSelector);
+  const paginationDirection = useSelector(paginationDirectionSelector);
   const {
     firstWord: firstWordEdited,
     secondWord: secondWordEdited,
@@ -48,21 +51,11 @@ function CardWords() {
 
   const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
   const [editCard, { data: editResult }] = useEditCardMutation();
-  const [trigger] = useLazyGetSelectedCardsQuery();
+  const [triggerSelectedCardsRefetch] = useLazyGetSelectedCardsQuery();
 
   React.useEffect(() => {
     setCurrentLanguage(preferredLanguage);
-  }, [preferredLanguage, currentCardNumber]);
-
-  const toggleLanguage = () => setCurrentLanguage(
-    currentLanguage === selectedLanguages[0]
-      ? selectedLanguages[1]
-      : selectedLanguages[0],
-  );
-
-  React.useEffect(() => {
-    setCurrentLanguage(preferredLanguage);
-  }, [preferredLanguage, currentCardNumber]);
+  }, [preferredLanguage]);
 
   React.useEffect(() => {
     if (editResult) {
@@ -71,7 +64,7 @@ function CardWords() {
           text: 'Word was sucessfullly edited!',
           severity: 'success',
         });
-        trigger({ userId, languages: selectedLanguages });
+        triggerSelectedCardsRefetch({ userId, languages: selectedLanguages });
       } else {
         showAlert({ text: 'Something went wrong:(', severity: 'error' });
       }
@@ -79,7 +72,7 @@ function CardWords() {
   }, [editResult]);
 
   React.useEffect(() => {
-    trigger({ userId, languages: selectedLanguages });
+    triggerSelectedCardsRefetch({ userId, languages: selectedLanguages });
     if (deleteResult) {
       if (deleteResult.deletedCount === 1) {
         showAlert({
@@ -92,14 +85,31 @@ function CardWords() {
     }
   }, [deleteResult]);
 
-  const handleCardDelete = () => {
+  const toggleLanguage = React.useCallback(() => {
+    setCurrentLanguage(
+      currentLanguage === selectedLanguages[0]
+        ? selectedLanguages[1]
+        : selectedLanguages[0],
+    );
+  }, [currentLanguage]);
+
+  const toggleEditingMode = React.useCallback(() => {
+    setEditingMode(!editingMode);
+  }, [editingMode]);
+
+  const setEditedCardInfo = React.useCallback((word: Record<string, string>) => (
+    dispatch(
+      setEditedCard(word),
+    )), []);
+
+  const handleCardDelete = React.useCallback(() => {
     showModal({
       text: ' This is going to delete this card forever. There is no possibility to restore deleted cards',
-      acceptFunction: () => deleteCard({ userId, cardId }).unwrap(),
+      acceptFunction: () => deleteCard({ userId, cardId }),
     });
-  };
+  }, []);
 
-  const handleCardEdit = () => {
+  const handleCardEdit = React.useCallback(() => {
     editCard({
       userId,
       [selectedLanguages[0]]: firstWordEdited || firstWord,
@@ -107,26 +117,22 @@ function CardWords() {
       cardId,
     }).unwrap();
     setEditingMode(!editingMode);
-  };
-
-  const cardText = editingMode ? (
-    <EditableWords words={toPairs(words)} actionType={setEditedCard} />
-  ) : (
-    <ReadonlyWords
-      text={currentWord}
-    />
-  );
+  }, [firstWordEdited, secondWordEdited]);
 
   return (
-    <Card
-      text={cardText}
-      toggleLanguage={toggleLanguage}
+    <CardComponent
+      currentCardNumber={currentCardNumber}
       editingMode={editingMode}
-      handleCardEdit={handleCardEdit}
       handleCardDelete={handleCardDelete}
-      handleModeChange={() => setEditingMode(!editingMode)}
+      handleCardEdit={handleCardEdit}
+      handleModeChange={toggleEditingMode}
+      text={editingMode
+        ? <EditableCardWords words={toPairs(words)} clickHandler={setEditedCardInfo} />
+        : <ReadonlyCardWords text={currentWord} />}
+      toggleLanguage={toggleLanguage}
+      paginationDirection={paginationDirection}
     />
   );
 }
 
-export default CardWords;
+export default Card;

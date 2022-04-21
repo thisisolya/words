@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCreateNewUserMutation } from '../store/apis/user-api';
 import useAlert from '../hooks/use-alert';
 
-import Card from '../components/shared/card';
+import CardLayout from '../components/CardLayout';
 import Container from '../components/shared/container';
 
 function CreateUser() {
@@ -35,7 +35,7 @@ function CreateUser() {
 
   return (
     <Container>
-      <Card size="medium">
+      <CardLayout size="medium">
         <Typography variant="h2" textAlign="center">
           Create account
         </Typography>
@@ -56,7 +56,7 @@ function CreateUser() {
         >
           Let&apos;s go!
         </Button>
-      </Card>
+      </CardLayout>
     </Container>
   );
 }

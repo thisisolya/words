@@ -1,28 +1,23 @@
 import React from 'react';
 import { Stack, Chip, Typography } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
-
 import _ from 'lodash';
 import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
-
-import { AppState } from '../../store';
 import { NewCard } from '../../types';
 
 interface LanguagesSelectorProps {
   languageNumber: string,
   specificLanguage?: Record<string, string>,
-  actionType: ActionCreatorWithPayload<Record<string, string>, string>,
+  clickHandler: (arg: Record<string, string>) => void,
+  newCard?: NewCard,
 }
 
-function LanguageSelector({ languageNumber, specificLanguage, actionType }:LanguagesSelectorProps) {
-  const dispatch = useDispatch();
-  const { newCard } = useSelector((state: AppState) => state.card);
+function LanguagePicker({
+  languageNumber, specificLanguage, clickHandler, newCard,
+}:LanguagesSelectorProps) {
   const languages = specificLanguage ? [specificLanguage] : allLanguages;
   const languageKey = `${languageNumber}Language`;
+  const currentLanguage = newCard && newCard[languageKey as keyof NewCard];
   const notToBeEqualToLanguage = languageKey === 'firstLanguage' ? 'secondLanguage' : 'firstLanguage';
-
-  const handleClick = (language: string) => dispatch(actionType({ [languageKey]: language }));
 
   return (
     <Stack direction="row" spacing={2} alignItems="center">
@@ -36,9 +31,9 @@ function LanguageSelector({ languageNumber, specificLanguage, actionType }:Langu
           <Chip
             key={React.useId()}
             label={language.short}
-            variant={newCard && newCard[languageKey as keyof NewCard] === (language.full || specificLanguage) ? 'filled' : 'outlined'}
-            clickable
-            onClick={() => handleClick(language.full)}
+            variant={(specificLanguage || currentLanguage === language.full) ? 'filled' : 'outlined'}
+            clickable={!!currentLanguage}
+            onClick={() => clickHandler({ [languageKey]: language.full })}
             disabled={newCard && language.full === newCard[notToBeEqualToLanguage]}
           />
         ))}
@@ -47,4 +42,4 @@ function LanguageSelector({ languageNumber, specificLanguage, actionType }:Langu
   );
 }
 
-export default LanguageSelector;
+export default LanguagePicker;
