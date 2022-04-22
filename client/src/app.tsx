@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import theme from './theme';
 import store from './store';
 
-import MainPage from './pages/main-page';
+import MainPage from './containers/MainPage';
 
 function App() {
   return (

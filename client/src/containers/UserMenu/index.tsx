@@ -9,18 +9,18 @@ import {
 import {
   useGetAllCardsQuery,
   useLazyGetSelectedCardsQuery,
-} from '../store/apis/card-api';
-import { useGetUserInfoQuery } from '../store/apis/user-api';
-import { selectedUserSelector } from '../store/selectors/user';
+} from '../../store/apis/card-api';
+import { useGetUserInfoQuery } from '../../store/apis/user-api';
+import { selectedUserSelector } from '../../store/selectors/user';
 import {
   resetCurrentCardNumber,
   setPreferredLanguage,
   setSelectedLanguages,
-} from '../store/slices/card-slice';
+} from '../../store/slices/card-slice';
 
-import AnimatedContainer from '../components/AnimatedContainer';
-import ButtonContained from '../components/ButtonContained';
-import LanguageOptions from '../components/LanguagePairsGrid';
+import AnimatedContainer from '../../components/AnimatedContainer';
+import ButtonContained from '../../components/ButtonContained';
+import LanguageOptions from '../../components/LanguagePairsGrid';
 
 function UserMenu() {
   const navigate = useNavigate();

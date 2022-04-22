@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack } from '@mui/material';
 import { SUPPORTED_LANGUAGES as allLanguages } from '../../../helpers/constats';
-import Autocomplete from '../../autocomplete';
+import Autocomplete from '../../Autocomplete';
 import LanguagePicker from '../../LanguagePicker';
 
 interface EditableWordsProps {

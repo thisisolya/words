@@ -3,15 +3,15 @@ import { Typography, Grid, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useGetAllUsersQuery } from '../store/apis/user-api';
-import { allUsersSelector } from '../store/selectors/user';
-import { setSelectedUser } from '../store/slices/user-slice';
-import { User } from '../types';
+import { useGetAllUsersQuery } from '../../store/apis/user-api';
+import { allUsersSelector } from '../../store/selectors/user';
+import { setSelectedUser } from '../../store/slices/user-slice';
+import { User } from '../../types';
 
-import CreateUser from './create-user';
-import AnimatedContainer from '../components/AnimatedContainer';
-import ButtonContained from '../components/ButtonContained';
-import UserCard from '../components/UserCard';
+import AnimatedContainer from '../../components/AnimatedContainer';
+import ButtonContained from '../../components/ButtonContained';
+import CreateUser from '../CreateUser';
+import UserCard from '../../components/UserCard';
 
 function UsersList() {
   const dispatch = useDispatch();

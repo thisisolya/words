@@ -1,19 +1,20 @@
 import React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import { ModalProvider } from '../context/ModalContext';
-import { AlertProvider } from '../context/AlertContext';
-import useLogout from '../hooks/useLogout';
+import { AlertProvider } from '../../context/AlertContext';
+import { ModalProvider } from '../../context/ModalContext';
 
-import AppWrapper from '../components/AppWrapper';
-import CardsGallery from '../containers/CardsGallery';
-import CreateCard from './create-card';
-import CreateUser from './create-user';
-import NavBar from '../components/Navbar';
-import PagesWrapper from '../components/PagesWrapper';
-import Settings from './settings';
-import UsersList from './users-list';
-import UserMenu from './user-menu';
+import useLogout from '../../hooks/useLogout';
+
+import AppWrapper from '../../components/AppWrapper';
+import CardsGallery from '../CardsGallery';
+import CreateCard from '../CreateCard';
+import CreateUser from '../CreateUser';
+import NavBar from '../../components/Navbar';
+import Settings from '../Settings';
+import PagesWrapper from '../../components/PagesWrapper';
+import UserMenu from '../UserMenu';
+import UsersList from '../UsersGallery';
 
 function MainPage() {
   const { logout } = useLogout();

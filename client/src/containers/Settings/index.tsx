@@ -1,21 +1,21 @@
 import React from 'react';
 import { Typography, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
 import { useSelector } from 'react-redux';
+import { useEditUserInfoMutation, useDeleteUserMutation } from '../../store/apis/user-api';
+import { selectedUserSelector } from '../../store/selectors/user';
+import { AppState } from '../../store';
 
-import { AppState } from '../store';
-import { useDeleteUserMutation, useEditUserInfoMutation } from '../store/apis/user-api';
-import { selectedUserSelector } from '../store/selectors/user';
+import useAlert from '../../hooks/useAlert';
+import useLogout from '../../hooks/useLogout';
+import useModal from '../../hooks/useModal';
 
-import useAlert from '../hooks/useAlert';
-import useModal from '../hooks/useModal';
-import useLogout from '../hooks/useLogout';
-
-import AnimatedContainer from '../components/AnimatedContainer';
-import ButtonContained from '../components/ButtonContained';
-import CardLayout from '../components/CardLayout';
-import EditableText from '../components/EditableText';
-import Toolbar from '../components/ToolBar';
+import AnimatedContainer from '../../components/AnimatedContainer';
+import ButtonContained from '../../components/ButtonContained';
+import CardLayout from '../../components/CardLayout';
+import EditableText from '../../components/EditableText';
+import Toolbar from '../../components/ToolBar';
 
 function Settings() {
   const navigate = useNavigate();

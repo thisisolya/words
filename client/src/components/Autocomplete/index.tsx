@@ -2,9 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 import { Autocomplete as MuiAutocomplete, TextField } from '@mui/material';
 import { filter, startsWith } from 'ramda';
-import allRussianWords from '../helpers/ru_words.json';
-import allEnglishWords from '../helpers/en_words.json';
-import allGermanWords from '../helpers/de_words.json';
+import allRussianWords from '../../helpers/ru_words.json';
+import allEnglishWords from '../../helpers/en_words.json';
+import allGermanWords from '../../helpers/de_words.json';
 
 interface AutocompleteProps {
   language: string,
@@ -36,7 +36,7 @@ function Autocomplete({
     clickHandler({ [wordKey]: selectedValue });
   }, [clickHandler]);
 
-  const handleInputChange = (event: React.SyntheticEvent<Element, Event>) => {
+  const handleInputChange = React.useCallback((event: React.SyntheticEvent<Element, Event>) => {
     if (event) {
       const target = event.target as HTMLInputElement;
       const currentInputValue = target.value;
@@ -52,7 +52,7 @@ function Autocomplete({
         setNoOptionsText('Please enter at least 3 characters');
       }
     }
-  };
+  }, []);
 
   return (
     <MuiAutocomplete

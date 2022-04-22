@@ -2,11 +2,11 @@ import React from 'react';
 import { Button, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { useCreateNewUserMutation } from '../store/apis/user-api';
-import useAlert from '../hooks/useAlert';
+import { useCreateNewUserMutation } from '../../store/apis/user-api';
+import useAlert from '../../hooks/useAlert';
 
-import AnimatedContainer from '../components/AnimatedContainer';
-import CardLayout from '../components/CardLayout';
+import AnimatedContainer from '../../components/AnimatedContainer';
+import CardLayout from '../../components/CardLayout';
 
 function CreateUser() {
   const navigate = useNavigate();
