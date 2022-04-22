@@ -18,8 +18,8 @@ import {
   setSelectedLanguages,
 } from '../store/slices/card-slice';
 
-import ButtonContained from '../components/shared/button-contained';
-import Container from '../components/shared/container';
+import AnimatedContainer from '../components/AnimatedContainer';
+import ButtonContained from '../components/ButtonContained';
 import LanguageOptions from '../components/LanguagePairsGrid';
 
 function UserMenu() {
@@ -70,7 +70,7 @@ function UserMenu() {
   if (isFetching) return <CircularProgress />;
 
   return (
-    <Container>
+    <AnimatedContainer>
       <Typography variant="h2" textAlign="center">
         Welcome,
         {' '}
@@ -94,7 +94,7 @@ function UserMenu() {
           clickHandler={() => navigate('settings')}
         />
       </Grid>
-    </Container>
+    </AnimatedContainer>
   );
 }
 

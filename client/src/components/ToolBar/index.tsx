@@ -4,7 +4,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import EditIcon from '@mui/icons-material/Edit';
-import IconButton from './icon-button';
+import IconButton from '../IconButton';
 
 interface CardToolbarProps {
   editingMode: boolean;
@@ -13,7 +13,7 @@ interface CardToolbarProps {
   handleModeChange: () => void;
 }
 
-function CardToolbar({
+function Toolbar({
   editingMode,
   handleCardDelete,
   handleCardEdit,
@@ -41,4 +41,4 @@ function CardToolbar({
   );
 }
 
-export default CardToolbar;
+export default Toolbar;

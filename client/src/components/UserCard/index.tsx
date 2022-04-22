@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-import { User } from '../types';
-import CardLayout from './CardLayout';
+import { User } from '../../types';
+import CardLayout from '../CardLayout';
 
 interface UserCardProps {
   user: User,

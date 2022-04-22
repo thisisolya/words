@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack } from '@mui/material';
 import AnimatedCardContainer from './AnimatedCardContainer';
 import CardLayout from '../CardLayout';
-import CardToolbar from '../shared/card-toolbar';
+import Toolbar from '../ToolBar';
 
 interface CardProps {
   currentCardNumber: number;
@@ -38,7 +38,7 @@ function Card({
         >
           {text}
         </Stack>
-        <CardToolbar
+        <Toolbar
           handleCardDelete={handleCardDelete}
           handleModeChange={handleModeChange}
           handleCardEdit={handleCardEdit}

@@ -7,15 +7,15 @@ import { AppState } from '../store';
 import { useDeleteUserMutation, useEditUserInfoMutation } from '../store/apis/user-api';
 import { selectedUserSelector } from '../store/selectors/user';
 
-import useAlert from '../hooks/use-alert';
-import useModal from '../hooks/use-modal';
-import useLogout from '../hooks/use-logout';
+import useAlert from '../hooks/useAlert';
+import useModal from '../hooks/useModal';
+import useLogout from '../hooks/useLogout';
 
-import EditableText from '../components/shared/editable-text';
+import AnimatedContainer from '../components/AnimatedContainer';
+import ButtonContained from '../components/ButtonContained';
 import CardLayout from '../components/CardLayout';
-import CardToolbar from '../components/shared/card-toolbar';
-import Container from '../components/shared/container';
-import ButtonContained from '../components/shared/button-contained';
+import EditableText from '../components/EditableText';
+import Toolbar from '../components/ToolBar';
 
 function Settings() {
   const navigate = useNavigate();
@@ -90,7 +90,7 @@ function Settings() {
   };
 
   return (
-    <Container>
+    <AnimatedContainer>
       <CardLayout size="medium">
         <Typography variant="h2" mb={1}>
           Change user info
@@ -123,7 +123,7 @@ function Settings() {
           {' '}
           {selectedUser?.cards?.length}
         </Typography>
-        <CardToolbar
+        <Toolbar
           editingMode={editingMode}
           handleModeChange={handleModeChange}
           handleCardEdit={handleCardEdit}
@@ -133,7 +133,7 @@ function Settings() {
         clickHandler={() => handleUserDelete()}
         text="Delete user"
       />
-    </Container>
+    </AnimatedContainer>
   );
 }
 

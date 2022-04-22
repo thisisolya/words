@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, Typography, Stack } from '@mui/material';
-import CardLayout from './CardLayout';
-import ButtonContained from './shared/button-contained';
+import ButtonContained from '../ButtonContained';
+import CardLayout from '../CardLayout';
 
 interface ModalProps {
   isOpen: boolean;

@@ -10,18 +10,18 @@ import {
   currentCardNumberSelector,
   preferredLanguageSelector,
   selectedLanguagesSelector,
-} from '../store/selectors/cards';
+} from '../../store/selectors/cards';
 import {
   setCurrentCardNumber,
   setPreferredLanguage,
-} from '../store/slices/card-slice';
+} from '../../store/slices/card-slice';
 
-import Card from '../containers/Card';
-import LanguagesSwitcher from '../components/LanguagesSwitcher';
-import ButtonContained from '../components/shared/button-contained';
-import Container from '../components/shared/container';
-import IconButton from '../components/shared/icon-button';
-import EmptyGallery from '../components/EmptyGallery';
+import Card from '../Card';
+import LanguagesSwitcher from '../../components/LanguagesSwitcher';
+import ButtonContained from '../../components/ButtonContained'; 
+import EmptyGallery from '../../components/EmptyGallery';
+import AnimatedContainer from '../../components/AnimatedContainer';
+import IconButton from '../../components/IconButton';
 
 function CardsGallery() {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ function CardsGallery() {
   }
 
   return (
-    <Container>
+    <AnimatedContainer>
       <LanguagesSwitcher toggleLanguage={toggleLanguage} selectedLanguages={selectedLanguages} />
       <Stack direction="row" alignItems="center" spacing={1}>
         <IconButton
@@ -80,7 +80,7 @@ function CardsGallery() {
         text="Create card"
         clickHandler={() => navigate('create')}
       />
-    </Container>
+    </AnimatedContainer>
   );
 }
 

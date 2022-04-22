@@ -3,23 +3,25 @@ import { AppBar as MuiAppBar } from '@mui/material';
 import styled from '@emotion/styled';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useNavigate } from 'react-router-dom';
+import palette from '../../theme/palette';
 
-import palette from '../theme/palette';
-import useLogout from '../hooks/use-logout';
+interface NavBarProps {
+  handleLogout: () => void,
+  handleHomeClick: () => void,
+}
 
 const AppBar = styled(MuiAppBar)`
   background-color: ${palette.primary.dark};
 `;
 
-function NavBar() {
-  const navigate = useNavigate();
-  const { logout } = useLogout();
+function NavBar({ handleLogout, handleHomeClick }: NavBarProps) {
+//   const navigate = useNavigate();
+//   const { logout } = useLogout();
 
   return (
     <AppBar>
-      <HomeIcon onClick={() => navigate('/')} />
-      <LogoutIcon onClick={logout} />
+      <HomeIcon onClick={handleHomeClick} />
+      <LogoutIcon onClick={handleLogout} />
     </AppBar>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import Snackbar from '../components/snackbar';
+import Snackbar from '../components/Snackbar';
 
 interface ContextType {
   toggleAlert: () => void;

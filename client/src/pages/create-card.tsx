@@ -3,16 +3,16 @@ import { Divider, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import useAlert from '../hooks/use-alert';
+import useAlert from '../hooks/useAlert';
 import { useCreateNewCardMutation } from '../store/apis/card-api';
 import { clearNewCard, setNewCard } from '../store/slices/card-slice';
 import { newCardSelector } from '../store/selectors/cards';
 import { NewCard } from '../types';
 
+import AnimatedContainer from '../components/AnimatedContainer';
 import Autocomplete from '../components/autocomplete';
-import ButtonContained from '../components/shared/button-contained';
+import ButtonContained from '../components/ButtonContained';
 import CardLayout from '../components/CardLayout';
-import Container from '../components/shared/container';
 import LanguagePicker from '../components/LanguagePicker';
 
 function CreateCard() {
@@ -53,7 +53,7 @@ function CreateCard() {
   }, []);
 
   return (
-    <Container>
+    <AnimatedContainer>
       <CardLayout size="medium">
         <Stack gap={1.5} my={3}>
           <LanguagePicker
@@ -89,7 +89,7 @@ function CreateCard() {
         />
       </CardLayout>
       <ButtonContained text="Back to menu" clickHandler={() => navigate('/')} />
-    </Container>
+    </AnimatedContainer>
   );
 }
 

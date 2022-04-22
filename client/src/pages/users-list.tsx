@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useGetAllUsersQuery } from '../store/apis/user-api';
 import { allUsersSelector } from '../store/selectors/user';
+import { setSelectedUser } from '../store/slices/user-slice';
 import { User } from '../types';
 
 import CreateUser from './create-user';
-import UserCard from '../components/user-card';
-import Container from '../components/shared/container';
-import ButtonContained from '../components/shared/button-contained';
-import { setSelectedUser } from '../store/slices/user-slice';
+import AnimatedContainer from '../components/AnimatedContainer';
+import ButtonContained from '../components/ButtonContained';
+import UserCard from '../components/UserCard';
 
 function UsersList() {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ function UsersList() {
   }
 
   return (
-    <Container>
+    <AnimatedContainer>
       <Typography variant="h2" textAlign="center">
         Who&apos;s playing?
       </Typography>
@@ -53,7 +53,7 @@ function UsersList() {
         />
       </Grid>
 
-    </Container>
+    </AnimatedContainer>
   );
 }
 

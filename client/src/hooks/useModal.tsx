@@ -1,5 +1,5 @@
 import React from 'react';
-import ModalContext from '../context/modal-context';
+import ModalContext from '../context/ModalContext';
 
 const useModal = () => {
   const { toggleModal, setAcceptButtonHandler, setText } = React.useContext(ModalContext);

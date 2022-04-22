@@ -1,35 +1,42 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import { ModalProvider } from '../context/modal-context';
-import { AlertProvider } from '../context/alert-context';
+import { ModalProvider } from '../context/ModalContext';
+import { AlertProvider } from '../context/AlertContext';
+import useLogout from '../hooks/useLogout';
 
-import CardsGallery from './cards-gallery';
+import AppWrapper from '../components/AppWrapper';
+import CardsGallery from '../containers/CardsGallery';
 import CreateCard from './create-card';
 import CreateUser from './create-user';
-import NavBar from '../components/nav-bar';
+import NavBar from '../components/Navbar';
+import PagesWrapper from '../components/PagesWrapper';
 import Settings from './settings';
 import UsersList from './users-list';
 import UserMenu from './user-menu';
-import Wrapper from '../components/wrapper';
 
 function MainPage() {
+  const { logout } = useLogout();
+  const navigate = useNavigate();
+
   return (
-    <Wrapper>
-      <NavBar />
+    <AppWrapper>
+      <NavBar handleHomeClick={() => navigate('/')} handleLogout={logout} />
       <AlertProvider>
         <ModalProvider>
-          <Routes>
-            <Route path="/" element={<UsersList />} />
-            <Route path="/user/:id" element={<UserMenu />} />
-            <Route path="/user/:id/cards" element={<CardsGallery />} />
-            <Route path="/user/:id/cards/create" element={<CreateCard />} />
-            <Route path="/user/create" element={<CreateUser />} />
-            <Route path="/user/:id/settings" element={<Settings />} />
-          </Routes>
+          <PagesWrapper>
+            <Routes>
+              <Route path="/" element={<UsersList />} />
+              <Route path="/user/:id" element={<UserMenu />} />
+              <Route path="/user/:id/cards" element={<CardsGallery />} />
+              <Route path="/user/:id/cards/create" element={<CreateCard />} />
+              <Route path="/user/create" element={<CreateUser />} />
+              <Route path="/user/:id/settings" element={<Settings />} />
+            </Routes>
+          </PagesWrapper>
         </ModalProvider>
       </AlertProvider>
-    </Wrapper>
+    </AppWrapper>
   );
 }
 

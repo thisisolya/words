@@ -18,8 +18,8 @@ import {
 import { setEditedCard } from '../../store/slices/card-slice';
 
 import { Card as CardType } from '../../types';
-import useAlert from '../../hooks/use-alert';
-import useModal from '../../hooks/use-modal';
+import useAlert from '../../hooks/useAlert';
+import useModal from '../../hooks/useModal';
 
 import CardComponent from '../../components/Card';
 import ReadonlyCardWords from '../../components/Card/ReadonlyCardWords';

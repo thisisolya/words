@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Stack, Typography } from '@mui/material';
-import ButtonContained from '../shared/button-contained';
+import ButtonContained from '../ButtonContained';
 
 function EmptyGallery({ clickHandler }: { clickHandler: ()=> void }) {
   return (

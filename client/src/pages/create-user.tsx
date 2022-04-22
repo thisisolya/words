@@ -3,10 +3,10 @@ import { Button, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import { useCreateNewUserMutation } from '../store/apis/user-api';
-import useAlert from '../hooks/use-alert';
+import useAlert from '../hooks/useAlert';
 
+import AnimatedContainer from '../components/AnimatedContainer';
 import CardLayout from '../components/CardLayout';
-import Container from '../components/shared/container';
 
 function CreateUser() {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ function CreateUser() {
   };
 
   return (
-    <Container>
+    <AnimatedContainer>
       <CardLayout size="medium">
         <Typography variant="h2" textAlign="center">
           Create account
@@ -57,7 +57,7 @@ function CreateUser() {
           Let&apos;s go!
         </Button>
       </CardLayout>
-    </Container>
+    </AnimatedContainer>
   );
 }
 

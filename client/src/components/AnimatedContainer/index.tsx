@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
 
-function Container({ children }: { children: React.ReactNode }) {
+function AnimatedContainer({ children }: { children: React.ReactNode }) {
   return (
     <AnimatePresence>
       <Stack
@@ -19,4 +19,4 @@ function Container({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default Container;
+export default AnimatedContainer;
