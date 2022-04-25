@@ -10,11 +10,11 @@ const getUserInfoById = ({ collection, userId, result }) => {
   });
 };
 
-const getSelectedCards = ({userId, firstKey,secondKey, collection, result }) => {    
-  collection.find({user_id: userId, [firstKey]: {$exists: true}, [secondKey]: {$exists: true}})
-  .toArray((error, documents) => {
-    error ? result.send("Cannot find cards") : result.send(documents);
-  });
+const getSelectedCards = ({ userId, firstKey, secondKey, collection, result }) => {
+  collection.find({ user_id: userId, [firstKey]: { $exists: true }, [secondKey]: { $exists: true } })
+    .toArray((error, documents) => {
+      error ? result.send("Cannot find cards") : result.send(documents);
+    });
 }
 
 const getCardsByUserId = ({ collection, userId, result }) => {
@@ -73,19 +73,23 @@ const deleteUserById = ({ userId, usersCollection, cardsCollection, result }) =>
     { $lookup: { from: 'cards', foreignField: "user_id", localField: "_id", as: 'cards' } }
   ]).toArray((error, documents) => {
     if (!error) {
-      documents.map((doc) => doc.cards.map((card) => {
-        cardsCollection.deleteOne({ _id: card._id }, (error) => {
-          if (!error) {
-            usersCollection.deleteOne({ _id: userId }, (error, response) => {
-              error ? result.send("Cannot delete user") : result.send(response);
-            })
-          } else {
-            result.send("Cannot delete user")
-          }
+      documents.cards
+        ? documents.map((doc) => doc.cards.map((card) => {
+          cardsCollection.deleteOne({ _id: card._id }, (error) => {
+            if (!error) {
+              usersCollection.deleteOne({ _id: userId }, (error, response) => {
+                error ? result.send("Cannot delete user") : result.send(response);
+              })
+            } else {
+              result.send("Cannot delete user") 
+            }
+          })
+        }))
+        : usersCollection.deleteOne({ _id: userId }, (error, response) => {
+          error ? result.send("Cannot delete user") : result.send(response);
         })
-      }))
     } else {
-      result.send("Cannot delete user")
+      result.send("Cannot delete user") 
     }
   });
 };

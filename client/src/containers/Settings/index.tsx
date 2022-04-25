@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useEditUserInfoMutation, useDeleteUserMutation } from '../../store/apis/user-api';
 import { selectedUserSelector } from '../../store/selectors/user';
-import { AppState } from '../../store';
+import { allCardsSelector } from '../../store/selectors/cards';
 
 import useAlert from '../../hooks/useAlert';
 import useLogout from '../../hooks/useLogout';
@@ -23,25 +23,15 @@ function Settings() {
   const { showModal } = useModal();
   const { logout } = useLogout();
   const selectedUser = useSelector(selectedUserSelector);
+  const allCardsCount = useSelector(allCardsSelector)?.length;
+  const { firstName, lastName, id: userId } = selectedUser || {};
 
   const [editingMode, setEdidingMode] = React.useState(false);
-  const [editedFirstName, setEdiditedFirstName] = React.useState(
-    selectedUser?.firstName || '',
-  );
-  const [editedLastName, setEdiditedLastName] = React.useState(
-    selectedUser?.lastName || '',
-  );
-  const userId = useSelector((state: AppState) => state.user.selectedUser?.id)
-    || localStorage.getItem('userId');
+  const [editedFirstName, setEdiditedFirstName] = React.useState(firstName || '');
+  const [editedLastName, setEdiditedLastName] = React.useState(lastName || '');
 
   const [editUserInfo, { data: editResult }] = useEditUserInfoMutation();
   const [deleteUser, { data: deleteResult }] = useDeleteUserMutation();
-
-  const handleModeChange = () => {
-    setEdidingMode(!editingMode);
-    setEdiditedFirstName(selectedUser?.firstName || '');
-    setEdiditedLastName(selectedUser?.lastName || '');
-  };
 
   React.useEffect(() => {
     if (editResult) {
@@ -74,20 +64,24 @@ function Settings() {
     }
   }, [selectedUser]);
 
-  const handleCardEdit = () => {
+  const handleModeChange = React.useCallback(() => {
+    setEdidingMode(!editingMode);
+  }, [editingMode]);
+
+  const handleCardEdit = React.useCallback(() => {
     editUserInfo({ userId, editedFirstName, editedLastName }).unwrap();
-  };
+  }, [userId, editedFirstName, editedLastName]);
 
-  const deleteUserFunction = () => {
+  const deleteUserFunction = React.useCallback(() => {
     deleteUser({ userId }).unwrap();
-  };
+  }, [userId]);
 
-  const handleUserDelete = () => {
+  const handleUserDelete = React.useCallback(() => {
     showModal({
       text: ' This is going to delete your account forever and you will not be able to restore it.',
       acceptFunction: () => deleteUserFunction,
     });
-  };
+  }, []);
 
   return (
     <AnimatedContainer>
@@ -121,7 +115,7 @@ function Settings() {
         <Typography>
           Total cards count:
           {' '}
-          {selectedUser?.cards?.length}
+          {allCardsCount}
         </Typography>
         <Toolbar
           editingMode={editingMode}

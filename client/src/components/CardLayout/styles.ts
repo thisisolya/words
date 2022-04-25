@@ -14,6 +14,7 @@ const CustomCard = styled(Stack)<CustomCardProps>`
   box-shadow: ${(props) => props.size === 'large' && `3px 3px 1px 1px ${palette.primary.main}`};
   justify-content: ${(props) => (props.size === 'small' ? 'space-evenly' : 'center')};
   min-height: ${(props) => (props.size === 'small' ? '90px' : '150px')};
+  max-width:${(props) => (props.size === 'medium' && '300px')};
   min-width: ${(props) => (props.size === 'large' ? '200px' : '280px')};
   min-width: ${(props) => props.size === 'small' && '100px'};
   gap: ${(props) => (props.size !== 'small' ? '15px' : undefined)};

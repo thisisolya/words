@@ -102,10 +102,14 @@ function Card() {
       setEditedCard(word),
     )), []);
 
+  const deleteCardFunction = React.useCallback(() => {
+    deleteCard({ userId, cardId }).unwrap();
+  }, [userId, cardId]);
+
   const handleCardDelete = React.useCallback(() => {
     showModal({
       text: ' This is going to delete this card forever. There is no possibility to restore deleted cards',
-      acceptFunction: () => deleteCard({ userId, cardId }),
+      acceptFunction: () => deleteCardFunction,
     });
   }, []);
 
