@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toPairs } from 'ramda';
-
+import { last, toPairs, head } from 'ramda';
 import {
   currentCardNumberSelector,
   editedCardSelector,
@@ -46,8 +45,8 @@ function Card() {
   const currentCard = selectedCards[currentCardNumber];
   const { userId, cardId, ...words } = currentCard;
   const currentWord = currentCard[currentLanguage as keyof CardType];
-  const firstWord = words[selectedLanguages[0] as keyof typeof words];
-  const secondWord = words[selectedLanguages[1] as keyof typeof words];
+  const firstWord = words[head(selectedLanguages) as keyof typeof words];
+  const secondWord = words[last(selectedLanguages) as keyof typeof words];
 
   const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
   const [editCard, { data: editResult }] = useEditCardMutation();
@@ -87,9 +86,9 @@ function Card() {
 
   const toggleLanguage = React.useCallback(() => {
     setCurrentLanguage(
-      currentLanguage === selectedLanguages[0]
-        ? selectedLanguages[1]
-        : selectedLanguages[0],
+      currentLanguage === head(selectedLanguages)
+        ? last(selectedLanguages) || ''
+        : head(selectedLanguages) || '',
     );
   }, [currentLanguage]);
 

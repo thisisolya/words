@@ -1,7 +1,9 @@
 import React from 'react';
 import { Typography, Grid } from '@mui/material';
 import _ from 'lodash';
+import { last, head } from 'ramda';
 import CardLayout from '../CardLayout';
+import { SUPPORTED_LANGUAGES as supportedLanguages } from '../../helpers/constats';
 
 interface LanguageOptionsProps {
   languagesPairs: string[][];
@@ -14,7 +16,7 @@ function LanguageOptions({ languagesPairs, clickHandler }: LanguageOptionsProps)
       {languagesPairs.map((pair) => (
         <div
           aria-hidden
-          key={`${pair[0]}-${pair[1]}`}
+          key={`${head(pair)}-${last(pair)}`}
           onClick={() => clickHandler(pair)}
           style={{ cursor: 'pointer' }}
         >
@@ -23,11 +25,11 @@ function LanguageOptions({ languagesPairs, clickHandler }: LanguageOptionsProps)
               Practice
             </Typography>
             <Typography>
-              {_.upperFirst(pair[0])}
+              {_.upperFirst(supportedLanguages[head(pair) as keyof typeof supportedLanguages])}
               {' '}
               &ndash;
               {' '}
-              {_.upperFirst(pair[1])}
+              {_.upperFirst(supportedLanguages[last(pair) as keyof typeof supportedLanguages])}
             </Typography>
           </CardLayout>
         </div>

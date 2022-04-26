@@ -5,6 +5,7 @@ import { filter, startsWith } from 'ramda';
 import allRussianWords from '../../helpers/ru_words.json';
 import allEnglishWords from '../../helpers/en_words.json';
 import allGermanWords from '../../helpers/de_words.json';
+import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
 
 interface AutocompleteProps {
   language: string,
@@ -68,7 +69,7 @@ function Autocomplete({
           {...params}
           variant={variant}
           type="text"
-          label={_.upperFirst(label)}
+          label={_.upperFirst(allLanguages[label as keyof typeof allLanguages])}
         />
       )}
       noOptionsText={noOptionsText}

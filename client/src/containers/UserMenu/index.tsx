@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  includes, keys, map, omit, reverse,
+  head, includes, keys, map, omit, reverse,
 } from 'ramda';
 import {
   useGetAllCardsQuery,
@@ -41,6 +41,7 @@ function UserMenu() {
         ((card) => keys(omit(['_id', 'user_id'], card))),
         allCardsList,
       );
+
       allLanguagePairs.map((pair) => (
         !includes(pair, uniqueLanguagePairs) && !includes(reverse(pair), uniqueLanguagePairs)
         && uniqueLanguagePairs.push(pair as string[])));
@@ -54,7 +55,7 @@ function UserMenu() {
 
   const handleLanguagesSelection = React.useCallback((languages: string[]) => {
     triggerSelectedCardsFetch({ userId, languages });
-    dispatch(setPreferredLanguage(languages[0]));
+    dispatch(setPreferredLanguage(head(languages)));
     dispatch(setSelectedLanguages(languages));
   }, []);
 

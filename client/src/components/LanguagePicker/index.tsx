@@ -1,12 +1,13 @@
 import React from 'react';
 import { Stack, Chip, Typography } from '@mui/material';
 import _ from 'lodash';
+import { keys } from 'ramda';
 import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
 import { NewCard } from '../../types';
 
 interface LanguagesSelectorProps {
   languageNumber: string,
-  specificLanguage?: Record<string, string>,
+  specificLanguage?: string,
   clickHandler: (arg: Record<string, string>) => void,
   newCard?: NewCard,
 }
@@ -14,7 +15,7 @@ interface LanguagesSelectorProps {
 function LanguagePicker({
   languageNumber, specificLanguage, clickHandler, newCard,
 }:LanguagesSelectorProps) {
-  const languages = specificLanguage ? [specificLanguage] : allLanguages;
+  const languages = (specificLanguage && [specificLanguage]) || keys(allLanguages);
   const languageKey = `${languageNumber}Language`;
   const currentLanguage = newCard && newCard[languageKey as keyof NewCard];
   const notToBeEqualToLanguage = languageKey === 'firstLanguage' ? 'secondLanguage' : 'firstLanguage';
@@ -27,14 +28,14 @@ function LanguagePicker({
         language
       </Typography>
       <Stack direction="row" flex={1} gap={2}>
-        {languages.map((language: Record<string, string>) => (
+        {languages.map((language) => (
           <Chip
             key={React.useId()}
-            label={language.short}
-            variant={(specificLanguage || currentLanguage === language.full) ? 'filled' : 'outlined'}
+            label={language}
+            variant={(specificLanguage || currentLanguage === language) ? 'filled' : 'outlined'}
             clickable={!!currentLanguage}
-            onClick={() => clickHandler({ [languageKey]: language.full })}
-            disabled={newCard && language.full === newCard[notToBeEqualToLanguage]}
+            onClick={() => language && clickHandler({ [languageKey]: language })}
+            disabled={newCard && language === newCard[notToBeEqualToLanguage]}
           />
         ))}
       </Stack>

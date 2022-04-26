@@ -5,6 +5,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { head, last } from 'ramda';
 import {
   selectedCardsSelector,
   currentCardNumberSelector,
@@ -18,7 +19,7 @@ import {
 
 import Card from '../Card';
 import LanguagesSwitcher from '../../components/LanguagesSwitcher';
-import ButtonContained from '../../components/ButtonContained'; 
+import ButtonContained from '../../components/ButtonContained';
 import EmptyGallery from '../../components/EmptyGallery';
 import AnimatedContainer from '../../components/AnimatedContainer';
 import IconButton from '../../components/IconButton';
@@ -41,9 +42,9 @@ function CardsGallery() {
   const toggleLanguage = React.useCallback(() => {
     dispatch(
       setPreferredLanguage(
-        preferredLanguage === selectedLanguages[0]
-          ? selectedLanguages[1]
-          : selectedLanguages[0],
+        preferredLanguage === head(selectedLanguages)
+          ? last(selectedLanguages)
+          : head(selectedLanguages),
       ),
     );
   }, [preferredLanguage]);
