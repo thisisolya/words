@@ -9,6 +9,8 @@ export interface NewCard {
   secondLanguage: string,
   firstWord:string,
   secondWord: string,
+  firstFilterable:string,
+  secondFilterable:string,
 }
 export interface User {
   firstName: string;

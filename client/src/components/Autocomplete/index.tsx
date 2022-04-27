@@ -1,40 +1,35 @@
 import React from 'react';
 import _ from 'lodash';
 import { Autocomplete as MuiAutocomplete, TextField } from '@mui/material';
-import { filter, startsWith } from 'ramda';
-import allRussianWords from '../../helpers/ru_words.json';
-import allEnglishWords from '../../helpers/en_words.json';
-import allGermanWords from '../../helpers/de_words.json';
 import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
 
 interface AutocompleteProps {
-  language: string,
+  autocompleteOptionsList?: string[];
+  language?: string,
   languageNumber: string,
+  inputHandler: (options: Record<string, string>) => void,
   clickHandler: (word: Record<string, string>) => void,
-  disabled: boolean,
   value?: string,
   variant?: 'standard' | 'filled' | 'outlined',
 }
 
-const options: Record<string, string[]> = {
-  english: allEnglishWords as string[],
-  russian: allRussianWords,
-  german: allGermanWords,
-};
-
 function Autocomplete({
-  languageNumber, language, clickHandler, disabled, value, variant,
+  autocompleteOptionsList,
+  clickHandler,
+  inputHandler,
+  language,
+  languageNumber,
+  value,
+  variant,
 }: AutocompleteProps) {
-  const [autocompleteOptions, setAutocompleteOptions] = React.useState<string[]>([]);
   const [noOptionsText, setNoOptionsText] = React.useState('Please enter at least 3 characters');
-
-  const label = language || 'Please select a language first';
-  const wordKey = `${languageNumber}Word`;
+  const label = _.upperFirst(allLanguages[language as keyof typeof allLanguages])
+  || 'Please select a language first';
 
   const handleChange = React.useCallback((event: React.SyntheticEvent<Element, Event>) => {
     const target = event.target as HTMLInputElement;
     const selectedValue = target.value || target.innerHTML;
-    clickHandler({ [wordKey]: selectedValue });
+    clickHandler({ [`${languageNumber}Word`]: selectedValue });
   }, [clickHandler]);
 
   const handleInputChange = React.useCallback((event: React.SyntheticEvent<Element, Event>) => {
@@ -43,37 +38,31 @@ function Autocomplete({
       const currentInputValue = target.value;
 
       if (currentInputValue && currentInputValue.length >= 3) {
-        const checkIfStartsWith = (option: string) => startsWith(currentInputValue, option);
-        setNoOptionsText('Lack of corresponding words');
-        setAutocompleteOptions(filter(
-          checkIfStartsWith,
-          options[language as keyof typeof options],
-        ));
+        inputHandler({ [`${languageNumber}Filterable`]: currentInputValue });
       } else {
         setNoOptionsText('Please enter at least 3 characters');
       }
     }
-  }, []);
+  }, [autocompleteOptionsList]);
 
   return (
     <MuiAutocomplete
-      options={autocompleteOptions}
+      options={autocompleteOptionsList || []}
       onBlur={handleChange}
       onClose={handleChange}
       onInputChange={handleInputChange}
       defaultValue={value}
       freeSolo
+      noOptionsText={noOptionsText}
       renderInput={(params) => (
         <TextField
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
+          label={label}
           variant={variant}
           type="text"
-          label={_.upperFirst(allLanguages[label as keyof typeof allLanguages])}
         />
       )}
-      noOptionsText={noOptionsText}
-      disabled={disabled}
     />
   );
 }

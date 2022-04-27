@@ -1,7 +1,10 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { last, toPairs, head } from 'ramda';
+
+import { AppState } from '../../store';
 import {
+  autocompleteSelector,
   currentCardNumberSelector,
   editedCardSelector,
   paginationDirectionSelector,
@@ -34,6 +37,7 @@ function Card() {
   const preferredLanguage = useSelector(preferredLanguageSelector);
   const currentCardNumber = useSelector(currentCardNumberSelector);
   const paginationDirection = useSelector(paginationDirectionSelector);
+
   const {
     firstWord: firstWordEdited,
     secondWord: secondWordEdited,
@@ -122,6 +126,14 @@ function Card() {
     setEditingMode(!editingMode);
   }, [firstWordEdited, secondWordEdited]);
 
+  const getAutocompleteSelector = (count: string) => (
+    useSelector((state: AppState) => autocompleteSelector(state.card.editedCard, count))
+  );
+
+  const setAutocompleteOptions = (options: Record<string, string>) => {
+    dispatch(setEditedCard(options));
+  };
+
   return (
     <CardComponent
       currentCardNumber={currentCardNumber}
@@ -130,7 +142,14 @@ function Card() {
       handleCardEdit={handleCardEdit}
       handleModeChange={toggleEditingMode}
       text={editingMode
-        ? <EditableCardWords words={toPairs(words)} clickHandler={setEditedCardInfo} />
+        ? (
+          <EditableCardWords
+            autocompleteOptions={getAutocompleteSelector}
+            clickHandler={setEditedCardInfo}
+            inputHandler={setAutocompleteOptions}
+            words={toPairs(words)}
+          />
+        )
         : <ReadonlyCardWords text={currentWord} />}
       toggleLanguage={toggleLanguage}
       paginationDirection={paginationDirection}

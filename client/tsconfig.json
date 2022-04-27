@@ -19,13 +19,18 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["react/next", "react-dom/next", "node"]
+    "types": [
+      "react/next",
+      "react-dom/next",
+      "node"
+    ]
   },
   "include": [
     "src",
     "src/**/*.ts",
     "test/**/*.ts",
     "typings/**/*.ts",
-    "src/**/*.js"
-, "src/components/.tsx"  ]
+    "src/**/*.js",
+    "src/components/.tsx"
+  ]
 }

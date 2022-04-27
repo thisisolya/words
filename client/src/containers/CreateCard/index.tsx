@@ -3,7 +3,8 @@ import { Divider, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { newCardSelector } from '../../store/selectors/cards';
+import { AppState } from '../../store';
+import { newCardSelector, autocompleteSelector } from '../../store/selectors/cards';
 import { useCreateNewCardMutation } from '../../store/apis/card-api';
 import { clearNewCard, setNewCard } from '../../store/slices/card-slice';
 import { NewCard } from '../../types';
@@ -20,10 +21,16 @@ function CreateCard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const newCard = useSelector(newCardSelector);
+  const firstAutocomplete = useSelector((state: AppState) => autocompleteSelector(state.card.newCard, 'first'));
+  const secondAutocomplete = useSelector((state: AppState) => autocompleteSelector(state.card.newCard, 'second'));
+
   const [createCard, { data: creationResult }] = useCreateNewCardMutation();
   const userId = localStorage.getItem('userId');
   const {
-    firstLanguage, secondLanguage, firstWord, secondWord,
+    firstLanguage,
+    secondLanguage,
+    firstWord,
+    secondWord,
   } = newCard || {};
 
   React.useEffect(() => {
@@ -48,9 +55,13 @@ function CreateCard() {
     }).unwrap();
   }, [firstWord, secondWord]);
 
-  const setNewCardInfo = React.useCallback((arg: Record<string, string>) => {
-    dispatch(setNewCard(arg));
-  }, []);
+  const setNewCardInfo = (info: Record<string, string>) => {
+    dispatch(setNewCard(info));
+  };
+
+  const setAutocompleteOptions = (options: Record<string, string>) => {
+    dispatch(setNewCard(options));
+  };
 
   return (
     <AnimatedContainer>
@@ -62,10 +73,11 @@ function CreateCard() {
             newCard={newCard}
           />
           <Autocomplete
-            language={firstLanguage || ''}
+            autocompleteOptionsList={firstAutocomplete}
+            inputHandler={setAutocompleteOptions}
+            language={firstLanguage}
             languageNumber="first"
             clickHandler={setNewCardInfo}
-            disabled={!firstLanguage}
           />
         </Stack>
         <Divider variant="fullWidth" />
@@ -76,10 +88,11 @@ function CreateCard() {
             newCard={newCard}
           />
           <Autocomplete
-            language={secondLanguage || ''}
+            autocompleteOptionsList={secondAutocomplete}
+            inputHandler={setAutocompleteOptions}
+            language={secondLanguage}
             languageNumber="second"
             clickHandler={setNewCardInfo}
-            disabled={!secondLanguage}
           />
         </Stack>
         <ButtonContained

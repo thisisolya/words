@@ -1,4 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit';
+import { filter, startsWith } from 'ramda';
+
+import { AUTOCOMPLETE_OPTIONS } from '../../helpers/constats';
+import { NewCard } from '../../types';
 import { AppState } from '../index';
 
 const cardState = ((state: AppState) => state.card);
@@ -43,6 +47,24 @@ const preferredLanguageSelector = createSelector(
   ({ preferredLanguage }) => preferredLanguage,
 );
 
+const autocompleteSelector = createSelector(
+  [(state) => state,
+    (_, count) => count,
+  ],
+  (state, count) => {
+    if (state) {
+      const filterable = state[`${count}Filterable`];
+      const language = state[`${count}Language`];
+      const checkIfStartsWith = (option: string) => filterable && startsWith(filterable, option);
+      return language
+      && filter(
+        checkIfStartsWith,
+        AUTOCOMPLETE_OPTIONS[language as keyof typeof AUTOCOMPLETE_OPTIONS],
+      );
+    } return [];
+  },
+) as (state: NewCard | undefined, count: string) => string[];
+
 export {
   allCardsSelector,
   selectedCardsSelector,
@@ -52,4 +74,5 @@ export {
   preferredLanguageSelector,
   currentCardNumberSelector,
   paginationDirectionSelector,
+  autocompleteSelector,
 };

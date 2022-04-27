@@ -20,6 +20,10 @@ function LanguagePicker({
   const currentLanguage = newCard && newCard[languageKey as keyof NewCard];
   const notToBeEqualToLanguage = languageKey === 'firstLanguage' ? 'secondLanguage' : 'firstLanguage';
 
+  React.useEffect(() => {
+    if (specificLanguage) { clickHandler({ [languageKey]: specificLanguage }); }
+  }, [specificLanguage]);
+
   return (
     <Stack direction="row" spacing={2} alignItems="center">
       <Typography>
