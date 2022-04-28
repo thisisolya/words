@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { Card, CardModelFromServer, NewCard } from '../../types';
+import { mergeRight } from 'ramda';
+import { Card, CardModelFromServer, ModifiableCard } from '../../types';
 import cardApi from '../apis/card-api';
 
 export interface CardSlice {
   allCards?: Card[],
-  editedCard?: NewCard,
-  newCard?: NewCard,
+  modifiableCard: ModifiableCard,
   selectedCards?: Card[],
   selectedLanguages: string[],
   preferredLanguage: string,
@@ -17,8 +17,18 @@ export interface CardSlice {
 const initialState: CardSlice = {
   allCards: undefined,
   selectedCards: undefined,
-  editedCard: undefined,
-  newCard: undefined,
+  modifiableCard: {
+    first: {
+      language: '',
+      word: '',
+      filterable: '',
+    },
+    second: {
+      language: '',
+      word: '',
+      filterable: '',
+    },
+  },
   preferredLanguage: '',
   selectedLanguages: [],
   currentCardNumber: 0,
@@ -32,14 +42,14 @@ const cardSlice = createSlice({
     setSelectedCards: (state, action) => {
       state.selectedCards = action.payload;
     },
-    setNewCard: (state, action) => {
-      state.newCard = { ...state.newCard, ...action.payload };
+    setModifiableFirstCard: (state, action) => {
+      state.modifiableCard.first = mergeRight(state.modifiableCard.first || {}, action.payload);
     },
-    clearNewCard: (state) => {
-      state.newCard = initialState.newCard;
+    setModifiableSecondCard: (state, action) => {
+      state.modifiableCard.second = mergeRight(state.modifiableCard.second || {}, action.payload);
     },
-    setEditedCard: (state, action) => {
-      state.editedCard = { ...state.editedCard, ...action.payload };
+    clearModifiableCard: (state) => {
+      state.modifiableCard = initialState.modifiableCard;
     },
     setPreferredLanguage: (state, action) => {
       state.preferredLanguage = action.payload;
@@ -89,19 +99,19 @@ const cardSlice = createSlice({
 
 const {
   setPreferredLanguage,
-  setNewCard,
-  clearNewCard,
-  setEditedCard,
   setSelectedLanguages,
+  setModifiableFirstCard,
+  setModifiableSecondCard,
+  clearModifiableCard,
   setSelectedCards,
   resetCurrentCardNumber,
   setCurrentCardNumber,
 } = cardSlice.actions;
 export {
   setPreferredLanguage,
-  setNewCard,
-  clearNewCard,
-  setEditedCard,
+  setModifiableFirstCard,
+  setModifiableSecondCard,
+  clearModifiableCard,
   setSelectedLanguages,
   setSelectedCards,
   setCurrentCardNumber,

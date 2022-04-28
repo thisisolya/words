@@ -7,16 +7,14 @@ interface AutocompleteProps {
   autocompleteOptionsList?: string[];
   language?: string,
   languageNumber: string,
-  inputHandler: (options: Record<string, string>) => void,
-  clickHandler: (word: Record<string, string>) => void,
+  changeHandler: (wordNumber: string, word: { [key:string]: string }) => void,
   value?: string,
   variant?: 'standard' | 'filled' | 'outlined',
 }
 
 function Autocomplete({
   autocompleteOptionsList,
-  clickHandler,
-  inputHandler,
+  changeHandler,
   language,
   languageNumber,
   value,
@@ -29,8 +27,8 @@ function Autocomplete({
   const handleChange = React.useCallback((event: React.SyntheticEvent<Element, Event>) => {
     const target = event.target as HTMLInputElement;
     const selectedValue = target.value || target.innerHTML;
-    clickHandler({ [`${languageNumber}Word`]: selectedValue });
-  }, [clickHandler]);
+    changeHandler(languageNumber, { word: selectedValue });
+  }, [changeHandler]);
 
   const handleInputChange = React.useCallback((event: React.SyntheticEvent<Element, Event>) => {
     if (event) {
@@ -38,7 +36,7 @@ function Autocomplete({
       const currentInputValue = target.value;
 
       if (currentInputValue && currentInputValue.length >= 3) {
-        inputHandler({ [`${languageNumber}Filterable`]: currentInputValue });
+        changeHandler(languageNumber, { filterable: currentInputValue });
       } else {
         setNoOptionsText('Please enter at least 3 characters');
       }

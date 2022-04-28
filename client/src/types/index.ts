@@ -1,16 +1,8 @@
 export interface Card {
   cardId: string,
   userId: string,
-  firstWord:string,
+  firstWord: string,
   secondWord: string,
-}
-export interface NewCard {
-  firstLanguage: string,
-  secondLanguage: string,
-  firstWord:string,
-  secondWord: string,
-  firstFilterable:string,
-  secondFilterable:string,
 }
 export interface User {
   firstName: string;
@@ -30,4 +22,13 @@ export interface UserModelFromServer {
   last_name: string;
   _id: string;
   cards: CardModelFromServer[];
+}
+export type ModifiableWord = {
+  language: string,
+  word: string,
+  filterable: string,
+};
+export interface ModifiableCard {
+  first?: ModifiableWord,
+  second?: ModifiableWord,
 }

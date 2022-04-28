@@ -2,22 +2,22 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { last, toPairs, head } from 'ramda';
 
-import { AppState } from '../../store';
 import {
-  autocompleteSelector,
   currentCardNumberSelector,
-  editedCardSelector,
+  modifiableCardSelector,
   paginationDirectionSelector,
   preferredLanguageSelector,
   selectedCardsSelector,
   selectedLanguagesSelector,
+  firstAutocompleteSelector,
+  secondAutocompleteSelector,
 } from '../../store/selectors/cards';
 import {
   useDeleteCardMutation,
   useEditCardMutation,
   useLazyGetSelectedCardsQuery,
 } from '../../store/apis/card-api';
-import { setEditedCard } from '../../store/slices/card-slice';
+import { clearModifiableCard, setModifiableFirstCard, setModifiableSecondCard } from '../../store/slices/card-slice';
 
 import { Card as CardType } from '../../types';
 import useAlert from '../../hooks/useAlert';
@@ -37,11 +37,7 @@ function Card() {
   const preferredLanguage = useSelector(preferredLanguageSelector);
   const currentCardNumber = useSelector(currentCardNumberSelector);
   const paginationDirection = useSelector(paginationDirectionSelector);
-
-  const {
-    firstWord: firstWordEdited,
-    secondWord: secondWordEdited,
-  } = useSelector(editedCardSelector) || {};
+  const modifiableCard = useSelector(modifiableCardSelector);
 
   const [editingMode, setEditingMode] = React.useState(false);
   const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);
@@ -52,9 +48,22 @@ function Card() {
   const firstWord = words[head(selectedLanguages) as keyof typeof words];
   const secondWord = words[last(selectedLanguages) as keyof typeof words];
 
+  const { word: firstWordEdited } = modifiableCard.first || {};
+  const { word: secondWordEdited } = modifiableCard.second || {};
+
   const [deleteCard, { data: deleteResult }] = useDeleteCardMutation();
   const [editCard, { data: editResult }] = useEditCardMutation();
   const [triggerSelectedCardsRefetch] = useLazyGetSelectedCardsQuery();
+
+  const modifiableCardFunction = {
+    first: setModifiableFirstCard,
+    second: setModifiableSecondCard,
+  };
+
+  const autocompleteSelector = {
+    first: useSelector(firstAutocompleteSelector),
+    second: useSelector(secondAutocompleteSelector),
+  };
 
   React.useEffect(() => {
     setCurrentLanguage(preferredLanguage);
@@ -71,6 +80,7 @@ function Card() {
       } else {
         showAlert({ text: 'Something went wrong:(', severity: 'error' });
       }
+      clearModifiableCard();
     }
   }, [editResult]);
 
@@ -85,6 +95,7 @@ function Card() {
       } else {
         showAlert({ text: 'Something went wrong:(', severity: 'error' });
       }
+      clearModifiableCard();
     }
   }, [deleteResult]);
 
@@ -99,11 +110,6 @@ function Card() {
   const toggleEditingMode = React.useCallback(() => {
     setEditingMode(!editingMode);
   }, [editingMode]);
-
-  const setEditedCardInfo = React.useCallback((word: Record<string, string>) => (
-    dispatch(
-      setEditedCard(word),
-    )), []);
 
   const deleteCardFunction = React.useCallback(() => {
     deleteCard({ userId, cardId }).unwrap();
@@ -126,13 +132,12 @@ function Card() {
     setEditingMode(!editingMode);
   }, [firstWordEdited, secondWordEdited]);
 
-  const getAutocompleteSelector = (count: string) => (
-    useSelector((state: AppState) => autocompleteSelector(state.card.editedCard, count))
-  );
-
-  const setAutocompleteOptions = (options: Record<string, string>) => {
-    dispatch(setEditedCard(options));
+  const setNewCardInfo = (wordNumber: string, word: { [key:string]: string }) => {
+    dispatch(modifiableCardFunction[wordNumber as keyof typeof modifiableCardFunction](word));
   };
+
+  const getAutocompleteOPtions = (wordNumber: string) => (
+    autocompleteSelector[wordNumber as keyof typeof autocompleteSelector]);
 
   return (
     <CardComponent
@@ -144,9 +149,8 @@ function Card() {
       text={editingMode
         ? (
           <EditableCardWords
-            autocompleteOptions={getAutocompleteSelector}
-            clickHandler={setEditedCardInfo}
-            inputHandler={setAutocompleteOptions}
+            autocompleteOptions={getAutocompleteOPtions}
+            changeHandler={setNewCardInfo}
             words={toPairs(words)}
           />
         )

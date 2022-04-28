@@ -5,13 +5,12 @@ import LanguagePicker from '../../LanguagePicker';
 
 interface EditableWordsProps {
   words: Record<string, string>[],
-  clickHandler: (arg: Record<string, string>) => void,
+  changeHandler: (wordNumber: string, word: { [key:string]: string }) => void,
   autocompleteOptions: (count: string) => string[],
-  inputHandler: (options: Record<string, string>) => void,
 }
 
 function EditableCardWords({
-  words, clickHandler, autocompleteOptions, inputHandler,
+  words, changeHandler, autocompleteOptions,
 }: EditableWordsProps) {
   const getIndex = (index: number) => (index ? 'second' : 'first');
 
@@ -22,14 +21,13 @@ function EditableCardWords({
           <LanguagePicker
             languageNumber={getIndex(index)}
             specificLanguage={word[0]}
-            clickHandler={clickHandler}
+            clickHandler={changeHandler}
           />
           <Autocomplete
             autocompleteOptionsList={autocompleteOptions(getIndex(index))}
-            inputHandler={inputHandler}
             languageNumber={getIndex(index)}
             language={word[0]}
-            clickHandler={clickHandler}
+            changeHandler={changeHandler}
             value={word[1]}
             variant="standard"
           />

@@ -2,12 +2,11 @@ import React from 'react';
 import { Divider, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { AppState } from '../../store';
-import { newCardSelector, autocompleteSelector } from '../../store/selectors/cards';
+import { firstAutocompleteSelector, modifiableCardSelector, secondAutocompleteSelector } from '../../store/selectors/cards';
 import { useCreateNewCardMutation } from '../../store/apis/card-api';
-import { clearNewCard, setNewCard } from '../../store/slices/card-slice';
-import { NewCard } from '../../types';
+import { setModifiableFirstCard, setModifiableSecondCard, clearModifiableCard } from '../../store/slices/card-slice';
+import { ModifiableCard } from '../../types';
+
 import useAlert from '../../hooks/useAlert';
 
 import AnimatedContainer from '../../components/AnimatedContainer';
@@ -20,18 +19,19 @@ function CreateCard() {
   const { showAlert } = useAlert();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const newCard = useSelector(newCardSelector);
-  const firstAutocomplete = useSelector((state: AppState) => autocompleteSelector(state.card.newCard, 'first'));
-  const secondAutocomplete = useSelector((state: AppState) => autocompleteSelector(state.card.newCard, 'second'));
+  const newCard = useSelector(modifiableCardSelector);
+  const firstAutocomplete = useSelector(firstAutocompleteSelector);
+  const secondAutocomplete = useSelector(secondAutocompleteSelector);
 
   const [createCard, { data: creationResult }] = useCreateNewCardMutation();
   const userId = localStorage.getItem('userId');
-  const {
-    firstLanguage,
-    secondLanguage,
-    firstWord,
-    secondWord,
-  } = newCard || {};
+  const { language: firstLanguage, word: firstWord } = newCard.first || {};
+  const { language: secondLanguage, word: secondWord } = newCard.second || {};
+
+  const modifiableCardFunction = {
+    first: setModifiableFirstCard,
+    second: setModifiableSecondCard,
+  };
 
   React.useEffect(() => {
     if (creationResult) {
@@ -40,7 +40,7 @@ function CreateCard() {
           text: 'Word was sucessfullly created!',
           severity: 'success',
         });
-        dispatch(clearNewCard());
+        dispatch(clearModifiableCard());
       } else {
         showAlert({ text: 'Something went wrong:(', severity: 'error' });
       }
@@ -50,17 +50,13 @@ function CreateCard() {
   const handleCreateCard = React.useCallback(() => {
     createCard({
       userId,
-      [firstLanguage as keyof NewCard]: firstWord,
-      [secondLanguage as keyof NewCard]: secondWord,
+      [firstLanguage as keyof ModifiableCard]: firstWord,
+      [secondLanguage as keyof ModifiableCard]: secondWord,
     }).unwrap();
   }, [firstWord, secondWord]);
 
-  const setNewCardInfo = (info: Record<string, string>) => {
-    dispatch(setNewCard(info));
-  };
-
-  const setAutocompleteOptions = (options: Record<string, string>) => {
-    dispatch(setNewCard(options));
+  const setNewCardInfo = (wordNumber: string, word: { [key:string]: string }) => {
+    dispatch(modifiableCardFunction[wordNumber as keyof typeof modifiableCardFunction](word));
   };
 
   return (
@@ -74,10 +70,9 @@ function CreateCard() {
           />
           <Autocomplete
             autocompleteOptionsList={firstAutocomplete}
-            inputHandler={setAutocompleteOptions}
+            changeHandler={setNewCardInfo}
             language={firstLanguage}
             languageNumber="first"
-            clickHandler={setNewCardInfo}
           />
         </Stack>
         <Divider variant="fullWidth" />
@@ -89,10 +84,9 @@ function CreateCard() {
           />
           <Autocomplete
             autocompleteOptionsList={secondAutocomplete}
-            inputHandler={setAutocompleteOptions}
+            changeHandler={setNewCardInfo}
             language={secondLanguage}
             languageNumber="second"
-            clickHandler={setNewCardInfo}
           />
         </Stack>
         <ButtonContained

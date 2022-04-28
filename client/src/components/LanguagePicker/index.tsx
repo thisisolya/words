@@ -3,25 +3,27 @@ import { Stack, Chip, Typography } from '@mui/material';
 import _ from 'lodash';
 import { keys } from 'ramda';
 import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
-import { NewCard } from '../../types';
+import { ModifiableCard } from '../../types';
 
 interface LanguagesSelectorProps {
   languageNumber: string,
   specificLanguage?: string,
-  clickHandler: (arg: Record<string, string>) => void,
-  newCard?: NewCard,
+  clickHandler: (wordNumber: string, word: { [key: string]: string; }) => void,
+  newCard?: ModifiableCard,
 }
 
 function LanguagePicker({
   languageNumber, specificLanguage, clickHandler, newCard,
 }:LanguagesSelectorProps) {
-  const languages = (specificLanguage && [specificLanguage]) || keys(allLanguages);
-  const languageKey = `${languageNumber}Language`;
-  const currentLanguage = newCard && newCard[languageKey as keyof NewCard];
-  const notToBeEqualToLanguage = languageKey === 'firstLanguage' ? 'secondLanguage' : 'firstLanguage';
+  const currentWord = newCard && newCard[languageNumber as keyof ModifiableCard];
+  const currentLanguage = currentWord?.language;
+  const languages = specificLanguage ? [specificLanguage] : keys(allLanguages);
+  const notToBeEqualToLanguage = languageNumber === 'first'
+    ? newCard?.second?.language
+    : newCard?.first?.language;
 
   React.useEffect(() => {
-    if (specificLanguage) { clickHandler({ [languageKey]: specificLanguage }); }
+    if (specificLanguage) clickHandler(languageNumber, { language: specificLanguage });
   }, [specificLanguage]);
 
   return (
@@ -38,8 +40,8 @@ function LanguagePicker({
             label={language}
             variant={(specificLanguage || currentLanguage === language) ? 'filled' : 'outlined'}
             clickable={!!currentLanguage}
-            onClick={() => language && clickHandler({ [languageKey]: language })}
-            disabled={newCard && language === newCard[notToBeEqualToLanguage]}
+            onClick={() => language && clickHandler(languageNumber, { language })}
+            disabled={newCard && language === notToBeEqualToLanguage}
           />
         ))}
       </Stack>

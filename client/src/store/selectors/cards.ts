@@ -2,7 +2,6 @@ import { createSelector } from '@reduxjs/toolkit';
 import { filter, startsWith } from 'ramda';
 
 import { AUTOCOMPLETE_OPTIONS } from '../../helpers/constats';
-import { NewCard } from '../../types';
 import { AppState } from '../index';
 
 const cardState = ((state: AppState) => state.card);
@@ -27,14 +26,9 @@ const paginationDirectionSelector = createSelector(
   ({ paginationDirection }) => paginationDirection,
 );
 
-const editedCardSelector = createSelector(
+const modifiableCardSelector = createSelector(
   cardState,
-  ({ editedCard }) => editedCard,
-);
-
-const newCardSelector = createSelector(
-  cardState,
-  ({ newCard }) => newCard,
+  ({ modifiableCard }) => modifiableCard,
 );
 
 const selectedLanguagesSelector = createSelector(
@@ -47,32 +41,40 @@ const preferredLanguageSelector = createSelector(
   ({ preferredLanguage }) => preferredLanguage,
 );
 
-const autocompleteSelector = createSelector(
-  [(state) => state,
-    (_, count) => count,
-  ],
-  (state, count) => {
-    if (state) {
-      const filterable = state[`${count}Filterable`];
-      const language = state[`${count}Language`];
-      const checkIfStartsWith = (option: string) => filterable && startsWith(filterable, option);
-      return language
-      && filter(
-        checkIfStartsWith,
+const firstAutocompleteSelector = createSelector(
+  cardState,
+  ({ modifiableCard }) => {
+    const { filterable, language } = modifiableCard.first || {};
+    if (filterable && language) {
+      return filter(
+        (option) => startsWith(filterable, option),
         AUTOCOMPLETE_OPTIONS[language as keyof typeof AUTOCOMPLETE_OPTIONS],
       );
     } return [];
   },
-) as (state: NewCard | undefined, count: string) => string[];
+);
+
+const secondAutocompleteSelector = createSelector(
+  cardState,
+  ({ modifiableCard }) => {
+    const { filterable, language } = modifiableCard.second || {};
+    if (filterable && language) {
+      return filter(
+        (option) => startsWith(filterable, option),
+        AUTOCOMPLETE_OPTIONS[language as keyof typeof AUTOCOMPLETE_OPTIONS],
+      );
+    } return [];
+  },
+);
 
 export {
   allCardsSelector,
   selectedCardsSelector,
-  editedCardSelector,
-  newCardSelector,
+  modifiableCardSelector,
   selectedLanguagesSelector,
   preferredLanguageSelector,
   currentCardNumberSelector,
   paginationDirectionSelector,
-  autocompleteSelector,
+  firstAutocompleteSelector,
+  secondAutocompleteSelector,
 };

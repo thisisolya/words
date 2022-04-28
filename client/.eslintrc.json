@@ -17,9 +17,8 @@
         },
         "ecmaVersion": "latest",
         "sourceType": "module",
-        "project": "tsconfig.eslint.json",
-        "experimentalObjectRestSpread": true,
-        "tsconfigRootDir": "client"
+        "project": "tsconfig.json",
+        "experimentalObjectRestSpread": true
     },
     "plugins": [
         "react",
