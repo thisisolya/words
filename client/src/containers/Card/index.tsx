@@ -19,7 +19,7 @@ import {
 } from '../../store/apis/card-api';
 import { clearModifiableCard, setModifiableFirstCard, setModifiableSecondCard } from '../../store/slices/card-slice';
 
-import { Card as CardType } from '../../types';
+import { Card as CardType, ModifiableCard } from '../../types';
 import useAlert from '../../hooks/useAlert';
 import useModal from '../../hooks/useModal';
 
@@ -32,12 +32,12 @@ function Card() {
   const { showAlert } = useAlert();
   const { showModal } = useModal();
 
-  const selectedCards = useSelector(selectedCardsSelector) || [];
-  const selectedLanguages = useSelector(selectedLanguagesSelector);
-  const preferredLanguage = useSelector(preferredLanguageSelector);
-  const currentCardNumber = useSelector(currentCardNumberSelector);
-  const paginationDirection = useSelector(paginationDirectionSelector);
-  const modifiableCard = useSelector(modifiableCardSelector);
+  const selectedCards = useSelector(selectedCardsSelector) as CardType[] || [];
+  const selectedLanguages = useSelector(selectedLanguagesSelector) as string[];
+  const preferredLanguage = useSelector(preferredLanguageSelector) as string;
+  const currentCardNumber = useSelector(currentCardNumberSelector) as number;
+  const paginationDirection = useSelector(paginationDirectionSelector) as boolean;
+  const modifiableCard = useSelector(modifiableCardSelector) as ModifiableCard;
 
   const [editingMode, setEditingMode] = React.useState(false);
   const [currentLanguage, setCurrentLanguage] = React.useState(preferredLanguage);

@@ -19,9 +19,9 @@ function CreateCard() {
   const { showAlert } = useAlert();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const newCard = useSelector(modifiableCardSelector);
-  const firstAutocomplete = useSelector(firstAutocompleteSelector);
-  const secondAutocomplete = useSelector(secondAutocompleteSelector);
+  const newCard = useSelector(modifiableCardSelector) as ModifiableCard;
+  const firstAutocomplete = useSelector(firstAutocompleteSelector) as string[];
+  const secondAutocomplete = useSelector(secondAutocompleteSelector) as string[];
 
   const [createCard, { data: creationResult }] = useCreateNewCardMutation();
   const userId = localStorage.getItem('userId');

@@ -16,6 +16,7 @@ import {
   setCurrentCardNumber,
   setPreferredLanguage,
 } from '../../store/slices/card-slice';
+import { Card as CardType } from '../../types';
 
 import Card from '../Card';
 import LanguagesSwitcher from '../../components/LanguagesSwitcher';
@@ -28,10 +29,10 @@ function CardsGallery() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const selectedCards = useSelector(selectedCardsSelector);
-  const currentCardNumber = useSelector(currentCardNumberSelector);
-  const selectedLanguages = useSelector(selectedLanguagesSelector);
-  const preferredLanguage = useSelector(preferredLanguageSelector);
+  const selectedCards = useSelector(selectedCardsSelector) as CardType[];
+  const currentCardNumber = useSelector(currentCardNumberSelector) as number;
+  const selectedLanguages = useSelector(selectedLanguagesSelector) as string[];
+  const preferredLanguage = useSelector(preferredLanguageSelector) as string;
 
   React.useEffect(() => {
     if (!selectedCards) {
