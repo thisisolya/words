@@ -1,57 +1,48 @@
 import { createSelector } from '@reduxjs/toolkit';
 import {
-  and, isEmpty, filter, path, startsWith,
+  and, isEmpty, filter, path, startsWith, prop, ifElse, pipe,
 } from 'ramda';
 
+import { identity } from 'lodash';
 import { AUTOCOMPLETE_OPTIONS } from '../../helpers/constats';
-import { Card, ModifiableCard } from '../../types/index';
 import { CardSlice } from '../slices/card-slice';
 import { AppState } from '../index';
 
-const extractObject = (key: string[]) => path(key);
-const cardState = ((state: AppState) => extractObject(['card'])(state) as CardSlice);
-
-const createCustomizedSelector = (arg: string[]) => createSelector(
+const cardState = ((state: AppState) => path(['card'])(state) as CardSlice);
+const createBasicSelector = (pathToState: string[]) => createSelector(
   cardState,
-  extractObject([...arg]),
-) as any;
+  identity(path(pathToState)),
+);
 
-const getAutocompleteOptions = (autocompleteNumber: string, modifiableCard: any) => {
-  const language = path([autocompleteNumber, 'language'], modifiableCard) as string;
-  const filterable = path([autocompleteNumber, 'filterable'], modifiableCard) as string;
-  const isReadyToFilter = and(!isEmpty(language), !isEmpty(filterable));
-
-  const result = isReadyToFilter
-    ? filter(
+const getAutocompleteOptions = (modifiableWord: Record<string, string>) => {
+  const language = prop('language', modifiableWord);
+  const filterable = prop('filterable', modifiableWord);
+  const result = ifElse(
+    () => and(!isEmpty(language), !isEmpty(filterable)),
+    () => filter(
       (option: string) => startsWith(filterable, option),
       AUTOCOMPLETE_OPTIONS[language as keyof typeof AUTOCOMPLETE_OPTIONS],
-    )
-    : [];
-  return result;
+    ),
+    () => identity([]),
+  );
+  return result();
 };
 
-const allCardsSelector = createCustomizedSelector(['allCards']) as Card[] | undefined;
-const selectedCardsSelector = createCustomizedSelector(['selectedCards']) as Card[] | undefined;
-const currentCardNumberSelector = createCustomizedSelector(['currentCardNumber']) as number;
-const paginationDirectionSelector = createCustomizedSelector(['paginationDirection']) as boolean;
-const modifiableCardSelector = createCustomizedSelector(['modifiableCard']) as ModifiableCard;
-const selectedLanguagesSelector = createCustomizedSelector(['selectedLanguages']) as any[];
-const preferredLanguageSelector = createCustomizedSelector(['preferredLanguage']) as string;
-
+const allCardsSelector = createBasicSelector(['allCards']);
+const selectedCardsSelector = createBasicSelector(['selectedCards']);
+const currentCardNumberSelector = createBasicSelector(['currentCardNumber']);
+const paginationDirectionSelector = createBasicSelector(['paginationDirection']);
+const modifiableCardSelector = createBasicSelector(['modifiableCard']);
+const selectedLanguagesSelector = createBasicSelector(['selectedLanguages']);
+const preferredLanguageSelector = createBasicSelector(['preferredLanguage']);
 const firstAutocompleteSelector = createSelector(
   cardState,
-  ({ modifiableCard }) => getAutocompleteOptions('first', modifiableCard),
+  ({ modifiableCard }) => getAutocompleteOptions(path(['first'], modifiableCard) as Record<string, string>),
 );
-
 const secondAutocompleteSelector = createSelector(
   cardState,
-  ({ modifiableCard }) => getAutocompleteOptions('second', modifiableCard),
+  ({ modifiableCard }) => getAutocompleteOptions(path(['second'], modifiableCard) as Record<string, string>),
 );
-
-// const allCardsSelector =  createSelector(
-//   cardState,
-//   ({ allCards }) => allCards,
-// );
 
 // const allCardsSelector =  createSelector(
 //   cardState,
