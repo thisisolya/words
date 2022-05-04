@@ -1,9 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit';
 import {
-  and, isEmpty, filter, path, startsWith, prop, ifElse, pipe,
+  and, isEmpty, filter, path, startsWith, prop, ifElse, identity,
 } from 'ramda';
 
-import { identity } from 'lodash';
 import { AUTOCOMPLETE_OPTIONS } from '../../helpers/constats';
 import { CardSlice } from '../slices/card-slice';
 import { AppState } from '../index';
