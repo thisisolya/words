@@ -1,103 +1,75 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSelector } from '@reduxjs/toolkit';
 import {
-  and, isEmpty, filter, path, startsWith, prop, ifElse, identity,
+  isEmpty, filter, path, startsWith, prop, pipe, length,
 } from 'ramda';
-
 import { AUTOCOMPLETE_OPTIONS } from '../../helpers/constats';
-import { CardSlice } from '../slices/card-slice';
-import { AppState } from '../index';
+import { ModifiableWord } from '../../types';
 
-const cardState = ((state: AppState) => path(['card'])(state) as CardSlice);
-const createBasicSelector = (pathToState: string[]) => createSelector(
-  cardState,
-  identity(path(pathToState)),
-);
-
-const getAutocompleteOptions = (modifiableWord: Record<string, string>) => {
-  const language = prop('language', modifiableWord);
-  const filterable = prop('filterable', modifiableWord);
-  const result = ifElse(
-    () => and(!isEmpty(language), !isEmpty(filterable)),
-    () => filter(
+const cardState = prop('card') as any;
+const getAutocompleteOptions = (item: ModifiableWord) => {
+  const { language, filterable } = item;
+  if (!isEmpty(language) && !isEmpty(filterable)) {
+    return filter(
       (option: string) => startsWith(filterable, option),
-      AUTOCOMPLETE_OPTIONS[language as keyof typeof AUTOCOMPLETE_OPTIONS],
-    ),
-    () => identity([]),
-  );
-  return result();
+    )(AUTOCOMPLETE_OPTIONS[language as keyof typeof AUTOCOMPLETE_OPTIONS]);
+  }
+  return [];
 };
 
-const allCardsSelector = createBasicSelector(['allCards']);
-const selectedCardsSelector = createBasicSelector(['selectedCards']);
-const currentCardNumberSelector = createBasicSelector(['currentCardNumber']);
-const paginationDirectionSelector = createBasicSelector(['paginationDirection']);
-const modifiableCardSelector = createBasicSelector(['modifiableCard']);
-const selectedLanguagesSelector = createBasicSelector(['selectedLanguages']);
-const preferredLanguageSelector = createBasicSelector(['preferredLanguage']);
+const allCardsSelector = createSelector(
+  cardState,
+  pipe(
+    prop('allCards') as any,
+    length,
+  ),
+);
+
+const selectedCardsSelector = createSelector(
+  cardState,
+  prop('selectedCards'),
+);
+
+const paginationDirectionSelector = createSelector(
+  cardState,
+  prop('paginationDirection'),
+);
+
+const modifiableCardSelector = createSelector(
+  cardState,
+  prop('modifiableCard'),
+);
+
+const currentCardNumberSelector = createSelector(
+  cardState,
+  prop('currentCardNumber'),
+);
+
+const selectedLanguagesSelector = createSelector(
+  cardState,
+  prop('selectedLanguages'),
+);
+
+const preferredLanguageSelector = createSelector(
+  cardState,
+  prop('preferredLanguage'),
+);
+
 const firstAutocompleteSelector = createSelector(
   cardState,
-  ({ modifiableCard }) => getAutocompleteOptions(path(['first'], modifiableCard) as Record<string, string>),
+  pipe(
+    path(['modifiableCard', 'first']) as any,
+    getAutocompleteOptions,
+  ),
 );
+
 const secondAutocompleteSelector = createSelector(
   cardState,
-  ({ modifiableCard }) => getAutocompleteOptions(path(['second'], modifiableCard) as Record<string, string>),
+  pipe(
+    path(['modifiableCard', 'second']) as any,
+    getAutocompleteOptions,
+  ),
 );
-
-// const allCardsSelector =  createSelector(
-//   cardState,
-//   ({ selectedCards }) => selectedCards,
-// );
-
-// const currentCardNumberSelector = createSelector(
-//   cardState,
-//   ({ currentCardNumber }) => currentCardNumber,
-// );
-
-// const paginationDirectionSelector = createSelector(
-//   cardState,
-//   ({ paginationDirection }) => paginationDirection,
-// );
-
-// const modifiableCardSelector = createSelector(
-//   cardState,
-//   ({ modifiableCard }) => modifiableCard,
-// );
-
-// const selectedLanguagesSelector = createSelector(
-//   cardState,
-//   ({ selectedLanguages }) => selectedLanguages,
-// );
-
-// const preferredLanguageSelector = createSelector(
-//   cardState,
-//   ({ preferredLanguage }) => preferredLanguage,
-// );
-
-// const firstAutocompleteSelector = createSelector(
-//   cardState,
-//   ({ modifiableCard }) => {
-//     const { filterable, language } = modifiableCard.first || {};
-//     if (filterable && language) {
-//       return filter(
-//         (option) => startsWith(filterable, option),
-//         AUTOCOMPLETE_OPTIONS[language as keyof typeof AUTOCOMPLETE_OPTIONS],
-//       );
-//     } return [];
-//   },
-// );
-
-// const secondAutocompleteSelector = createSelector(
-//   cardState,
-//   ({ modifiableCard }) => {
-//     const { filterable, language } = modifiableCard.second || {};
-//     if (filterable && language) {
-//       return filter(
-//         (option) => startsWith(filterable, option),
-//         AUTOCOMPLETE_OPTIONS[language as keyof typeof AUTOCOMPLETE_OPTIONS],
-//       );
-//     } return [];
-//   },
-// );
 
 export {
   allCardsSelector,

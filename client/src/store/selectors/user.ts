@@ -1,16 +1,17 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { AppState } from '../index';
+import { prop } from 'ramda';
 
-const userState = ((state: AppState) => state.user);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const userState = prop('user') as any;
 
 const allUsersSelector = createSelector(
   userState,
-  ({ allUsers }) => allUsers,
+  prop('allUsers'),
 );
 
 const selectedUserSelector = createSelector(
   userState,
-  ({ selectedUser }) => selectedUser,
+  prop('selectedUser'),
 );
 
 export { allUsersSelector, selectedUserSelector };

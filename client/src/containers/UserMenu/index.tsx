@@ -17,6 +17,7 @@ import {
   setPreferredLanguage,
   setSelectedLanguages,
 } from '../../store/slices/card-slice';
+import { User } from '../../types';
 
 import AnimatedContainer from '../../components/AnimatedContainer';
 import ButtonContained from '../../components/ButtonContained';
@@ -26,7 +27,7 @@ function UserMenu() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userId = localStorage.getItem('userId');
-  const selectedUser = useSelector(selectedUserSelector);
+  const selectedUser = useSelector(selectedUserSelector) as User;
 
   const { isFetching } = useGetUserInfoQuery({ userId });
   const { data: allCardsList } = useGetAllCardsQuery({ userId: selectedUser?.id });

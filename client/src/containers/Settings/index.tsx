@@ -10,7 +10,7 @@ import { allCardsSelector } from '../../store/selectors/cards';
 import useAlert from '../../hooks/useAlert';
 import useLogout from '../../hooks/useLogout';
 import useModal from '../../hooks/useModal';
-import { Card } from '../../types';
+import { User } from '../../types';
 
 import AnimatedContainer from '../../components/AnimatedContainer';
 import ButtonContained from '../../components/ButtonContained';
@@ -23,8 +23,8 @@ function Settings() {
   const { showAlert } = useAlert();
   const { showModal } = useModal();
   const { logout } = useLogout();
-  const selectedUser = useSelector(selectedUserSelector);
-  const allCards = useSelector(allCardsSelector) as Card[];
+  const selectedUser = useSelector(selectedUserSelector) as User;
+  const allCards = useSelector(allCardsSelector) as number;
   const { firstName, lastName, id: userId } = selectedUser || {};
 
   const [editingMode, setEdidingMode] = React.useState(false);
@@ -116,7 +116,7 @@ function Settings() {
         <Typography>
           Total cards count:
           {' '}
-          {allCards.length}
+          {allCards}
         </Typography>
         <Toolbar
           editingMode={editingMode}

@@ -17,7 +17,7 @@ function UsersList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
-  const allUsers = useSelector(allUsersSelector);
+  const allUsers = useSelector(allUsersSelector) as User[];
   const { isLoading } = useGetAllUsersQuery('/');
 
   React.useEffect(() => {
