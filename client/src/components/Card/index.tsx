@@ -3,6 +3,8 @@ import { Stack } from '@mui/material';
 import AnimatedCardContainer from './AnimatedCardContainer';
 import CardLayout from '../CardLayout';
 import Toolbar from '../ToolBar';
+import EditableCardWords from '../../containers/EditableCardWords';
+import ReadonlyCardWords from '../../containers/ReadonlyCardWords';
 
 interface CardProps {
   currentCardNumber: number;
@@ -11,8 +13,6 @@ interface CardProps {
   handleCardDelete: () => void;
   handleModeChange: () => void;
   paginationDirection: boolean;
-  text: JSX.Element;
-  toggleLanguage: () => void;
 }
 
 function Card({
@@ -22,8 +22,6 @@ function Card({
   handleCardEdit,
   handleModeChange,
   paginationDirection,
-  text,
-  toggleLanguage,
 }: CardProps) {
   return (
     <AnimatedCardContainer
@@ -33,10 +31,11 @@ function Card({
       <CardLayout size="large">
         <Stack
           flex={10}
-          onClick={toggleLanguage}
           justifyContent="center"
         >
-          {text}
+          {editingMode
+            ? <EditableCardWords />
+            : <ReadonlyCardWords />}
         </Stack>
         <Toolbar
           handleCardDelete={handleCardDelete}
