@@ -4,8 +4,8 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { head, last } from 'ramda';
+
 import {
   selectedCardsSelector,
   currentCardNumberSelector,
@@ -56,10 +56,8 @@ function CardsGallery() {
     );
   }, [currentCardNumber]);
 
-  const handleEmptyGalleryExit = React.useCallback(() => navigate('/cards/create'), []);
-
   if (!selectedCards || selectedCards.length === 0) {
-    return <EmptyGallery clickHandler={handleEmptyGalleryExit} />;
+    return <EmptyGallery clickHandler={() => navigate('cards/create')} />;
   }
 
   return (

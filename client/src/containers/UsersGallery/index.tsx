@@ -18,19 +18,20 @@ function UsersList() {
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
   const allUsers = useSelector(allUsersSelector) as User[];
-  const { isLoading } = useGetAllUsersQuery('/');
+
+  const { isFetching } = useGetAllUsersQuery('/');
 
   React.useEffect(() => {
     if (userId) navigate(`user/${userId}`);
   }, []);
 
-  const handleClick = (user: User) => {
+  const handleUserSelection = (user: User) => {
     localStorage.setItem('userId', user.id);
     dispatch(setSelectedUser(user));
     navigate(`user/${user.id}`);
   };
 
-  if (isLoading) {
+  if (isFetching) {
     return <CircularProgress />;
   }
 
@@ -45,7 +46,11 @@ function UsersList() {
       </Typography>
       <Grid container gap="15px" justifyContent="center" mt="20px">
         {allUsers?.map((user: User) => (
-          <UserCard key={user.id} user={user} clickHandler={() => handleClick(user)} />
+          <UserCard
+            key={user.id}
+            user={user}
+            clickHandler={() => handleUserSelection(user)}
+          />
         ))}
         <ButtonContained
           text="Create new user"

@@ -5,6 +5,7 @@ import { SUPPORTED_LANGUAGES as allLanguages } from '../../helpers/constats';
 
 interface AutocompleteProps {
   autocompleteOptionsList?: string[];
+  disabled?: boolean;
   language?: string,
   languageNumber: string,
   changeHandler: (wordNumber: string, word: { [key:string]: string }) => void,
@@ -15,6 +16,7 @@ interface AutocompleteProps {
 function Autocomplete({
   autocompleteOptionsList,
   changeHandler,
+  disabled,
   language,
   languageNumber,
   value,
@@ -24,19 +26,16 @@ function Autocomplete({
   const label = _.upperFirst(allLanguages[language as keyof typeof allLanguages])
   || 'Please select a language first';
 
-  const handleChange = React.useCallback((event: React.SyntheticEvent<Element, Event>) => {
-    const target = event.target as HTMLInputElement;
+  const handleChange = React.useCallback(({ target }) => {
     const selectedValue = target.value || target.innerHTML;
     changeHandler(languageNumber, { word: selectedValue });
   }, [changeHandler]);
 
-  const handleInputChange = React.useCallback((event: React.SyntheticEvent<Element, Event>) => {
+  const handleInputChange = React.useCallback((event) => {
     if (event) {
-      const target = event.target as HTMLInputElement;
-      const currentInputValue = target.value;
-
-      if (currentInputValue && currentInputValue.length >= 3) {
-        changeHandler(languageNumber, { filterable: currentInputValue });
+      const currentValue = event.target.value;
+      if (currentValue.length >= 3) {
+        changeHandler(languageNumber, { filterable: currentValue });
       } else {
         setNoOptionsText('Please enter at least 3 characters');
       }
@@ -50,6 +49,7 @@ function Autocomplete({
       onClose={handleChange}
       onInputChange={handleInputChange}
       defaultValue={value}
+      disabled={disabled}
       freeSolo
       noOptionsText={noOptionsText}
       renderInput={(params) => (

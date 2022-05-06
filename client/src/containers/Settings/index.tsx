@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Stack } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
@@ -23,6 +23,7 @@ function Settings() {
   const { showAlert } = useAlert();
   const { showModal } = useModal();
   const { logout } = useLogout();
+
   const selectedUser = useSelector(selectedUserSelector) as User;
   const allCards = useSelector(allCardsSelector) as number;
   const { firstName, lastName, id: userId } = selectedUser || {};
@@ -31,33 +32,8 @@ function Settings() {
   const [editedFirstName, setEdiditedFirstName] = React.useState(firstName || '');
   const [editedLastName, setEdiditedLastName] = React.useState(lastName || '');
 
-  const [editUserInfo, { data: editResult }] = useEditUserInfoMutation();
-  const [deleteUser, { data: deleteResult }] = useDeleteUserMutation();
-
-  React.useEffect(() => {
-    if (editResult) {
-      if (editResult.modifiedCount === 1) {
-        showAlert({
-          text: 'Info was sucessfullly edited!',
-          severity: 'success',
-        });
-        navigate('/user/settings');
-      } else {
-        showAlert({ text: 'Something went wrong:(', severity: 'error' });
-      }
-      setEdidingMode(false);
-    }
-  }, [editResult]);
-
-  React.useEffect(() => {
-    if (deleteResult) {
-      if (deleteResult.deletedCount === 1) {
-        logout();
-      } else {
-        showAlert({ text: 'Something went wrong:(', severity: 'error' });
-      }
-    }
-  }, [deleteResult]);
+  const [editUserInfo] = useEditUserInfoMutation();
+  const [deleteUser] = useDeleteUserMutation();
 
   React.useEffect(() => {
     if (!selectedUser) {
@@ -65,67 +41,64 @@ function Settings() {
     }
   }, [selectedUser]);
 
-  const handleModeChange = React.useCallback(() => {
+  const toggleMode = React.useCallback(() => {
     setEdidingMode(!editingMode);
   }, [editingMode]);
 
-  const handleCardEdit = React.useCallback(() => {
-    editUserInfo({ userId, editedFirstName, editedLastName }).unwrap();
+  const handleUserEditing = React.useCallback(() => {
+    editUserInfo({ userId, editedFirstName, editedLastName }).unwrap()
+      .then((result) => {
+        if (result.modifiedCount) {
+          showAlert({ text: 'Info has been sucessfullly edited!', severity: 'success' });
+        } else showAlert({ text: 'Info has not been edited:(', severity: 'error' });
+      })
+      .catch((error) => error && showAlert({ text: 'Something went wrong:(', severity: 'error' }))
+      .finally(() => setEdidingMode(false));
   }, [userId, editedFirstName, editedLastName]);
 
-  const deleteUserFunction = React.useCallback(() => {
-    deleteUser({ userId }).unwrap();
-  }, [userId]);
-
   const handleUserDelete = React.useCallback(() => {
+    const deleteFunction = () => deleteUser({ userId }).unwrap()
+      .then((result) => {
+        if (result.deletedCount) {
+          logout();
+        } else showAlert({ text: 'User has not been deleted:(', severity: 'error' });
+      })
+      .catch((error) => error && showAlert({ text: 'Something went wrong:(', severity: 'error' }));
     showModal({
       text: ' This is going to delete your account forever and you will not be able to restore it.',
-      acceptFunction: () => deleteUserFunction,
+      acceptFunction: () => deleteFunction,
     });
-  }, []);
+  }, [userId]);
 
   return (
     <AnimatedContainer>
       <CardLayout size="medium">
-        <Typography variant="h2" mb={1}>
+        <Typography variant="h2" mb={1} textAlign="center">
           Change user info
         </Typography>
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Typography>First name:</Typography>
-          {editingMode ? (
-            <EditableText
-              value={editedFirstName}
-              setNewValue={setEdiditedFirstName}
-            />
-          ) : (
-            <Typography>{editedFirstName}</Typography>
-          )}
-        </Stack>
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Typography>Last name:</Typography>
-          {editingMode ? (
-            <EditableText
-              value={editedLastName}
-              setNewValue={setEdiditedLastName}
-            />
-          ) : (
-            <Typography>{editedLastName}</Typography>
-          )}
-        </Stack>
-
+        <EditableText
+          entity="first name"
+          value={editedFirstName}
+          editingMode={editingMode}
+          setNewValue={setEdiditedFirstName}
+        />
+        <EditableText
+          entity="last name"
+          editingMode={editingMode}
+          value={editedLastName}
+          setNewValue={setEdiditedLastName}
+        />
         <Typography>
-          Total cards count:
-          {' '}
-          {allCards}
+          {`Total cards count: ${allCards}`}
         </Typography>
         <Toolbar
           editingMode={editingMode}
-          handleModeChange={handleModeChange}
-          handleCardEdit={handleCardEdit}
+          handleModeChange={toggleMode}
+          handleCardEdit={handleUserEditing}
         />
       </CardLayout>
       <ButtonContained
-        clickHandler={() => handleUserDelete()}
+        clickHandler={handleUserDelete}
         text="Delete user"
       />
     </AnimatedContainer>

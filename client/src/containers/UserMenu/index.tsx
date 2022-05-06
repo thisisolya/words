@@ -2,21 +2,21 @@ import React from 'react';
 import { Typography, Grid, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
 import {
-  head, includes, keys, map, omit, reverse,
+  head, includes, keys, map, omit, pipe, reverse,
 } from 'ramda';
+
 import {
   useGetAllCardsQuery,
   useLazyGetSelectedCardsQuery,
 } from '../../store/apis/card-api';
-import { useGetUserInfoQuery } from '../../store/apis/user-api';
-import { selectedUserSelector } from '../../store/selectors/user';
 import {
   resetCurrentCardNumber,
   setPreferredLanguage,
   setSelectedLanguages,
 } from '../../store/slices/card-slice';
+import { useGetUserInfoQuery } from '../../store/apis/user-api';
+import { selectedUserSelector } from '../../store/selectors/user';
 import { User } from '../../types';
 
 import AnimatedContainer from '../../components/AnimatedContainer';
@@ -38,14 +38,16 @@ function UserMenu() {
 
   React.useEffect(() => {
     if (allCardsList) {
-      const allLanguagePairs = map(
-        ((card) => keys(omit(['_id', 'user_id'], card))),
-        allCardsList,
-      );
-
-      allLanguagePairs.map((pair) => (
-        !includes(pair, uniqueLanguagePairs) && !includes(reverse(pair), uniqueLanguagePairs)
-        && uniqueLanguagePairs.push(pair as string[])));
+      pipe(
+        map(
+          ((card) => keys(omit(['_id', 'user_id'], card))),
+        ),
+        map(
+          ((pair) => !includes(pair as string[])(uniqueLanguagePairs)
+            && !includes(reverse(pair as string[]))(uniqueLanguagePairs)
+            && uniqueLanguagePairs.push(pair as string[])),
+        ),
+      )(allCardsList);
       setLanguagePairs(uniqueLanguagePairs);
     }
   }, [allCardsList]);
@@ -58,7 +60,7 @@ function UserMenu() {
     triggerSelectedCardsFetch({ userId, languages });
     dispatch(setPreferredLanguage(head(languages)));
     dispatch(setSelectedLanguages(languages));
-  }, []);
+  }, [userId]);
 
   React.useEffect(() => {
     if (!userId) navigate('/');
@@ -74,18 +76,13 @@ function UserMenu() {
   return (
     <AnimatedContainer>
       <Typography variant="h2" textAlign="center">
-        Welcome,
-        {' '}
-        {selectedUser?.firstName}
-        !
+        {`Welcome, ${selectedUser?.firstName}!`}
       </Typography>
       <Typography textAlign="center">{text}</Typography>
-      {allCardsList && !!allCardsList.length && (
       <LanguageOptions
         languagesPairs={languagesPairs}
         clickHandler={handleLanguagesSelection}
       />
-      )}
       <Grid container gap={2} justifyContent="center">
         <ButtonContained
           text="Add card"

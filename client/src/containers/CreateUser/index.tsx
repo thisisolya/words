@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, TextField, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import { useCreateNewUserMutation } from '../../store/apis/user-api';
@@ -7,30 +7,27 @@ import useAlert from '../../hooks/useAlert';
 
 import AnimatedContainer from '../../components/AnimatedContainer';
 import CardLayout from '../../components/CardLayout';
+import EditableText from '../../components/EditableText';
+import ButtonContained from '../../components/ButtonContained';
 
 function CreateUser() {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
-  const [createUser, { data: creationResult }] = useCreateNewUserMutation();
-
-  React.useEffect(() => {
-    if (creationResult) {
-      if (creationResult.insertedId) {
-        showAlert({
-          text: 'User was sucessfullly created!',
-          severity: 'success',
-        });
-        navigate('/');
-      } else {
-        showAlert({ text: 'Something went wrong:(', severity: 'error' });
-      }
-    }
-  }, [creationResult]);
+  const [createUser] = useCreateNewUserMutation();
 
   const handleCreateUser = () => {
-    createUser({ firstName, lastName }).unwrap();
+    createUser({ firstName, lastName }).unwrap()
+      .then((result) => {
+        if (result.insertedId) {
+          showAlert({ text: 'User has been sucessfullly created!', severity: 'success' });
+          navigate('/');
+        } else {
+          showAlert({ text: 'User has not been created:(', severity: 'error' });
+        }
+      })
+      .catch((error) => error && showAlert({ text: 'Something went wrong:(', severity: 'error' }));
   };
 
   return (
@@ -39,23 +36,25 @@ function CreateUser() {
         <Typography variant="h2" textAlign="center">
           Create account
         </Typography>
-        <TextField
-          label="First name"
-          onChange={(e) => setFirstName(e.target.value)}
+        <EditableText
+          entity="first name"
           value={firstName}
+          editingMode
+          setNewValue={setFirstName}
+          outlinedVariant
         />
-        <TextField
-          label="Last name"
-          onChange={(e) => setLastName(e.target.value)}
+        <EditableText
+          entity="last name"
           value={lastName}
+          editingMode
+          setNewValue={setLastName}
+          outlinedVariant
         />
-        <Button
-          variant="contained"
-          onClick={handleCreateUser}
+        <ButtonContained
           disabled={!firstName || !lastName}
-        >
-          Let&apos;s go!
-        </Button>
+          clickHandler={handleCreateUser}
+          text="Let's go!"
+        />
       </CardLayout>
     </AnimatedContainer>
   );
