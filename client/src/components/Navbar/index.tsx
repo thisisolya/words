@@ -15,9 +15,6 @@ const AppBar = styled(MuiAppBar)`
 `;
 
 function NavBar({ handleLogout, handleHomeClick }: NavBarProps) {
-//   const navigate = useNavigate();
-//   const { logout } = useLogout();
-
   return (
     <AppBar>
       <HomeIcon onClick={handleHomeClick} />

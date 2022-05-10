@@ -29,9 +29,7 @@ function LanguagePicker({
   return (
     <Stack direction="row" spacing={2} alignItems="center">
       <Typography>
-        {_.upperFirst(languageNumber)}
-        {' '}
-        language
+        {`${_.upperFirst(languageNumber)} language`}
       </Typography>
       <Stack direction="row" flex={1} gap={2}>
         {languages.map((language) => (

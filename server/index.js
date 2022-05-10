@@ -74,7 +74,7 @@ client.connect((error, client) => {
     })
   })
 
-  app.post("/cards/edit", (request, result) => {
+  app.patch("/cards/edit", (request, result) => {
     const { cardId, userId, ...editedWords } = request.body;
     editCardById({
       userId: new ObjectId(request.body.userId),
@@ -85,13 +85,13 @@ client.connect((error, client) => {
     });
   });
 
-  app.post("/cards/delete", (request, result) => {
+  app.delete("/cards/delete", (request, result) => {
     const cardId = new ObjectId(request.body.cardId);
     const userId = new ObjectId(request.body.userId);
     deleteCardById({ cardId, userId, collection: cardsCollection, result });
   });
 
-  app.post("/user/edit", (request, result) => {
+  app.patch("/user/edit", (request, result) => {
     const userId = new ObjectId(request.body.userId);
     const { editedFirstName, editedLastName } = request.body;
     editUserById({
@@ -103,7 +103,7 @@ client.connect((error, client) => {
     });
   });
 
-  app.post("/user/delete", (request, result) => {
+  app.delete("/user/delete", (request, result) => {
     const userId = new ObjectId(request.body.userId);
     deleteUserById({ userId, usersCollection, cardsCollection, result });
   });

@@ -28,7 +28,7 @@ const userApi = createApi({
     deleteUser: build.mutation({
       query: (body) => ({
         url: 'user/delete',
-        method: 'POST',
+        method: 'DELETE',
         body,
       }),
       invalidatesTags: ['Users'],
@@ -36,7 +36,7 @@ const userApi = createApi({
     editUserInfo: build.mutation({
       query: (body) => ({
         url: 'user/edit',
-        method: 'POST',
+        method: 'PATCH',
         body,
       }),
       invalidatesTags: ['UserInfo', 'Users'],

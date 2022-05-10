@@ -32,7 +32,7 @@ const cardApi = createApi({
     deleteCard: build.mutation({
       query: (body) => ({
         url: 'cards/delete',
-        method: 'POST',
+        method: 'DELETE',
         body,
       }),
       invalidatesTags: ['SelectedCards', 'Cards'],
@@ -40,7 +40,7 @@ const cardApi = createApi({
     editCard: build.mutation({
       query: (body) => ({
         url: 'cards/edit',
-        method: 'POST',
+        method: 'PATCH',
         body,
       }),
       invalidatesTags: ['SelectedCards', 'Cards'],

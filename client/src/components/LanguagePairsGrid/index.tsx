@@ -25,11 +25,8 @@ function LanguageOptions({ languagesPairs, clickHandler }: LanguageOptionsProps)
               Practice
             </Typography>
             <Typography>
-              {_.upperFirst(supportedLanguages[head(pair) as keyof typeof supportedLanguages])}
-              {' '}
-              &ndash;
-              {' '}
-              {_.upperFirst(supportedLanguages[last(pair) as keyof typeof supportedLanguages])}
+              {`${_.upperFirst(supportedLanguages[head(pair) as keyof typeof supportedLanguages])} – 
+              ${_.upperFirst(supportedLanguages[last(pair) as keyof typeof supportedLanguages])}`}
             </Typography>
           </CardLayout>
         </div>

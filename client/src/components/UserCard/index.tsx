@@ -12,11 +12,7 @@ function UserCard({ user, clickHandler }: UserCardProps) {
   return (
     <CardLayout key={user.id} size="small">
       <div aria-hidden onClick={clickHandler} style={{ cursor: 'pointer' }}>
-        <Typography align="center">
-          {user.firstName}
-          {' '}
-          {user.lastName}
-        </Typography>
+        <Typography align="center">{`${user.firstName} ${user.lastName}`}</Typography>
       </div>
     </CardLayout>
   );
