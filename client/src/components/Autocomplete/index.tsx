@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import _ from 'lodash';
 import { Autocomplete as MuiAutocomplete, TextField } from '@mui/material';
@@ -26,12 +27,12 @@ function Autocomplete({
   const label = _.upperFirst(allLanguages[language as keyof typeof allLanguages])
   || 'Please select a language first';
 
-  const handleChange = React.useCallback(({ target }) => {
+  const handleChange = React.useCallback(({ target }: { target: any }) => {
     const selectedValue = target.value || target.innerHTML;
     changeHandler(languageNumber, { word: selectedValue });
   }, [changeHandler]);
 
-  const handleInputChange = React.useCallback((event) => {
+  const handleInputChange = React.useCallback((event: any) => {
     if (event) {
       const currentValue = event.target.value;
       if (currentValue.length >= 3) {
