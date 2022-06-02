@@ -15,6 +15,7 @@ import Settings from '../Settings';
 import PagesWrapper from '../../components/PagesWrapper';
 import UserMenu from '../UserMenu';
 import UsersList from '../UsersGallery';
+import Loader from '../../components/Loader';
 
 function MainPage() {
   const { logout } = useLogout();
@@ -26,6 +27,7 @@ function MainPage() {
       <AlertProvider>
         <ModalProvider>
           <PagesWrapper>
+            <Loader />
             <Routes>
               <Route path="/" element={<UsersList />} />
               <Route path="/user/:id" element={<UserMenu />} />

@@ -11,11 +11,9 @@ import {
 import {
   setModifiableFirstCard,
   setModifiableSecondCard,
-  clearModifiableCard,
+  initCardCreation,
 } from '../../store/slices/card-slice';
-import { useCreateNewCardMutation } from '../../store/apis/card-api';
 import { ModifiableCard } from '../../types';
-import useAlert from '../../hooks/useAlert';
 
 import AnimatedContainer from '../../components/AnimatedContainer';
 import Autocomplete from '../../components/Autocomplete';
@@ -24,7 +22,6 @@ import CardLayout from '../../components/CardLayout';
 import LanguagePicker from '../../components/LanguagePicker';
 
 function CreateCard() {
-  const { showAlert } = useAlert();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const newCard = useSelector(modifiableCardSelector) as ModifiableCard;
@@ -39,22 +36,11 @@ function CreateCard() {
     second: setModifiableSecondCard,
   };
 
-  const [createCard] = useCreateNewCardMutation();
-
-  const handleCreateCard = React.useCallback(() => {
-    createCard({
-      userId,
-      [firstLanguage as keyof ModifiableCard]: firstWord,
-      [secondLanguage as keyof ModifiableCard]: secondWord,
-    }).unwrap()
-      .then((result) => {
-        if (result.insertedId) {
-          showAlert({ text: 'Card has been sucessfullly created!', severity: 'success' });
-          dispatch(clearModifiableCard());
-        } else showAlert({ text: 'Card has not been created:(', severity: 'error' });
-      })
-      .catch((error) => error && showAlert({ text: 'Something went wrong:(', severity: 'error' }));
-  }, [firstWord, secondWord]);
+  const handleCreateCard = () => dispatch(initCardCreation({
+    userId,
+    [firstLanguage as keyof ModifiableCard]: firstWord,
+    [secondLanguage as keyof ModifiableCard]: secondWord,
+  }));
 
   const setNewCardInfo = (wordNumber: string, word: { [key:string]: string }) => {
     dispatch(modifiableCardFunction[wordNumber as keyof typeof modifiableCardFunction](word));
@@ -64,7 +50,7 @@ function CreateCard() {
     <AnimatedContainer>
       <CardLayout size="medium">
         <Stack gap={1.5} my={3}>
-          <LanguagePicker
+          {/* <LanguagePicker
             languageNumber="first"
             clickHandler={setNewCardInfo}
             newCard={newCard}
@@ -90,7 +76,7 @@ function CreateCard() {
             changeHandler={setNewCardInfo}
             language={secondLanguage}
             languageNumber="second"
-          />
+          /> */}
         </Stack>
         <ButtonContained
           clickHandler={handleCreateCard}

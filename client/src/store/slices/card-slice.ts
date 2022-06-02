@@ -1,13 +1,16 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { mergeRight } from 'ramda';
-import { Card, CardModelFromServer, ModifiableCard } from '../../types';
-import cardApi from '../apis/card-api';
+import { Card, ModifiableCard } from '../../types';
 
 export interface CardSlice {
   allCards?: Card[],
+
   modifiableCard: ModifiableCard,
   selectedCards?: Card[],
+  editedCard?: Record<string, string | number>;
+  deletedCard?: Record<string, string | number>;
+  createdCard?: Record<string, string | number>;
   selectedLanguages: string[],
   preferredLanguage: string,
   currentCardNumber: number,
@@ -29,6 +32,9 @@ const initialState: CardSlice = {
       filterable: '',
     },
   },
+  deletedCard: {},
+  createdCard: {},
+  editedCard: {},
   preferredLanguage: '',
   selectedLanguages: [],
   currentCardNumber: 0,
@@ -39,9 +45,23 @@ const cardSlice = createSlice({
   name: 'card',
   initialState,
   reducers: {
+    getAllCards: () => {},
+    setAllCards: (state, action) => {
+      state.allCards = action.payload;
+    },
     setSelectedCards: (state, action) => {
       state.selectedCards = action.payload;
     },
+    initCardEditing: (state, { payload }) => {
+      state.editedCard = payload;
+    },
+    initCardCreation: (state, { payload }) => {
+      state.createdCard = payload;
+    },
+    initCardDeletion: (state, { payload }) => {
+      state.deletedCard = payload;
+    },
+
     setModifiableFirstCard: (state, action) => {
       state.modifiableCard.first = mergeRight(state.modifiableCard.first || {}, action.payload);
     },
@@ -65,39 +85,41 @@ const cardSlice = createSlice({
       state.currentCardNumber = 0;
     },
   },
-  extraReducers: (builder) => {
-    builder.addMatcher(
-      cardApi.endpoints.getAllCards.matchFulfilled,
-      (state, { payload }) => {
-        state.allCards = payload.map((card: CardModelFromServer) => {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          const { user_id, _id, ...words } = card;
-          return ({
-            ...words,
-            userId: card.user_id,
-            cardId: card._id,
-          });
-        });
-      },
-    );
-    builder.addMatcher(
-      cardApi.endpoints.getSelectedCards.matchFulfilled,
-      (state, { payload }) => {
-        state.selectedCards = payload.map((card: CardModelFromServer) => {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          const { user_id, _id, ...words } = card;
-          return ({
-            ...words,
-            userId: card.user_id,
-            cardId: card._id,
-          });
-        });
-      },
-    );
-  },
+  // extraReducers: (builder) => {
+  //   builder.addMatcher(
+  //     cardApi.endpoints.getAllCards.matchFulfilled,
+  //     (state, { payload }) => {
+  //       state.allCards = payload.map((card: CardModelFromServer) => {
+  //         // eslint-disable-next-line @typescript-eslint/naming-convention
+  //         const { user_id, _id, ...words } = card;
+  //         return ({
+  //           ...words,
+  //           userId: card.user_id,
+  //           cardId: card._id,
+  //         });
+  //       });
+  //     },
+  //   );
+  //   builder.addMatcher(
+  //     cardApi.endpoints.getSelectedCards.matchFulfilled,
+  //     (state, { payload }) => {
+  //       state.selectedCards = payload.map((card: CardModelFromServer) => {
+  //         // eslint-disable-next-line @typescript-eslint/naming-convention
+  //         const { user_id, _id, ...words } = card;
+  //         return ({
+  //           ...words,
+  //           userId: card.user_id,
+  //           cardId: card._id,
+  //         });
+  //       });
+  //     },
+  //   );
+  // },
 });
 
 const {
+  getAllCards,
+  setAllCards,
   setPreferredLanguage,
   setSelectedLanguages,
   setModifiableFirstCard,
@@ -106,8 +128,13 @@ const {
   setSelectedCards,
   resetCurrentCardNumber,
   setCurrentCardNumber,
+  initCardEditing,
+  initCardCreation,
+  initCardDeletion,
 } = cardSlice.actions;
 export {
+  getAllCards,
+  setAllCards,
   setPreferredLanguage,
   setModifiableFirstCard,
   setModifiableSecondCard,
@@ -115,7 +142,9 @@ export {
   setSelectedLanguages,
   setSelectedCards,
   setCurrentCardNumber,
-  resetCurrentCardNumber,
+  resetCurrentCardNumber, initCardEditing,
+  initCardCreation,
+  initCardDeletion,
 };
 
 export default cardSlice;

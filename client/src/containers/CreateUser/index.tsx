@@ -3,7 +3,6 @@ import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import { useCreateNewUserMutation } from '../../store/apis/user-api';
-import useAlert from '../../hooks/useAlert';
 
 import AnimatedContainer from '../../components/AnimatedContainer';
 import CardLayout from '../../components/CardLayout';
@@ -12,22 +11,22 @@ import ButtonContained from '../../components/ButtonContained';
 
 function CreateUser() {
   const navigate = useNavigate();
-  const { showAlert } = useAlert();
+  // const { showAlert } = useAlert();
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [createUser] = useCreateNewUserMutation();
 
   const handleCreateUser = () => {
-    createUser({ firstName, lastName }).unwrap()
-      .then((result) => {
-        if (result.insertedId) {
-          showAlert({ text: 'User has been sucessfullly created!', severity: 'success' });
-          navigate('/');
-        } else {
-          showAlert({ text: 'User has not been created:(', severity: 'error' });
-        }
-      })
-      .catch((error) => error && showAlert({ text: 'Something went wrong:(', severity: 'error' }));
+    createUser({ firstName, lastName }).unwrap();
+    // .then((result) => {
+    //   if (result.insertedId) {
+    //     showAlert({ text: 'User has been sucessfullly created!', severity: 'success' });
+    //     navigate('/');
+    //   } else {
+    //     showAlert({ text: 'User has not been created:(', severity: 'error' });
+    //   }
+    // })
+    // .catch((error) => error && showAlert({ text: 'Something went wrong:(', severity: 'error' }));
   };
 
   return (

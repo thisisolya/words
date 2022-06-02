@@ -35,7 +35,7 @@ function ReadonlyCardWords() {
 
   return (
     <AnimatePresence>
-      <Typography
+      {/* <Typography
         component={motion.div}
         key={currentLanguage}
         animate={{ opacity: 1 }}
@@ -46,7 +46,7 @@ function ReadonlyCardWords() {
         fontWeight={600}
       >
         {words[currentLanguage as keyof typeof words]}
-      </Typography>
+      </Typography> */}
     </AnimatePresence>
 
   );

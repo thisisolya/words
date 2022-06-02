@@ -1,11 +1,10 @@
 import React from 'react';
-import { Typography, Grid, CircularProgress } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useGetAllUsersQuery } from '../../store/apis/user-api';
+import { getAllUsersInfo, setSelectedUserId } from '../../store/slices/user-slice';
 import { allUsersSelector } from '../../store/selectors/user';
-import { setSelectedUser } from '../../store/slices/user-slice';
 import { User } from '../../types';
 
 import AnimatedContainer from '../../components/AnimatedContainer';
@@ -14,28 +13,33 @@ import CreateUser from '../CreateUser';
 import UserCard from '../../components/UserCard';
 
 function UsersList() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const userId = localStorage.getItem('userId');
   const allUsers = useSelector(allUsersSelector) as User[];
 
-  const { isFetching } = useGetAllUsersQuery('/');
-
   React.useEffect(() => {
-    if (userId) navigate(`user/${userId}`);
+    if (userId) {
+      navigate(`user/${userId}`);
+    } else dispatch(getAllUsersInfo());
   }, []);
 
-  const handleUserSelection = (user: User) => {
-    localStorage.setItem('userId', user.id);
-    dispatch(setSelectedUser(user));
-    navigate(`user/${user.id}`);
-  };
+  const letters = ['a', 'b', 'c'];
 
-  if (isFetching) {
-    return <CircularProgress />;
+  for (let i = 0; i < 1000; i += 1) {
+    const letter = 'abc';
+
+    console.log(letter);
   }
 
-  if (!allUsers) {
+  const handleUserSelection = (id: string) => {
+    localStorage.setItem('userId', id);
+    setSelectedUserId(id);
+    navigate(`user/${id}`);
+  };
+
+  if (!allUsers) return null;
+  if (allUsers.length === 0) {
     return <CreateUser />;
   }
 
@@ -49,7 +53,7 @@ function UsersList() {
           <UserCard
             key={user.id}
             user={user}
-            clickHandler={() => handleUserSelection(user)}
+            clickHandler={() => handleUserSelection(user.id)}
           />
         ))}
         <ButtonContained
@@ -57,7 +61,6 @@ function UsersList() {
           clickHandler={() => navigate('user/create')}
         />
       </Grid>
-
     </AnimatedContainer>
   );
 }

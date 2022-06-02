@@ -1,30 +1,37 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../components/Modal';
+import { modalSelector } from '../store/selectors/utility';
+import { setModal } from '../store/slices/utility-slice';
+import { Modal as ModalType } from '../types';
 
 interface ContextType {
-  toggleModal: () => void;
-  setAcceptButtonHandler: React.Dispatch<React.SetStateAction<() => void>>;
-  setText: React.Dispatch<React.SetStateAction<string>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toggleModal: () => any,
+  acceptButtonHandler?: () => void,
+  text: string,
 }
 
 const initialModalContextState = {
   toggleModal: () => false,
-  setAcceptButtonHandler: () => null,
-  setText: () => '',
+  acceptButtonHandler: undefined,
+  text: '',
 };
 
 const ModalContext = React.createContext<ContextType>(initialModalContextState);
 
 function ModalProvider({ children }: { children: React.ReactNode }) {
-  const [isOpen, setOpen] = React.useState(false);
-  const [text, setText] = React.useState('');
-  const [acceptButtonHandler, setAcceptButtonHandler] = React.useState<() => void>(() => null);
-  const toggleModal = () => setOpen(!isOpen);
+  const dispatch = useDispatch();
+  const modalInfo = useSelector(modalSelector) as ModalType;
+  const { isOpen } = modalInfo;
+  const toggleModal = () => dispatch(setModal({ isOpen: !isOpen }));
+  const text = `You are going to ${modalInfo.action} the ${modalInfo.entity}, do you really want to do it?`;
+  const acceptButtonHandler = modalInfo.acceptButtonHadler;
 
   const contextValue = React.useMemo(
     () => (
-      { toggleModal, setAcceptButtonHandler, setText }),
-    [toggleModal, setAcceptButtonHandler, setText],
+      { toggleModal, acceptButtonHandler, text }),
+    [toggleModal, acceptButtonHandler, text],
   );
 
   return (
@@ -35,7 +42,8 @@ function ModalProvider({ children }: { children: React.ReactNode }) {
           isOpen={isOpen}
           toggleModal={toggleModal}
           text={text}
-          acceptButtonHandler={acceptButtonHandler}
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          acceptButtonHandler={acceptButtonHandler!}
         />
       )}
     </ModalContext.Provider>

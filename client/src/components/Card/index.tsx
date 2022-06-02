@@ -33,9 +33,9 @@ function Card({
           flex={10}
           justifyContent="center"
         >
-          {editingMode
+          {/* {editingMode
             ? <EditableCardWords />
-            : <ReadonlyCardWords />}
+            : <ReadonlyCardWords />} */}
         </Stack>
         <Toolbar
           handleCardDelete={handleCardDelete}

@@ -32,3 +32,17 @@ export interface ModifiableCard {
   first?: ModifiableWord,
   second?: ModifiableWord,
 }
+
+export interface Alert {
+  isOpen: boolean,
+  result?: number,
+  entity?: string,
+  action?: string,
+}
+
+export interface Modal {
+  isOpen: boolean,
+  acceptButtonHadler?: () => void,
+  entity?: string,
+  action?: string,
+}

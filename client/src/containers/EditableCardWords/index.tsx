@@ -43,7 +43,7 @@ function EditableCardWords() {
 
   return (
     <Stack spacing={3} m={3}>
-      {words.map((word, index) => (
+      {/* {words.map((word, index) => (
         <div key={word[0]}>
           <LanguagePicker
             languageNumber={indexArray[index]}
@@ -59,7 +59,7 @@ function EditableCardWords() {
             variant="standard"
           />
         </div>
-      ))}
+      ))} */}
     </Stack>
   );
 }

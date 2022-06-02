@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
+import { mergeRight } from 'ramda';
 import { User, UserModelFromServer } from '../../types';
 import userApi from '../apis/user-api';
 
@@ -17,38 +18,39 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setSelectedUser: (state, { payload }) => {
-      state.selectedUser = payload;
+    getAllUsersInfo: () => { },
+    setAllUsersInfo: (state, { payload }) => {
+      state.allUsers = payload;
+    },
+    setSelectedUserInfo: (state, { payload }) => {
+      state.selectedUser = mergeRight(state.selectedUser || {}, payload);
+    },
+    setSelectedUserId: (state, { payload }) => {
+      state.selectedUser = mergeRight(state.selectedUser || {}, payload);
     },
     resetSelectedUser: (state) => {
       state.selectedUser = undefined;
     },
   },
-  extraReducers: (builder) => {
-    builder.addMatcher(
-      userApi.endpoints.getUserInfo.matchFulfilled,
-      (state, { payload }) => {
-        state.selectedUser = {
-          firstName: payload.first_name,
-          lastName: payload.last_name,
-          id: payload._id,
-        };
-      },
-    );
-    builder.addMatcher(
-      userApi.endpoints.getAllUsers.matchFulfilled,
-      (state, { payload }) => {
-        state.allUsers = payload.map((user: UserModelFromServer) => ({
-          firstName: user.first_name,
-          lastName: user.last_name,
-          id: user._id,
-        }));
-      },
-    );
-  },
+  // extraReducers: (builder) => {
+  //   builder.addMatcher(
+  //     userApi.endpoints.getAllUsers.matchFulfilled,
+  //     (state, { payload }) => {
+  //       state.allUsers = payload.map((user: UserModelFromServer) => ({
+  //         firstName: user.first_name,
+  //         lastName: user.last_name,
+  //         id: user._id,
+  //       }));
+  //     },
+  //   );
+  // },
 });
 
-const { setSelectedUser, resetSelectedUser } = userSlice.actions;
-export { setSelectedUser, resetSelectedUser };
+const {
+  getAllUsersInfo, setAllUsersInfo, setSelectedUserInfo, setSelectedUserId, resetSelectedUser,
+} = userSlice.actions;
+export {
+  getAllUsersInfo, setAllUsersInfo, setSelectedUserInfo, setSelectedUserId, resetSelectedUser,
+};
 
 export default userSlice;

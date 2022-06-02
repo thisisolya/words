@@ -22,10 +22,6 @@ function LanguagePicker({
     ? newCard?.second?.language
     : newCard?.first?.language;
 
-  React.useEffect(() => {
-    if (specificLanguage) clickHandler(languageNumber, { language: specificLanguage });
-  }, [specificLanguage]);
-
   return (
     <Stack direction="row" spacing={2} alignItems="center">
       <Typography>

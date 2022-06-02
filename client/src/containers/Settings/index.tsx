@@ -7,9 +7,7 @@ import { useEditUserInfoMutation, useDeleteUserMutation } from '../../store/apis
 import { selectedUserSelector } from '../../store/selectors/user';
 import { allCardsSelector } from '../../store/selectors/cards';
 
-import useAlert from '../../hooks/useAlert';
 import useLogout from '../../hooks/useLogout';
-import useModal from '../../hooks/useModal';
 import { User } from '../../types';
 
 import AnimatedContainer from '../../components/AnimatedContainer';
@@ -20,8 +18,6 @@ import Toolbar from '../../components/ToolBar';
 
 function Settings() {
   const navigate = useNavigate();
-  const { showAlert } = useAlert();
-  const { showModal } = useModal();
   const { logout } = useLogout();
 
   const selectedUser = useSelector(selectedUserSelector) as User;
@@ -46,28 +42,30 @@ function Settings() {
   }, [editingMode]);
 
   const handleUserEditing = React.useCallback(() => {
-    editUserInfo({ userId, editedFirstName, editedLastName }).unwrap()
-      .then((result) => {
-        if (result.modifiedCount) {
-          showAlert({ text: 'Info has been sucessfullly edited!', severity: 'success' });
-        } else showAlert({ text: 'Info has not been edited:(', severity: 'error' });
-      })
-      .catch((error) => error && showAlert({ text: 'Something went wrong:(', severity: 'error' }))
-      .finally(() => setEdidingMode(false));
+    editUserInfo({ userId, editedFirstName, editedLastName }).unwrap();
+    // .then((result) => {
+    //   if (result.modifiedCount) {
+    //     showAlert({ text: 'Info has been sucessfullly edited!', severity: 'success' });
+    //   } else showAlert({ text: 'Info has not been edited:(', severity: 'error' });
+    // })
+    // .catch((error) => error && showAlert({ text: 'Something went wrong:(', severity: 'error' }))
+    // .finally(() => setEdidingMode(false));
   }, [userId, editedFirstName, editedLastName]);
 
   const handleUserDelete = React.useCallback(() => {
-    const deleteFunction = () => deleteUser({ userId }).unwrap()
-      .then((result) => {
-        if (result.deletedCount) {
-          logout();
-        } else showAlert({ text: 'User has not been deleted:(', severity: 'error' });
-      })
-      .catch((error) => error && showAlert({ text: 'Something went wrong:(', severity: 'error' }));
-    showModal({
-      text: ' This is going to delete your account forever and you will not be able to restore it.',
-      acceptFunction: () => deleteFunction,
-    });
+    const deleteFunction = () => deleteUser({ userId }).unwrap();
+    //   .then((result) => {
+    //     if (result.deletedCount) {
+    //       logout();
+    //     } else showAlert({ text: 'User has not been deleted:(', severity: 'error' });
+    //   })
+    //   .catch((error) => error && showAlert
+    // ({ text: 'Something went wrong:(', severity: 'error' }));
+    // showModal({
+    //   text: ' This is going to delete
+    // your account forever and you will not be able to restore it.',
+    //   acceptFunction: () => deleteFunction,
+    // });
   }, [userId]);
 
   return (
